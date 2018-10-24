@@ -8,6 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -18,13 +22,24 @@ import java.util.Set;
 @Table(name="user", catalog="cuponera")
 public class Users implements java.io.Serializable{
 	
+	@Positive
 	private int id;
+	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un nombre correcto")
+	@NotBlank(message="El nombre del usuario es obligatorio")
 	private String name;
+	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un apellido correcto")
+	@NotBlank(message="El apellido del usuario es obligatorio")
 	private String lastName;
+	@Email(message="Ingrese un correo correcto")
 	private String email;
+	@NotBlank(message="La contraseña es obligatoria")
 	private String passsword;
 	private UserTypes userType;
+	@NotBlank(message="El DUI es obligatorio")
+	@Pattern(regexp="^[0-9]{1}[0-9]{7}[-]{1}[0-9]{1}$")
 	private String dui;
+	@NotBlank(message="El NIT es obligatorio")
+	@Pattern(regexp="^[0-9]{1}[0-9]{3}[-]{1}[0-9]{6}[-]{1}[0-9]{3}[-]{1}[0-9]{1}$")
 	private String nit;
 	private byte confirmed;
 	private String idConfirmation;
