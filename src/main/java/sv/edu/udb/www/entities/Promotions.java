@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -124,6 +126,7 @@ public class Promotions implements java.io.Serializable{
 		this.ofertPrice = ofertPrice;
 	}
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name="init_date", nullable=false)
 	public Date getInitDate() {
 		return initDate;
@@ -131,7 +134,8 @@ public class Promotions implements java.io.Serializable{
 	public void setInitDate(Date initDate) {
 		this.initDate = initDate;
 	}
-
+	
+	@Temporal(TemporalType.DATE)
 	@Column(name="end_date", nullable=false)
 	public Date getEndDate() {
 		return endDate;
