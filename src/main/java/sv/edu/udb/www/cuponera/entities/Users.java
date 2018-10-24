@@ -1,4 +1,4 @@
-package sv.edu.udb.www.entities;
+package sv.edu.udb.www.cuponera.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +22,7 @@ public class Users implements java.io.Serializable{
 	private String name;
 	private String lastName;
 	private String email;
-	private String passsword;
+	private String password;
 	private UserTypes userType;
 	private String dui;
 	private String nit;
@@ -31,13 +31,13 @@ public class Users implements java.io.Serializable{
 	private Set<Sales> sales = new HashSet<Sales>(0);
 	
 	public Users() {}
-	public Users(int id, String name, String lastName, String email, String passsword, UserTypes userType, String dui,
+	public Users(int id, String name, String lastName, String email, String password, UserTypes userType, String dui,
 			String nit, byte confirmed, String idConfirmation) {
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
-		this.passsword = passsword;
+		this.password = password;
 		this.userType = userType;
 		this.dui = dui;
 		this.nit = nit;
@@ -45,19 +45,32 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = idConfirmation;
 	}
 	
-	public Users(int id, String name, String lastName, String email, String passsword, UserTypes userType, String dui,
+	public Users(int id, String name, String lastName, String email, String password, UserTypes userType, String dui,
 			String nit, byte confirmed, String idConfirmation, Set<Sales> sales) {
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
-		this.passsword = passsword;
+		this.password = password;
 		this.userType = userType;
 		this.dui = dui;
 		this.nit = nit;
 		this.confirmed = confirmed;
 		this.idConfirmation = idConfirmation;
 		this.sales = sales;
+	}
+	
+	public Users(Users user) {
+		this.id = user.getId();
+		this.name = user.getName();
+		this.lastName = user.getLastName();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
+		this.userType = user.getUserType();
+		this.dui = user.getDui();
+		this.nit = user.getNit();
+		this.confirmed = user.getConfirmed();
+		this.idConfirmation = user.getIdConfirmation();
 	}
 	
 	@Id
@@ -95,11 +108,11 @@ public class Users implements java.io.Serializable{
 	}
 	
 	@Column(name="password", nullable=false, length=64)
-	public String getPasssword() {
-		return passsword;
+	public String getPassword() {
+		return password;
 	}
-	public void setPasssword(String passsword) {
-		this.passsword = passsword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	@ManyToMany(fetch=FetchType.LAZY)
