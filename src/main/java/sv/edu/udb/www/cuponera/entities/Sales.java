@@ -14,7 +14,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
 @Entity
-@Table(name="company_type", catalog="cuponera")
+@Table(name="sales", catalog="cuponera")
 public class Sales implements java.io.Serializable{
 	
 	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){3}[0-9]{3}[0-9]{7}$",message="El formato del código del cupón no es válido")
@@ -72,7 +72,7 @@ public class Sales implements java.io.Serializable{
 		this.verified = verified;
 	}
 	
-	@Column(name="date", nullable=false)
+	@Column(name="date", nullable=true)
 	public Date getDate() {
 		return date;
 	}
