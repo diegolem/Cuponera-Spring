@@ -7,5 +7,5 @@ import sv.edu.udb.www.cuponera.entities.UserTypes;
 
 @Repository("UserTypesRepository")
 public interface UserTypesRepository extends JpaRepository<UserTypes, Integer>{
-
+	public abstract UserTypes findByType(String type);
 }

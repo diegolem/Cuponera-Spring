@@ -30,3 +30,4 @@
 **/.settings/
 blog/bin/
 **/.tern-project
+/bin/
