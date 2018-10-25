@@ -12,12 +12,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 @Entity
 @Table(name="company_type", catalog="cuponera")
 public class PromotionsState implements java.io.Serializable{
 	
+	@Positive
 	private int id;
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}[a-zA-Z ñÑáéíóú]*$", message="Ingrese una descripción válida")
+	@NotBlank(message="La descripción es obligatoria")
 	private String state;
 	private Set<Promotions> promotions = new HashSet<Promotions>(0);
 	

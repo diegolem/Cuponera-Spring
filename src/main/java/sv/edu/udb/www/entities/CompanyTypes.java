@@ -6,6 +6,9 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -16,7 +19,10 @@ import java.util.Set;
 @Table(name="company_type", catalog="cuponera")
 public class CompanyTypes implements java.io.Serializable{
 	
+	@Positive
 	private int id;
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}[a-zA-Z ñÑáéíóú]*$",message="Ingrese un nombre de rubro válido")
+	@NotBlank(message="El rubro es obligatorio")
 	private String type;
 	private Set<Companies> companies = new HashSet<Companies>(0);
 	

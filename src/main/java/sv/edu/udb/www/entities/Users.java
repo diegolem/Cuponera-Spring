@@ -31,6 +31,7 @@ public class Users implements java.io.Serializable{
 	@NotBlank(message="El apellido del usuario es obligatorio")
 	private String lastName;
 	@Email(message="Ingrese un correo correcto")
+	@NotBlank(message="El correo es obligatorio")
 	private String email;
 	@NotBlank(message="La contraseña es obligatoria")
 	private String passsword;
