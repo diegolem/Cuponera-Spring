@@ -3,7 +3,7 @@ package sv.edu.udb.www.cuponera.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import sv.edu.udb.www.entities.Users;
+import sv.edu.udb.www.cuponera.entities.Users;
 
 @Repository("UserRepository")
 public interface UserRepository extends JpaRepository<Users,Integer> {

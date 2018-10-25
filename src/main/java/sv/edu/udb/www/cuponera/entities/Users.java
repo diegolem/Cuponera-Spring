@@ -1,4 +1,4 @@
-package sv.edu.udb.www.entities;
+package sv.edu.udb.www.cuponera.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -159,7 +159,7 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = idConfirmation;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="users")
 	public Set<Sales> getSales() {
 		return sales;
 	}

@@ -1,4 +1,4 @@
-package sv.edu.udb.www.entities;
+package sv.edu.udb.www.cuponera.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -127,7 +127,7 @@ public class Companies implements java.io.Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	//AQUI ESTA MALO
 	@ManyToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="type_company", nullable=false)
 	public CompanyTypes getCompanyType() {

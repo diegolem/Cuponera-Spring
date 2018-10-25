@@ -1,4 +1,4 @@
-package sv.edu.udb.www.entities;
+package sv.edu.udb.www.cuponera.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 

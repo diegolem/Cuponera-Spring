@@ -1,4 +1,4 @@
-package sv.edu.udb.www.entities;
+package sv.edu.udb.www.cuponera.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +24,7 @@ public class CompanyTypes implements java.io.Serializable{
 	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}[a-zA-Z ñÑáéíóú]*$",message="Ingrese un nombre de rubro válido")
 	@NotBlank(message="El rubro es obligatorio")
 	private String type;
-	private Set<Companies> companies = new HashSet<Companies>(0);
+	private Set<Companies> companies = new HashSet<Companies>();
 	
 	public CompanyTypes() {}
 	public CompanyTypes(int id, String type) {
@@ -55,7 +55,7 @@ public class CompanyTypes implements java.io.Serializable{
 		this.type = type;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="companyType")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="types")
 	public Set<Companies> getCompanies() {
 		return companies;
 	}
