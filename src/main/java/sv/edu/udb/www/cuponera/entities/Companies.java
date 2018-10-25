@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -127,8 +128,8 @@ public class Companies implements java.io.Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	//AQUI ESTA MALO
-	@ManyToMany(fetch=FetchType.LAZY)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="type_company", nullable=false)
 	public CompanyTypes getCompanyType() {
 		return companyType;

@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -118,7 +119,7 @@ public class Users implements java.io.Serializable{
 		this.passsword = passsword;
 	}
 	
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_type", nullable=false)
 	public UserTypes getUserType() {
 		return userType;
@@ -159,7 +160,7 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = idConfirmation;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="users")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
 	public Set<Sales> getSales() {
 		return sales;
 	}

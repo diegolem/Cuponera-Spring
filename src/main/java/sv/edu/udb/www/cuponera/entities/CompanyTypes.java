@@ -55,7 +55,7 @@ public class CompanyTypes implements java.io.Serializable{
 		this.type = type;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="types")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="companyType")
 	public Set<Companies> getCompanies() {
 		return companies;
 	}

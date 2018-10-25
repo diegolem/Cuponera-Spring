@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -61,7 +62,7 @@ public class Employees implements java.io.Serializable{
 		this.name = name;
 	}
 
-	@Column(name="name", nullable=false,  length=50)
+	@Column(name="last_name", nullable=false,  length=50)
 	public String getLastName() {
 		return lastName;
 	}
@@ -85,7 +86,7 @@ public class Employees implements java.io.Serializable{
 		this.password = password;
 	}
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_company", nullable=false)
 	public Companies getCompany() {
 		return company;
