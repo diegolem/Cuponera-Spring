@@ -6,12 +6,13 @@
   
   <title>Cuponera | Login</title>
   
-  <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
-  <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
+  <link rel="stylesheet" href="/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/iconfonts/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
   
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="shortcut icon" href="/images/favicon.png" />
 </head>
 
 <body>
@@ -22,14 +23,14 @@
           <div class="col-lg-4 mx-auto">
             <div class="auto-form-wrapper">
             
-			<form role="form" method="POST" th:action="@{/login}">
+			<form role="form" method="POST" th:action="'/login'">
                	<div class="form-group">
                		<label for="username" class="label">Username</label>
                   	<div class="input-group">
-                    	<input type="text" name="username" id="username" class="form-control" placeholder="Username" />
+                    	<input type="text" name="username" id="username" requerid="true" class="form-control" placeholder="xxxxxxxx-x" data-validation="custom"  data-validation-regexp="^[0-9]{8}-[0-9]$" />
                    		<div class="input-group-append">
                     		<span class="input-group-text">
-                       			<i class="mdi mdi-check-circle-outline"></i>
+                       			<i class="fa fa-asterisk"></i>
                      		</span>
                     	</div>
                   	</div>
@@ -37,10 +38,10 @@
                 <div class="form-group">
                 	<label for="password" class="label">Password</label>
                   	<div class="input-group">
-                    	<input id="password" name="password" type="password" class="form-control" placeholder="*********">
+                    	<input id="password" name="password" type="password" requerid="true" class="form-control" placeholder="*********" data-validation="length alphanumeric" data-validation-length="min4">
                     	<div class="input-group-append">
                       		<span class="input-group-text">
-                        		<i class="mdi mdi-check-circle-outline"></i>
+                        		<i class="fa fa-asterisk"></i>
                       		</span>
                    		</div>
                 	</div>
@@ -67,11 +68,19 @@
     </div>
   </div>
   
-  <script src="vendors/js/vendor.bundle.base.js"></script>
-  <script src="vendors/js/vendor.bundle.addons.js"></script>
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/vendors/js/vendor.bundle.addons.js"></script>
   
-  <script src=".js/off-canvas.js"></script>
-  <script src="js/misc.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  
+  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script>
+	  $.validate({
+	    lang: 'es'
+	  });
+	</script>
   
 </body>
 

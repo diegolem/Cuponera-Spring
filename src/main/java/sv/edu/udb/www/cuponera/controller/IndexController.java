@@ -47,10 +47,12 @@ public class IndexController {
 		return "client/index";
 	}
 	
+	/*
 	@RequestMapping(value = "/employee", method = RequestMethod.GET)
 	public String employeeIndex(Model model) {
 		return "employee/index";
 	}
+	*/
 	
 	@RequestMapping(value = "/denied", method = RequestMethod.GET)
 	public String denied(Model model) {

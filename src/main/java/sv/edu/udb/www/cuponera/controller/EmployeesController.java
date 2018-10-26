@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import sv.edu.udb.www.cuponera.entities.Employees;
 import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
@@ -28,6 +29,11 @@ public class EmployeesController {
 	@Autowired
 	@Qualifier("EmployeesRepository")
 	EmployeesRepository employeesRepository;
+	
+	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
+	public String index() {
+		return "employee/index";
+	}
 	
 	@GetMapping("/list")
 	public String listEmployees(Model model) {

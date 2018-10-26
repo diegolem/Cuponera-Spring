@@ -1,12 +1,22 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Cuponera [Empresa]</title>
-</head>
-<body>
-	<h1>Hola Empresa</h1>
-	<form th:action="@{/logout}">
-		<button type="submit">Cerrar</button>
-	</form>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Employee', ~{:: link})" ></head>
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: script})">
+	<li class="nav-item option_list">
+	    <a class="nav-link" href="../../pages/forms/basic_elements.html">
+	      <i class="menu-icon mdi mdi-backup-restore"></i>
+	      <span class="menu-title">Form elements</span>
+	    </a>
+     </li>
+     <li class="nav-item option_list">
+        <a class="nav-link" href="../../pages/forms/basic_elements.html">
+	         <i class="menu-icon mdi mdi-backup-restore"></i>
+	         <span class="menu-title">Form elements</span>
+        </a>
+      </li>
+	
+	<section id="container">
+		Modo Empresa
+	</section>
 </body>
 </html>
