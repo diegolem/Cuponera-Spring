@@ -8,7 +8,7 @@ import sv.edu.udb.www.cuponera.entities.Users;
 @Repository("UserRepository")
 public interface UserRepository extends JpaRepository<Users,Integer> {
 	
-	 public abstract Users findByEmailAndPasssword(String email,String password);
+	 public abstract Users findByEmailAndPassword(String email,String password);
 	 public abstract Users findByEmail(String email);
 	
 }
