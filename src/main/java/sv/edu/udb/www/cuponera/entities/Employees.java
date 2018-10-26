@@ -44,6 +44,15 @@ public class Employees implements java.io.Serializable{
 		this.company = company;
 	}
 
+	public Employees(Employees employee) {
+		this.id = employee.getId();
+		this.name = employee.getName();
+		this.lastName = employee.getLastName();
+		this.email = employee.getEmail();
+		this.password = employee.getPassword();
+		this.company = employee.getCompany();
+	}
+	
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", nullable=false)

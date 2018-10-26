@@ -1,9 +1,11 @@
 package sv.edu.udb.www.cuponera.controller;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -17,16 +19,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import sv.edu.udb.www.cuponera.service.EmailService;
+import sv.edu.udb.www.cuponera.utils.Mail;
+import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
-import sv.edu.udb.www.cuponera.repositories.UserRepository;
+import sv.edu.udb.www.cuponera.repositories.UserTypesRepository;
+import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
 	@Autowired
-	@Qualifier("UserRepository")
-	UserRepository userRepository;
+	@Qualifier("UsersRepository")
+	UsersRepository userRepository;
+	@Autowired
+	@Qualifier("UserTypesRepository")
+	UserTypesRepository userTypesRepository;
 	
 	@GetMapping("/list")
 	public String listUsers(Model model) {
@@ -54,6 +63,39 @@ public class UserController {
 		}catch(Exception ex) {
 			model.addAttribute("user",user);
 			return "users/nuevo";			
+		}
+	}
+	
+	@PostMapping("/new_client")
+	public String insertClient(@ModelAttribute("user") Users user, BindingResult result, Model model) {
+		try {
+			if(result.hasErrors()) {
+				return "";
+			}else {
+				// Validar que no exista el correo, DUI o NIT.
+				
+				String password = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
+				String token = UUID.randomUUID().toString(); // ID de confirmación
+				UserTypes userTypes = userTypesRepository.findByType("client"); // Se obtiene tipo de usuario
+				
+				user.setPassword(password);
+				user.setIdConfirmation(token);
+				user.setUserType(userTypes);
+				userRepository.save(user); // Se guarda el usuario
+				
+				String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
+						+ "Contraseña: "+password+""
+						+ "Antes debes verificar tú cuenta" + token;
+				
+				Mail mail = new Mail(user.getEmail(), "Verifiación de cuenta", message);
+				EmailService mailService = new EmailService();
+				mailService.SendSimpleMessage(mail);
+				
+				return "";
+			}
+		}catch(Exception ex) {
+			model.addAttribute("user", user);
+			return "";
 		}
 	}
 	
@@ -95,5 +137,4 @@ public class UserController {
 			return "redirect:/users/list";
 		}
 	}
-	
 }

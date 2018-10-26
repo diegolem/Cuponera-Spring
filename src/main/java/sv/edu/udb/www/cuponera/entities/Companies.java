@@ -80,6 +80,18 @@ public class Companies implements java.io.Serializable{
 		this.promotions = promotions;
 	}
 	
+	public Companies(Companies company) {
+		this.id = company.getId();
+		this.name = company.getName();
+		this.address = company.getAddress();
+		this.contactName = company.getContactName();
+		this.telephone = company.getTelephone();
+		this.email = company.getEmail();
+		this.companyType = company.getCompanyType();
+		this.pctComission = company.getPctComission();
+		this.password = company.getPassword();
+	}
+	
 	@Id
 	@Column(name="id", unique=true, nullable=false, length=6)
 	public String getId() {

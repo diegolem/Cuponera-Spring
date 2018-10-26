@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cuponera [Administrador]</title>
+</head>
+<body>
+	<h1>Hola Administrador</h1>
+	<h2 th:text="${user.name}"></h2>
+	<form th:action="@{/logout}">
+		<button type="submit">Cerrar</button>
+	</form>
+</body>
+</html>
