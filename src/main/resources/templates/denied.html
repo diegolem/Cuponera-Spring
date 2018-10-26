@@ -1,12 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
- 	<meta charset="UTF-8">
-	<title>Home - Acceso denegado</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>Home - Acceso denegado</title>
+  
+  <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.addons.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="images/favicon.png" />
 </head>
+
 <body>
-	<div>
-		<h2>No tienes derecho a estar aquí, intruso!</h2>
-	</div>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
+      <div class="content-wrapper d-flex align-items-center text-center error-page bg-info">
+        <div class="row flex-grow">
+          <div class="col-lg-7 mx-auto text-white">
+            <div class="row align-items-center d-flex flex-row">
+              <div class="col-lg-6 text-lg-right pr-lg-4">
+                <h1 class="display-1 mb-0">403</h1>
+              </div>
+              <div class="col-lg-6 error-page-divider text-lg-left pl-lg-4">
+                <h2>Intruso</h2>
+                <h3 class="font-weight-light">No tienes derecho a estar aquí!</h3>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-12 text-center mt-xl-2">
+                <a class="text-white font-weight-medium" th:href="@{'/'}">Back to home</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="vendors/js/vendor.bundle.base.js"></script>
+  <script src="vendors/js/vendor.bundle.addons.js"></script>
+  
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+  
 </body>
+
 </html>
