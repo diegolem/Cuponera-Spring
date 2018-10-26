@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import sv.edu.udb.www.cuponera.repository.UserRepository;
 import sv.edu.udb.www.cuponera.service.EmailService;
 import sv.edu.udb.www.cuponera.utils.Mail;
 import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.UserTypesRepository;
+import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
 	@Autowired
-	@Qualifier("UserRepository")
-	UserRepository userRepository;
+	@Qualifier("UsersRepository")
+	UsersRepository userRepository;
 	@Autowired
 	@Qualifier("UserTypesRepository")
 	UserTypesRepository userTypesRepository;

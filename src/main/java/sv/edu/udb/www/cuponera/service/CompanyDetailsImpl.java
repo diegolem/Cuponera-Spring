@@ -7,21 +7,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.entities.Companies;
 
-public class UserDetailsImpl extends Users implements UserDetails {
-	
-	public UserDetailsImpl(Users user) {
-		super(user);
+public class CompanyDetailsImpl extends Companies implements UserDetails{
+
+	public CompanyDetailsImpl(Companies company) {
+		super(company);
 	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority(getUserType().getType().toUpperCase()));
+		grantedAuthorities.add(new SimpleGrantedAuthority("COMPANY"));
 		return grantedAuthorities;
 	}
-
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub

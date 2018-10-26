@@ -4,17 +4,27 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name="company_type", catalog="cuponera")
 public class Sales implements java.io.Serializable{
 	
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){3}[0-9]{3}[0-9]{7}$",message="El formato del código del cupón no es válido")
+	@NotBlank(message="El codigo del cupon es obligatorio")
 	private String couponCode;
 	private Promotions promotion;
 	private Users client;
 	private byte verified;
+	@PastOrPresent(message="Ingrese una fecha válida")
+	@NotBlank(message="La fecha de compra es obligatoria")
 	private Date date;
 	private SalesState state;
 	
@@ -45,7 +55,8 @@ public class Sales implements java.io.Serializable{
 		this.promotion = promotion;
 	}
 	
-	@Column(name="cleint_id", nullable=false)
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="client_id", nullable=false)
 	public Users getClient() {
 		return client;
 	}
@@ -76,4 +87,5 @@ public class Sales implements java.io.Serializable{
 	public void setState(SalesState state) {
 		this.state = state;
 	}
+	
 }

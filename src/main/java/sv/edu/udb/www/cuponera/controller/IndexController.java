@@ -2,32 +2,58 @@ package sv.edu.udb.www.cuponera.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
-@RequestMapping("/cuponera")
 public class IndexController {
 	@Autowired
 	@Qualifier("UsersRepository")
 	UsersRepository usersRepository;
 	
-	@GetMapping("/")
+	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String index() {
 		return "index";
 	}
 	
-	@GetMapping("/login")
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model) {
-		model.addAttribute("", "");
 		return "login";
 	}
 	
-	@GetMapping("/admin")
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String adminIndex(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = usersRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
 		return "admin/index";
+	}
+	
+	@RequestMapping(value = "/client", method = RequestMethod.GET)
+	public String clientIndex(Model model) {
+		return "client/index";
+	}
+	
+	@RequestMapping(value = "/company", method = RequestMethod.GET)
+	public String companyIndex(Model model) {
+		return "client/index";
+	}
+	
+	@RequestMapping(value = "/employee", method = RequestMethod.GET)
+	public String employeeIndex(Model model) {
+		return "employee/index";
+	}
+	
+	@RequestMapping(value = "/denied", method = RequestMethod.GET)
+	public String denied(Model model) {
+		return "denied";
 	}
 }

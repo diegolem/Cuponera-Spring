@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import sv.edu.udb.www.cuponera.service.UserDetailsServiceImpl;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -21,16 +20,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.csrf().disable()
 			.authorizeRequests()
 				.antMatchers("/resources/**").permitAll()
-				.antMatchers("/admin/**").hasRole("ROLE_ADMINISTRATOR")
+				.antMatchers("/admin").hasAuthority("ADMINISTRATOR")
+				.antMatchers("/client").hasAuthority("CLIENT")
+				.antMatchers("/company").hasAnyAuthority("COMPANY")
+				.antMatchers("/employee").hasAnyAuthority("EMPLOYEE")
 				.and()
 			.formLogin()
 				.loginPage("/login")
 				.permitAll()
 				.and()
 			.logout()
+				.logoutSuccessUrl("/")
 				.permitAll()
+				.and()
+			.exceptionHandling().accessDeniedPage("/denied")
 		;
 	}
 	

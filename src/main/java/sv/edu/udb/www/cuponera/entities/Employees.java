@@ -6,18 +6,31 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name="employee", catalog="cuponera")
 public class Employees implements java.io.Serializable{
-
+	
+	@Positive
 	private int id;
+	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un nombre correcto")
+	@NotBlank(message="El nombre del usuario es obligatorio")
 	private String name;
+	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un apellido correcto")
+	@NotBlank(message="El apellido del usuario es obligatorio")
 	private String lastName;
+	@Email(message="Ingrese un correo correcto")
+	@NotBlank(message="El correo es obligatorio")
 	private String email;
+	@NotBlank(message="La contraseña es obligatoria")
 	private String password;
 	private Companies company;
 	
@@ -31,6 +44,15 @@ public class Employees implements java.io.Serializable{
 		this.company = company;
 	}
 
+	public Employees(Employees employee) {
+		this.id = employee.getId();
+		this.name = employee.getName();
+		this.lastName = employee.getLastName();
+		this.email = employee.getEmail();
+		this.password = employee.getPassword();
+		this.company = employee.getCompany();
+	}
+	
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", nullable=false)
@@ -49,7 +71,7 @@ public class Employees implements java.io.Serializable{
 		this.name = name;
 	}
 
-	@Column(name="name", nullable=false,  length=50)
+	@Column(name="last_name", nullable=false,  length=50)
 	public String getLastName() {
 		return lastName;
 	}
@@ -73,7 +95,7 @@ public class Employees implements java.io.Serializable{
 		this.password = password;
 	}
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_company", nullable=false)
 	public Companies getCompany() {
 		return company;

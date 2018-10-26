@@ -9,21 +9,43 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name="company", catalog="cuponera")
 public class Companies implements java.io.Serializable{
 	
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}([a-z]|[A-Z]|[ñÑ]){2}([0-9]){3}$",message="El codigo de la empresa no tiene el formato correcto")
+	@NotBlank(message="el codigo de la compañia es obligatoria")
 	private String id;
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]|[0-9]){1}[a-zA-Z0-9 ñÑáéíóú]*$",message="Ingrese un nombre de compañia válido")
+	@NotBlank(message="El nombre de la compañia es obligatorio")
 	private String name;
+	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese una dirección válida")
+	@NotBlank(message="La dirección es obligatoria")
 	private String address;
+	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}[a-zA-Z ñÑáéíóú]*$",message="Ingrese un nombre de contacto válido")
+	@NotBlank(message="El nombre del contacto es obligatorio")
 	private String contactName;
+	@Pattern(regexp="^[267]{1}[0-9]{3}([- ])[0-9]{4}$",message="Ingrese un telefono válido")
+	@NotBlank(message="El telefono es obligatorio")
 	private String telephone;
+	@Email(message="Ingrese un correo válido")
+	@NotBlank(message="El correo es obligatorio")
 	private String email;
 	private CompanyTypes companyType;
+	@Min(value= 0,message="La comision no puede ser negativa")
+	@Max(value= 100,message="La comision no debe ser mayor al 100%")
+	@NotBlank(message="El porcentaje de comision es obligatorio")
 	private int pctComission;
+	@NotBlank(message="La contraseña es obligatoria")
 	private String password;
 	private Set<Employees> employees = new HashSet<Employees>(0);
 	private Set<Promotions> promotions = new HashSet<Promotions>(0);
@@ -56,6 +78,18 @@ public class Companies implements java.io.Serializable{
 		this.password = password;
 		this.employees = employees;
 		this.promotions = promotions;
+	}
+	
+	public Companies(Companies company) {
+		this.id = company.getId();
+		this.name = company.getName();
+		this.address = company.getAddress();
+		this.contactName = company.getContactName();
+		this.telephone = company.getTelephone();
+		this.email = company.getEmail();
+		this.companyType = company.getCompanyType();
+		this.pctComission = company.getPctComission();
+		this.password = company.getPassword();
 	}
 	
 	@Id
@@ -107,7 +141,7 @@ public class Companies implements java.io.Serializable{
 		this.email = email;
 	}
 	
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="type_company", nullable=false)
 	public CompanyTypes getCompanyType() {
 		return companyType;

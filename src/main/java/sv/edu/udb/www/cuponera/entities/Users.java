@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -31,6 +32,7 @@ public class Users implements java.io.Serializable{
 	@NotBlank(message="El apellido del usuario es obligatorio")
 	private String lastName;
 	@Email(message="Ingrese un correo correcto")
+	@NotBlank(message="El correo es obligatorio")
 	private String email;
 	@NotBlank(message="La contraseña es obligatoria")
 	private String password;
@@ -130,7 +132,7 @@ public class Users implements java.io.Serializable{
 		this.password = password;
 	}
 	
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_type", nullable=false)
 	public UserTypes getUserType() {
 		return userType;
