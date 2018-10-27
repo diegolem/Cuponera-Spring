@@ -6,7 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import sv.edu.udb.www.cuponera.entities.Promotions;
+import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
 
 @Controller
@@ -29,9 +31,15 @@ public class PromotionsController {
 	@Qualifier("PromotionsRepository")
 	PromotionsRepository promotionRepository;
 	
+	@Autowired
+	@Qualifier("CompaniesRepository")
+	CompaniesRepository companiesRepository;
+	
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
-		model.addAttribute("lista",promotionRepository.findAll());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		model.addAttribute("lista", promotionRepository.findByCompany(companiesRepository.findByEmail(auth.getName())));
 		return "company/promotion/listar";
 	}
 	
@@ -65,7 +73,7 @@ public class PromotionsController {
 	}
 	
 	@GetMapping("/edit/{id}")
-	public String editPromotion(@PathVariable("id")int id,Model model) {
+	public String editPromotion(@PathVariable("id")Integer id,Model model) {
 		Optional<Promotions> promotion = promotionRepository.findById(id);
 		if(promotion.isPresent()) {
 			model.addAttribute("promotion",promotion);
@@ -93,7 +101,7 @@ public class PromotionsController {
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public String deletePromotion(@PathVariable("id")int id) {
+	public String deletePromotion(@PathVariable("id")Integer id) {
 		Optional<Promotions> promotion = promotionRepository.findById(id);
 		if(promotion.isPresent()) {
 			promotionRepository.deleteById(id);

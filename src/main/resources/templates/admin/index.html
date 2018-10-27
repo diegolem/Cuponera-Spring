@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="index :: headPage('Employee', ~{:: link})" ></head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: script})">
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+
+	<!-- // Menu lateral //////////////////////////////////////////////// -->
 	<li class="nav-item option_list">
-	    <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	      <i class="menu-icon mdi mdi-backup-restore"></i>
-	      <span class="menu-title">Form elements</span>
+	    <a class="nav-link" data-toggle="collapse" href="#company" aria-expanded="false" aria-controls="company">
+      		<i class="menu-icon fa fa-building"></i>
+	      	<span class="menu-title">Empresas</span>
+	      	<i class="menu-arrow"></i>
 	    </a>
-     </li>
-     <li class="nav-item option_list">
-        <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	         <i class="menu-icon mdi mdi-backup-restore"></i>
-	         <span class="menu-title">Form elements</span>
-        </a>
-      </li>
+	    <div class="collapse" id="company">
+	      	<ul class="nav flex-column sub-menu">
+	        	<li class="nav-item">
+	          		<a class="nav-link" href="#">Registrar</a>
+	        	</li>
+	        	<li class="nav-item">
+	          		<a class="nav-link" href="#">Buscar</a>
+	        	</li>
+	      	</ul>
+    	</div>
+  	</li>
+	<!-- //////////////////////////////////////////////////////////////// -->
 	
 	<section id="container">
 		<h1>Hola Administrador</h1>

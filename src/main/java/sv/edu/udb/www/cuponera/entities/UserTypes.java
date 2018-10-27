@@ -56,7 +56,7 @@ public class UserTypes implements java.io.Serializable{
 		this.type = type;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="userType")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="userType")
 	public Set<Users> getUsers() {
 		return users;
 	}

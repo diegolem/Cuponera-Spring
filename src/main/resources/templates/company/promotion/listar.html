@@ -1,9 +1,59 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Insert title here</title>
-</head>
-<body>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Company', ~{:: link})"></head>
+<body
+	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
 
+	<section id="container">
+		<h2 class="text-center">Lista de promociones</h2>
+		<div class="row">
+			<div class="table-responsive">
+				<table id="tbl_promotions" class="table table-striped table-dark">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Precio regular [$]</th>
+							<th>Precio oferta [$]</th>
+							<th>Estado</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody th:each="promotion : ${lista} ">
+						<tr>
+							<td th:text="${promotion.title}"></td>
+							<td th:text="${promotion.regularPrice}"></td>
+							<td th:text="${promotion.ofertPrice}"></td>
+							<td th:text="${promotion.state.state}"></td>
+							<td th:if="${promotion.state.id == 3}">
+								<button id='btnEliminar' class='btn btn-edit'>Editar</button>
+								<button id='btnEliminar' class='btn btn-danger'>Eliminar</button>
+							</td>
+							<td th:if="${promotion.state.id != 3}">
+								<button id='btnEliminar' disabled class='btn btn-edit'>Editar</button>
+								<button id='btnEliminar' disabled class='btn btn-danger'>Eliminar</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready( function () {
+			 $('#tbl_promotions').DataTable();
+		});
+	</script>
 </body>
 </html>

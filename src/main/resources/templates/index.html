@@ -37,10 +37,11 @@
           </li>
           <div th:replace="${menu} ?: _">
         </ul>
-        <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown d-none d-xl-inline-block">
+        
+        <ul th:switch="${user != null}" class="navbar-nav navbar-nav-right">
+          <li th:case="true" class="nav-item dropdown d-none d-xl-inline-block">
             <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="profile-text">Username</span>
+              <span class="profile-text" th:text="${user.name + ' ' + user.lastName }"></span>
               <img class="img-xs rounded-circle" src="/images/settings.png" alt="Profile image">
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
