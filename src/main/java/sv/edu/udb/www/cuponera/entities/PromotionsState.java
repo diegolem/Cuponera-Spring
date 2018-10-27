@@ -17,7 +17,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 @Entity
-@Table(name="company_type", catalog="cuponera")
+@Table(name="promotion_state", catalog="cuponera")
 public class PromotionsState implements java.io.Serializable{
 	
 	@Positive

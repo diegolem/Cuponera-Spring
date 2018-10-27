@@ -20,6 +20,8 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -28,8 +30,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name="promotion", catalog="cuponera")
 public class Promotions implements java.io.Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Positive
-	private int id;
+	private Integer id;
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese un titulo de oferta válido")
 	@NotBlank(message="El titulo de la oferta es obligatorio")
 	private String title;
@@ -78,7 +84,7 @@ public class Promotions implements java.io.Serializable{
 	private Set<Sales> sales = new HashSet<Sales>(0);
 	
 	public Promotions() {}
-	public Promotions(int id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
+	public Promotions(Integer id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
 			Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold,
 			int couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
 			PromotionsState state, String rejectedDescription) {
@@ -103,7 +109,7 @@ public class Promotions implements java.io.Serializable{
 	}
 	
 
-	public Promotions(int id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
+	public Promotions(Integer id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
 			Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold,
 			int couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
 			PromotionsState state, String rejectedDescription, Set<Sales> sales) {
@@ -130,11 +136,11 @@ public class Promotions implements java.io.Serializable{
 	
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
-	@Column(name="id", nullable=false)
-	public int getId() {
+	@Column(name="id", nullable=false, unique=true)
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -252,7 +258,8 @@ public class Promotions implements java.io.Serializable{
 		this.chargeService = chargeService;
 	}
 
-	@Column(name="id_company", nullable=false)
+	@ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="id_company", nullable=false)
 	public Companies getCompany() {
 		return company;
 	}
@@ -260,7 +267,8 @@ public class Promotions implements java.io.Serializable{
 		this.company = company;
 	}
 
-	@Column(name="id_state", nullable=false)
+	@ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="id_state", nullable=false)
 	public PromotionsState getState() {
 		return state;
 	}
