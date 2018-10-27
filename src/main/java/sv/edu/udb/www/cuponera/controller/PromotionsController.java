@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,10 +29,16 @@ public class PromotionsController {
 	@Qualifier("PromotionsRepository")
 	PromotionsRepository promotionRepository;
 	
-	@GetMapping("/list")
-	public String listPromotion(Model model) {
+	@GetMapping("/list_company")
+	public String listPromotionToCompany(Model model) {
 		model.addAttribute("lista",promotionRepository.findAll());
-		return "promotion/listar";
+		return "company/promotion/listar";
+	}
+	
+	@GetMapping("/list_admin")
+	public String listPromotionToAdmin(Model model) {
+		model.addAttribute("lista", promotionRepository.findAll());
+		return "admin/promotion/listar";
 	}
 	
 	@GetMapping("/new")

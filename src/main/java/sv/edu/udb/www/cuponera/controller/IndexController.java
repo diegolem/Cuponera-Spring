@@ -42,17 +42,15 @@ public class IndexController {
 		return "client/index";
 	}
 	
-	@RequestMapping(value = "/company", method = RequestMethod.GET)
+	@RequestMapping(value = "/companies", method = RequestMethod.GET)
 	public String companyIndex(Model model) {
-		return "client/index";
+		return "company/index";
 	}
 	
-	/*
-	@RequestMapping(value = "/employee", method = RequestMethod.GET)
+	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public String employeeIndex(Model model) {
 		return "employee/index";
 	}
-	*/
 	
 	@RequestMapping(value = "/denied", method = RequestMethod.GET)
 	public String denied(Model model) {
