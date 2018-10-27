@@ -132,7 +132,7 @@ public class Users implements java.io.Serializable{
 		this.password = password;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_type", nullable=false)
 	public UserTypes getUserType() {
 		return userType;
@@ -173,7 +173,7 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = idConfirmation;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="client")
 	public Set<Sales> getSales() {
 		return sales;
 	}
