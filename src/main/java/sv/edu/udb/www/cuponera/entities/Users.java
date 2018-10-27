@@ -132,7 +132,7 @@ public class Users implements java.io.Serializable{
 		this.password = password;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_type", nullable=false)
 	public UserTypes getUserType() {
 		return userType;

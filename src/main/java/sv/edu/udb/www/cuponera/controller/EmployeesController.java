@@ -1,14 +1,18 @@
 package sv.edu.udb.www.cuponera.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,15 +21,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.Employees;
+import sv.edu.udb.www.cuponera.entities.SimpleEmployees;
 import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
 
 
 @Controller
 @RequestMapping("/employee")
 public class EmployeesController {
-
+	
 	@Autowired
 	@Qualifier("EmployeesRepository")
 	EmployeesRepository employeesRepository;
@@ -33,6 +41,21 @@ public class EmployeesController {
 	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String index() {
 		return "employee/index";
+	}
+	
+	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String retrieveAllStudents() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonInString = mapper.writeValueAsString(SimpleEmployees.Parse((this.employeesRepository.findAll())));
+		
+		
+		return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getMessage();
+		}
 	}
 	
 	@GetMapping("/list")
