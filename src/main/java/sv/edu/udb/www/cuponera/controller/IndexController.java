@@ -39,6 +39,9 @@ public class IndexController {
 	
 	@RequestMapping(value = "/client", method = RequestMethod.GET)
 	public String clientIndex(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = usersRepository.findByEmail(auth.getName());
+		model.addAttribute("user",user);
 		return "client/index";
 	}
 	

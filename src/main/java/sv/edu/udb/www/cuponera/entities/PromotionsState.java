@@ -57,7 +57,7 @@ public class PromotionsState implements java.io.Serializable{
 		this.state = state;
 	}
 
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="state")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="state")
 	public Set<Promotions> getPromotions() {
 		return promotions;
 	}

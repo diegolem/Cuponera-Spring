@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
-import sv.edu.udb.www.cuponera.entities.Sales;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
-import sv.edu.udb.www.cuponera.repositories.SalesRepository;
 
 @Controller
 @RequestMapping("/company_type")

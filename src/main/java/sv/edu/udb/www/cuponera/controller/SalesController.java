@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,20 +20,33 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import sv.edu.udb.www.cuponera.entities.Sales;
+import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.SalesRepository;
+import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
-@RequestMapping("/sales")
+@RequestMapping(value= {"client/sales","/sales"})
 public class SalesController {
 
 	@Autowired
 	@Qualifier("SalesRepository")
 	SalesRepository salesRepository;
 	
+	@Autowired
+	@Qualifier("UsersRepository")
+	UsersRepository usersRepository;
+	
+	@GetMapping("/index")
+	public String indexClientSales() {
+		return "client/index";		
+	}
+	
 	@GetMapping("/list")
 	public String listSales(Model model) {
-		model.addAttribute("lista",salesRepository.findAll());
-		return "sales/listar";
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = usersRepository.findByEmail(auth.getName());
+		model.addAttribute("lista", salesRepository.findByClient(user));
+		return "client/sales/listar";
 	}
 	
 	@GetMapping("/new")
@@ -49,7 +64,7 @@ public class SalesController {
 				return "sales/nuevo";
 			}else {
 				salesRepository.save(sales);
-				return "redirect:/sales/list";
+				return "redirect:/client/sales/list";
 			}
 		}catch(Exception ex) {
 			model.addAttribute("sales",sales);
@@ -64,7 +79,7 @@ public class SalesController {
 			model.addAttribute("sales",sales);
 			return "sales/editar";
 		}else {
-			return "redirect:/sales/list";
+			return "redirect:/client/sales/list";
 		}
 	}
 	
@@ -77,7 +92,7 @@ public class SalesController {
 				return "sales/editar";
 			}else{
 				salesRepository.save(sales);
-				return "redirect:/sales/list";
+				return "redirect:/client/sales/list";
 			}
 		}catch(Exception ex) {
 			model.addAttribute("sales",sales);
@@ -90,9 +105,9 @@ public class SalesController {
 		Optional<Sales> sales = salesRepository.findById(id);
 		if(sales.isPresent()) {
 			salesRepository.deleteById(id);
-			return "redirect:/sales/list";
+			return "redirect:/client/sales/list";
 		}else {
-			return "redirect:/sales/list";
+			return "redirect:/client/sales/list";
 		}
 	}
 	

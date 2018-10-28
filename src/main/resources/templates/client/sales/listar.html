@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Client', ~{:: link})" ></head>
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+	<li class="nav-item option_list">
+	    <a class="nav-link" href="/client/">
+	      <i class="menu-icon mdi mdi-home"></i>
+	      <span class="menu-title">Home</span>
+	    </a>
+     </li>
+     <li class="nav-item option_list">
+        <a class="nav-link" href="">
+	         <i class="menu-icon mdi mdi-ticket-account"></i>
+	         <span class="menu-title">Listado de cupones</span>
+        </a>
+      </li>
+      <li class="nav-item option_list">
+        <a class="nav-link" href="../../pages/forms/basic_elements.html">
+	         <i class="menu-icon mdi mdi-settings"></i>
+	         <span class="menu-title">Configurar</span>
+        </a>
+      </li>
+      <li class="nav-item option_list">
+        <a class="nav-link" href="../../pages/forms/basic_elements.html">
+	         <i class="menu-icon mdi mdi-exit-to-app"></i>
+	         <span class="menu-title">Cerrar sesion</span>
+        </a>
+      </li>
+	
+	<section id="container">
+		<h2 class="text-center">Listado de tus cupones</h2>
+		
+		<div class="row">
+			<div class="table-responsive">
+				<table id="tbl_coupons1" class="table table-striped table-dark">
+					<thead>
+						<tr>
+							<th>Codigo del cupon</th>
+							<th>Promocion</th>
+							<th>Fecha de compra</th>
+							<th>Fecha de vencimiento</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody th:each="sales : ${lista} ">
+						<tr>
+							<td th:text="${sales.couponCode}"></td>
+							<td th:text="${sales.promotion.title}"></td>
+							<td th:text="${sales.date}"></td>
+							<td th:text="${sales.promotion.limitDate}"></td>
+							<td th:text="${sales.state.state}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready( function () {
+			 $('#tbl_coupons1').DataTable();
+		});
+	</script>
+	</body>
+</html>

@@ -30,8 +30,8 @@
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
-          <li class="nav-item">
-            <a href="#" class="nav-link">Cupones
+          <li th:switch="${user == null}" class="nav-item">
+            <a th:case="true" href="#" class="nav-link">Cupones
               <span class="badge badge-primary ml-1">New</span>
             </a>
           </li>
@@ -64,23 +64,25 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          <li class="nav-item nav-profile">
-            <div class="nav-link">
+          <li th:switch="${user != null}" class="nav-item nav-profile">
+            <div th:case="true" class="nav-link">
               <div class="user-wrapper">
                 <div class="profile-image">
                   <img src="/images/ghost.png" alt="profile image">
                 </div>
                 <div class="text-wrapper">
-                  <p class="profile-name">Username</p>
+                  <p class="profile-name" th:text="${user.name + ' ' + user.lastName }"></p>
                   <div>
-                    <small class="designation text-muted">User Type</small>
+                    <small class="designation text-muted" th:text="${user.userType.type }"></small>
                     <span class="status-indicator online"></span>
                   </div>
                 </div>
               </div>
-              <button class="btn btn-success btn-block"> Comprar Cupon
-                <i class="fa fa-money"></i>
-              </button>
+            </div>
+            <div th:case="*" class="nav-link">
+            	<button class="btn btn-success btn-block"> Comprar Cupon
+                	<i class="fa fa-money"></i>
+              	</button>
             </div>
           </li>
           <span th:replace="${listOption} ?: _"></span>

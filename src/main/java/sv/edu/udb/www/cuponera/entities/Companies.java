@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -174,7 +173,7 @@ public class Companies implements java.io.Serializable{
 		this.employees = employees;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="company")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="company")
 	public Set<Promotions> getPromotions() {
 		return promotions;
 	}

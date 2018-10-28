@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" ></head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+<head th:fragment="adminHead" th:insert="index :: headPage('Employee', ~{:: link})" >
+	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
+</head>
+<body th:fragment="adminBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
 
 	<!-- // Menu lateral //////////////////////////////////////////////// -->
 	<li class="nav-item option_list">
@@ -13,6 +15,23 @@
 	    <div class="collapse" id="company">
 	      	<ul class="nav flex-column sub-menu">
 	        	<li class="nav-item">
+	          		<a class="nav-link" th:href="@{/company/}">Registrar</a>
+	        	</li>
+	        	<li class="nav-item">
+	          		<a class="nav-link" href="#">Buscar</a>
+	        	</li>
+	      	</ul>
+    	</div>
+  	</li>
+  	<li class="nav-item option_list">
+	    <a class="nav-link" data-toggle="collapse" href="#category" aria-expanded="false" aria-controls="category">
+      		<i class="menu-icon fa fa-folder"></i>
+	      	<span class="menu-title">Rubros</span>
+	      	<i class="menu-arrow"></i>
+	    </a>
+	    <div class="collapse" id="category">
+	      	<ul class="nav flex-column sub-menu">
+	        	<li class="nav-item">
 	          		<a class="nav-link" href="#">Registrar</a>
 	        	</li>
 	        	<li class="nav-item">
@@ -21,14 +40,39 @@
 	      	</ul>
     	</div>
   	</li>
+  	<li class="nav-item option_list">
+	    <a class="nav-link" data-toggle="collapse" href="#user" aria-expanded="false" aria-controls="user">
+      		<i class="menu-icon fa fa-users"></i>
+	      	<span class="menu-title">Usuarios</span>
+	      	<i class="menu-arrow"></i>
+	    </a>
+	    <div class="collapse" id="user">
+	      	<ul class="nav flex-column sub-menu">
+	        	<li class="nav-item">
+	          		<a class="nav-link" href="#">Registrar</a>
+	        	</li>
+	        	<li class="nav-item">
+	          		<a class="nav-link" href="#">Buscar</a>
+	        	</li>
+	      	</ul>
+    	</div>
+  	</li>
+  	<li class="nav-item option_list">
+       <a class="nav-link" href="pages/charts/chartjs.html">
+         <i class="menu-icon fa fa-money"></i>
+         <span class="menu-title">Promociones</span>
+       </a>
+    </li>
 	<!-- //////////////////////////////////////////////////////////////// -->
 	
 	<section id="container">
-		<h1>Hola Administrador</h1>
-		<h2 th:text="${user.name}"></h2>
-		<form th:action="@{/logout}">
-			<button type="submit">Cerrar</button>
-		</form>
+		<div th:replace="${data} ?: _"></div>
 	</section>
+	
+	<span id="script">
+		<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+		<th:block th:replace="${dataScript} ?: _" />
+	</span>
+	
 </body>
 </html>
