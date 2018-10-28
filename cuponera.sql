@@ -291,7 +291,7 @@ CREATE TABLE `sales` (
   `coupon_code` varchar(13) COLLATE utf8_spanish2_ci NOT NULL,
   `promotion_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
-  `date` datetime DEFAULT NULL,
+  `date` date DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `sales_state` int(11) NOT NULL,
   PRIMARY KEY (`coupon_code`),
