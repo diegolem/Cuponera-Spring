@@ -15,6 +15,7 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -40,25 +41,24 @@ public class Promotions implements java.io.Serializable{
 	@NotBlank(message="El titulo de la oferta es obligatorio")
 	private String title;
 	@Positive
-	@NotBlank(message="El precio regular es obligatorio")
+	@NotNull(message="El precio regular es obligatorio")
 	@Min(value = 1,message="Ingrese un precio mayor a 0")
 	private BigDecimal regularPrice;
 	@Positive
-	@NotBlank(message="El precio de la oferta es obligatorio")
+	@NotNull(message="El precio de la oferta es obligatorio")
 	@Min(value = 1,message="Ingrese un precio mayor a 0")
 	private BigDecimal ofertPrice;
 	
 	@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
-	@NotBlank(message="La fecha de inicio es obligatoria")
+	@NotNull(message="La fecha de inicio es obligatoria")
 	private Date initDate;
 	@Future(message="La fecha debe ser mayor a la actual")
-	@NotBlank(message="La fecha de finalización es obligatoria")
+	@NotNull(message="La fecha de finalización es obligatoria")
 	private Date endDate;
 	@Future(message="La fecha debe ser mayor a la actual")
-	@NotBlank(message="La fecha limite es obligatoria")
+	@NotNull(message="La fecha limite es obligatoria")
 	private Date limitDate;
 	@PositiveOrZero(message="la cantidad limite debe ser mayor o igual que 0")
-	@NotBlank(message="La cantidad limite de cupones es requerida")
 	private int limitCant;
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
@@ -67,7 +67,7 @@ public class Promotions implements java.io.Serializable{
 	@NotBlank(message="La descripcion es obligatoria")
 	private String otherDetails;
 	@Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")
-	@NotBlank(message="La imagen es obligatoria")
+	@NotNull(message="La imagen es obligatoria")
 	private String image;
 	@Positive
 	private int couponsSold;

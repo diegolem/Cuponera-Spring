@@ -18,15 +18,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import sv.edu.udb.www.cuponera.entities.Promotions;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
+import sv.edu.udb.www.cuponera.service.UploadFileService;
 
 @Controller
 @RequestMapping("/promotion")
 public class PromotionsController {
-
+	@Autowired
+	private UploadFileService uploadFileService;
+	
 	@Autowired
 	@Qualifier("PromotionsRepository")
 	PromotionsRepository promotionRepository;
@@ -52,19 +57,22 @@ public class PromotionsController {
 	@GetMapping("/new")
 	public String newPromotion(Model model) {
 		model.addAttribute("promotion", new Promotions());
-		return "promotion/nuevo";
+		return "company/promotion/nuevo";
 	}
 	
 	@PostMapping("/new")
-	public String insertPromotion(@Valid @ModelAttribute("promotion") Promotions promotion,
+	public String insertPromotion(@RequestParam("image") MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
 			BindingResult result, Model model) {
 		try {
 			if(result.hasErrors()) {
 				model.addAttribute("promotion",promotion);
-				return "promotion/nuevo";
+				return "company/promotion/nuevo";
 			}else {
+				promotion.setCouponsAvailable(promotion.getLimitCant());
 				promotionRepository.save(promotion);
-				return "redirect:/promotion/list";
+				
+				uploadFileService.saveImage(image);
+				return "redirect:/promotion/list_company";
 			}
 		}catch(Exception ex) {
 			model.addAttribute("promotion",promotion);

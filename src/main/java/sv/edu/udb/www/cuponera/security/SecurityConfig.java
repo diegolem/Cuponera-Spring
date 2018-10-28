@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/companies").hasAnyAuthority("COMPANY")
 				.antMatchers("/employees").hasAnyAuthority("EMPLOYEE")
 				.antMatchers("/promotion/list_company").hasAnyAuthority("COMPANY")
+				.antMatchers("/promotion/new").hasAnyAuthority("COMPANY")
 				.and()
 			.formLogin()
 				.loginPage("/login")

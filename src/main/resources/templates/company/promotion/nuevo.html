@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Company', ~{:: link})">
+	  <meta charset="utf-8">
+	  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.10/summernote-bs4.css" />
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.10/summernote.min.js"></script>
+</head>
+<body
+	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
+
+	<section id="container">
+		<h2 class="text-center">Ingresar promoción</h2>
+		<div class="row">
+			<ul th:if="${#fields.hasErrors('global')}">
+  <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Input is incorrect</li>
+</ul>
+		</div>
+		<div class="row">
+			<div class="col-md-10 offset-md-1">
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				  <strong>Cupones ilimitados!</strong> Para que tú promoción sea ilimitada dejar el campo "Cantidad límite" en 0
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    <span aria-hidden="true">&times;</span>
+				  </button>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<form th:action="@{/promotion/new}" enctype="multipart/form-data" method="POST" th:object="${promotion}" class="col-md-10 offset-md-1">
+				<div class="form-group">
+               		<label for="title" class="label">Título</label>
+                  	<div class="input-group">
+                    	<input type="text" name="title" id="title" th:field="*{promotion.title}" requerid="true" class="form-control" data-validation="custom"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+
+                <div class="form-group">
+               		<label for="regularPrice" class="label">Precio regular [$]</label>
+                  	<div class="input-group">
+                    	<input type="number" step="0.01" min="0.01" name="regularPrice" th:field="*{promotion.regularPrice}" id="regularPrice" requerid="true" class="form-control" data-validation="custom"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                
+                <div class="form-group">
+               		<label for="ofertPrice" class="label">Precio de oferta [$]</label>
+                  	<div class="input-group">
+                    	<input type="number" step="0.01" min="0.01" name="ofertPrice" th:field="*{promotion.ofertPrice}" id="ofertPrice" requerid="true" class="form-control" data-validation="custom"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                
+                <div class="form-group">
+               		<label for="initDate" class="label">Fecha de inicio de promoción</label>
+                  	<div class="input-group">
+                    	<input type="date" name="initDate" id="initDate" requerid="true" th:field="*{promotion.initDate}" class="form-control" data-validation="custom"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                <div class="form-group">
+               		<label for="endDate" class="label">Fecha final de promoción</label>
+                  	<div class="input-group">
+                    	<input type="date" name="endDate" id="endDate" requerid="true" class="form-control" th:field="*{promotion.endDate}" data-validation="custom"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                <div class="form-group">
+               		<label for="limitDate" class="label">Fecha límite para canjear cupón</label>
+                  	<div class="input-group">
+                    	<input type="date" name="limitDate" id="limitDate" requerid="true" class="form-control" data-validation="custom" th:field="*{promotion.limitDate}"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                <div class="form-group">
+               		<label for="limitCant" class="label">Cantidad límite</label>
+                  	<div class="input-group">
+                    	<input type="number" min="0" value="0" step="1.0" name="limitCant" id="limitCant" requerid="true" class="form-control" data-validation="custom" th:field="*{promotion.limitCant}"  />
+                   		<div class="input-group-append">
+                    		<span class="input-group-text">
+                       			<i class="fa fa-asterisk"></i>
+                     		</span>
+                    	</div>
+                  	</div>
+                </div>
+                <div class="form-group">
+               		<label for="description" class="label">Descripción [*]</label>
+                  	<div class="input-group">
+                   		<textarea id="description" name="description" th:field="*{promotion.description}"></textarea>
+                  	</div>
+                </div>
+                <div class="form-group">
+               		<label for="otherDetails" class="label">Otros Detalles [*]</label>
+                  	<div class="input-group">
+                   		<textarea class="form-control" id="otherDetails" name="otherDetails" rows="3" th:field="*{promotion.otherDetails}"></textarea>
+                  	</div>
+                </div>
+                <div class="form-group">
+                	<div class="custom-file">
+                		<input type="file" class="custom-file-input" id="image" name="image" th:field="*{promotion.image}"/>
+  						<label class="custom-file-label" for="image">Seleccionar imagen</label>
+                	</div>
+                </div>
+                <div class="form-group">
+                  	<button class="btn btn-primary submit-btn btn-block">Registrar</button>
+                </div>
+			</form>
+		</div>
+	</section>
+	<script>
+		$(document).ready(function() {
+		  
+		});
+	</script>
+</body>
+</html>
