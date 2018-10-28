@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Cliente', ~{:: link})" ></head>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Client', ~{:: link})" ></head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list">
-	    <a class="nav-link" href="">
+	    <a class="nav-link" href="/client/">
 	      <i class="menu-icon mdi mdi-home"></i>
 	      <span class="menu-title">Home</span>
 	    </a>
      </li>
      <li class="nav-item option_list">
-        <a class="nav-link" href="sales/list">
+        <a class="nav-link" href="">
 	         <i class="menu-icon mdi mdi-ticket-account"></i>
 	         <span class="menu-title">Listado de cupones</span>
         </a>
@@ -28,7 +28,7 @@
       </li>
 	
 	<section id="container">
-		
+		Modo cliente
 	</section>
 </body>
-</html>
+</html>>

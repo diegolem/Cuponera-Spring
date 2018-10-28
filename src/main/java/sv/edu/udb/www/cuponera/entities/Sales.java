@@ -1,6 +1,6 @@
 package sv.edu.udb.www.cuponera.entities;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
@@ -18,13 +20,13 @@ import javax.validation.constraints.Pattern;
 public class Sales implements java.io.Serializable{
 	
 	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){3}[0-9]{3}[0-9]{7}$",message="El formato del código del cupón no es válido")
-	@NotBlank(message="El codigo del cupon es obligatorio")
+	@NotNull(message="El codigo del cupon es obligatorio")
 	private String couponCode;
 	private Promotions promotion;
 	private Users client;
 	private byte verified;
 	@PastOrPresent(message="Ingrese una fecha válida")
-	@NotBlank(message="La fecha de compra es obligatoria")
+	@NotNull(message="La fecha de compra es obligatoria")
 	private Date date;
 	private SalesState state;
 	
@@ -46,8 +48,8 @@ public class Sales implements java.io.Serializable{
 	public void setCouponCode(String couponCode) {
 		this.couponCode = couponCode;
 	}
-	
-	@Column(name="promotion_id", nullable=false)
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="promotion_id", nullable=false)
 	public Promotions getPromotion() {
 		return promotion;
 	}
@@ -55,7 +57,7 @@ public class Sales implements java.io.Serializable{
 		this.promotion = promotion;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="client_id", nullable=false)
 	public Users getClient() {
 		return client;
@@ -71,8 +73,8 @@ public class Sales implements java.io.Serializable{
 	public void setVerified(byte verified) {
 		this.verified = verified;
 	}
-	
-	@Column(name="date", nullable=true)
+	@Temporal(TemporalType.DATE)
+	@Column(name="date", nullable=false)
 	public Date getDate() {
 		return date;
 	}
@@ -80,7 +82,8 @@ public class Sales implements java.io.Serializable{
 		this.date = date;
 	}
 	
-	@Column(name="sales_state", nullable=false)
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="sales_state", nullable=false)
 	public SalesState getState() {
 		return state;
 	}
