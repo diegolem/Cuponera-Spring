@@ -8,6 +8,9 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,11 +21,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.service.EmailService;
 import sv.edu.udb.www.cuponera.utils.Mail;
 import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleUsers;
 import sv.edu.udb.www.cuponera.repositories.UserTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
@@ -37,6 +46,32 @@ public class UserController {
 	@Qualifier("UserTypesRepository")
 	UserTypesRepository userTypesRepository;
 	
+	// /////////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
+	public String index(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		return "admin/users";
+	}
+	
+	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String retrieveAllStudents() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonInString = mapper.writeValueAsString(SimpleUsers.Parse(this.userRepository.findAll()));
+		
+		
+		return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getLocalizedMessage();
+		}
+	}
+	
+	// //////////////////////////////////////////////////////////////////////////////////////
 	@GetMapping("/list")
 	public String listUsers(Model model) {
 		model.addAttribute("lista",userRepository.findAll());

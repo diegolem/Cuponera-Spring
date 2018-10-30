@@ -16,6 +16,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -43,7 +44,7 @@ public class Companies implements java.io.Serializable{
 	private CompanyTypes companyType;
 	@Min(value= 0,message="La comision no puede ser negativa")
 	@Max(value= 100,message="La comision no debe ser mayor al 100%")
-	@NotBlank(message="El porcentaje de comision es obligatorio")
+	@NotNull(message="El porcentaje de comision es obligatorio")
 	private int pctComission;
 	@NotBlank(message="La contraseña es obligatoria")
 	private String password;

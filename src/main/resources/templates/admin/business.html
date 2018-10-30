@@ -2,13 +2,9 @@
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head  th:insert="admin/index :: adminHead" ></head>
 <body th:insert="admin/index :: adminBody(~{:: article}, ~{:: script})">
-	<article class="row purchace-popup">
-        <div class="col-12">
-          <span class="d-block d-md-flex align-items-center">
-            <p>Empresas:</p>
-            <button class="btn ml-auto download-button d-none d-md-block" href="https://github.com/BootstrapDash/StarAdmin-Free-Bootstrap-Admin-Template"><i class="fa fa-plus-circle"></i></button>
-          </span>
-        </div>
+	<article class="d-flex justify-content-between mb-2">
+	    <h2>Empresas:</h2>
+	    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#mdlAdd"><i class="fa fa-plus-circle"></i> Registrar</button>
      </article>
 
 	<article>
@@ -40,8 +36,324 @@
 		</div>
 	</article>
 	
+	<article>
+		<div class="modal fade" id="mdlAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  		<div class="modal-dialog  modal-lg" role="document">
+			    <div class="modal-content">
+			      	<div class="modal-header bg-primary text-white">
+			        	<h5 class="modal-title" id="exampleModalLabel">Registrar empresa</h5>
+			        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          		<span aria-hidden="true">&times;</span>
+			        	</button>
+			      	</div>
+			      	<div class="modal-body">
+						
+						<div class="row">
+						  <div class="col-3">
+						    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+						      <a class="nav-link active" id="company-tab" data-toggle="pill" href="#v-pills-company" role="tab" aria-controls="v-pills-company" aria-selected="true">Empresa</a>
+						      <a class="nav-link" id="user-tab" data-toggle="pill" href="#v-pills-user" role="tab" aria-controls="v-pills-user" aria-selected="false">Representantee</a>
+						    </div>
+						  </div>
+						  <div class="col-9">
+						  	<form id="frmAddCompany" th:action="@{/company/save}">
+							    <div class="tab-content" id="v-pills-tabContent">
+						      		<div class="tab-pane fade show active" id="v-pills-company" role="tabpanel" aria-labelledby="v-pills-home-tab">
+							      		<div class="form-group">
+										    <label for="txtCode">Codigo</label>
+										    <input role-form="input" type="text" class="form-control" id="txtCode" name="code" placeholder="ABC123" data-validation="length custom" data-validation-length="6" data-validation-regexp="^([a-z]|[A-Z]|[ñÑ]){1}([a-z]|[A-Z]|[ñÑ]){2}([0-9]){3}$">
+									  	</div>
+									  	<div class="form-group">
+										    <label for="txtName">Nombre</label>
+										    <input role-form="input" type="text" class="form-control" id="txtName" name="name" placeholder="Nombre" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+									  	</div>
+									  	<div class="form-group">
+										    <label for="selType">Tipo</label>
+										    <select name="type" class="form-control" id="selType">
+										    	 <option th:each="type : ${useType}" th:value="${type.id}" th:text="${type.type}"></option>
+										    </select>
+									  	</div>
+									  	<div class="form-group">
+										    <label for="txtAddress">Direccion</label>
+										    <textarea role-form="input" row="3" class="form-control" id="txtAddress" name="address" placeholder="Direccion" data-validation="custom" data-validation-regexp="^([a-zA-Z0-9 ]+)$"></textarea>
+									  	</div>
+									  	<div class="form-group">
+										    <label for="txtComission">Comision</label>
+										    <input role-form="input" type="number" value="1" min="1" step="1" class="form-control" id="txtComission" name="pct_comission" data-validation="number" data-validation-allowing="range[1;100]">
+									  	</div>								  
+									  	<div class="form-group">
+									  		<button role-form="next" type="button" class="btn btn-outline-primary">Sigiente</button>	
+									  	</div>
+						      		</div>
+							      	<div class="tab-pane fade" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+							      		<div class="form-group">
+										    <label for="txtContact">Representante</label>
+										    <input role-form="input" type="text" class="form-control" id="txtContact" name="contact_name" placeholder="Mekaku" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+									  	</div>
+									  	<div class="form-group">
+										    <label for="txtPhone">Telefono</label>
+										    <input role-form="input" type="text" class="form-control" id="txtPhone" name="phone" placeholder="xxxx-xxxx" data-validation="custom" data-validation-regexp="^([279][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9])$">
+									  	</div>
+									  	<div class="form-group">
+										    <label for="txtEmail">Correo Electronico</label>
+										    <input role-form="input" type="email" class="form-control" id="txtEmail" name="email" placeholder="xxxx@xxxx.com" data-validation="email">
+									  	</div>
+									  	<div class="form-group">
+									  		<div class="btn-group" role="group" aria-label="Basic example">
+									  			<button role-form="back" type="button" class="btn btn-outline-danger">Volver</button>
+										  		<button role-form="register" type="button" class="btn btn-outline-success">Registrar</button>
+											</div>	
+									  	</div>
+							      	</div>
+							    </div>
+						    </form>
+						  </div>
+						</div>
+			      	</div>
+		   		</div>
+	  		</div>
+		</div>
+		
+		<div id="mdlCompany" class="modal fade" tabindex="-1" role="dialog" >
+	  		<div class="modal-dialog" role="document">
+		    	<div class="modal-content">
+		      		<div class="modal-header bg-dark text-white">
+		        		<h5 class="modal-title" id="mdlCompanyTitle">Modal title</h5>
+	        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          			<span aria-hidden="true">&times;</span>
+		        		</button>
+		      		</div>
+		      		<form id="frmEditCompany" th:action="@{/company/update}">
+			      		<div class="modal-body">
+			        		<!-- div class="form-group">
+							    <label for="txtEditCode">Codigo</label>
+							    <input type="text" class="form-control" id="txtEditCode" name="code" placeholder="ABC123" data-validation="length custom" data-validation-length="6" data-validation-regexp="^([a-z]|[A-Z]|[ñÑ]){1}([a-z]|[A-Z]|[ñÑ]){2}([0-9]){3}$">
+						  	</div -->
+						  	<div class="form-group">
+							    <label for="txtEditName">Nombre</label>
+							    <input type="text" class="form-control" id="txtEditName" name="name" placeholder="Nombre" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+						  	</div>
+						  	<div class="form-group">
+							    <label for="selEditType">Tipo</label>
+							    <select name="type" class="form-control" id="selEditType">
+							    	 <option th:each="type : ${useType}" th:value="${type.id}" th:text="${type.type}"></option>
+							    </select>
+						  	</div>
+						  	<div class="form-group">
+							    <label for="txtEditAddress">Direccion</label>
+							    <textarea row="3" class="form-control" id="txtEditAddress" name="address" placeholder="Direccion" data-validation="custom" data-validation-regexp="^([a-zA-Z0-9 ]+)$"></textarea>
+						  	</div>
+						  	<div class="form-group">
+							    <label for="txtEditComission">Comision</label>
+							    <input type="number" value="1" min="1" step="1" class="form-control" id="txtEditComission" name="pct_comission" data-validation="number" data-validation-allowing="range[1;100]">
+						  	</div>
+				      	</div>
+			      		<div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+				      	</div>
+			      	</form>
+		    	</div>
+		  	</div>
+		</div>
+		
+		<div id="mdlCompanyUser" class="modal fade" tabindex="-1" role="dialog" >
+	  		<div class="modal-dialog" role="document">
+		    	<div class="modal-content">
+		      		<div class="modal-header bg-dark text-white">
+		        		<h5 class="modal-title" id="mdlCompanyUserTitle">Modal title</h5>
+	        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          			<span aria-hidden="true">&times;</span>
+		        		</button>
+		      		</div>
+		      		<form id="frmEditCompanyUser" th:action="@{/company/update/user}">
+			      		<div class="modal-body">
+			        		<div class="form-group">
+							    <label for="txtEditContact">Representante</label>
+							    <input type="text" class="form-control" id="txtEditContact" name="contact_name" placeholder="Mekaku" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+						  	</div>
+						  	<div class="form-group">
+							    <label for="txtEditPhone">Telefono</label>
+							    <input type="text" class="form-control" id="txtEditPhone" name="phone" placeholder="xxxx-xxxx" data-validation="custom" data-validation-regexp="^([279][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9])$">
+						  	</div>
+						  	<div class="form-group">
+							    <label for="txtEditEmail">Correo Electronico</label>
+							    <input type="email" class="form-control" id="txtEditEmail" name="email" placeholder="xxxx@xxxx.com" data-validation="email">
+						  	</div>
+				      	</div>
+			      		<div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+				      	</div>
+			      	</form>
+		    	</div>
+		  	</div>
+		</div>
+		
+	</article>
+	
+	<script type="text/javascript" src="/js/jquery.steps.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script>
+		function _M(id)
+		{
+			let modal = new frmMekaku(id);
+			
+			return modal;
+		}
+	
+		function Separator(id, active)
+		{
+			this.id = id;
+			this.element = $("#" + id);
+			this.active = active;
+			this.setActive = function(active){
+				if (active) this.element.tab('show');
+				this.active = active;
+			}
+		}
+		
+		function frmMekaku(id)
+		{
+			this.id = id; // ID del element
+			this.modal = $("#"+id); // El modal
+			this.separators = []; // Lista de separadores
+			
+			// Funciones /////////////////////////////////
+			this.action = function(data){
+				
+			};
+			this.reset = function(){
+				this.separators[0].setActive(true);
+				this.modal.modal('hide')
+			};
+			this.addSeparator = function(id, active){ // Añadimos un separador
+				this.separators.push(new Separator(id, active));
+			};
+			this.changeClass = function(){
+				for(var index = 0; index < this.separators.length; index++)
+				{
+					let separator = this.separators[index];
+					
+					if (separator.active){
+						if (!separator.element.hasClass("active")) separator.element.addClass("active");
+						
+						for(var subindex = 0; subindex < this.separators.length; subindex++)
+						{
+							if (subindex != index){
+								let subseparator = this.separators[subindex];
+								
+								if (subseparator.element.hasClass("active")) subseparator.element.removeClass("active");
+								subseparator.active = false;
+								subseparator.element.click(function(){ return false; });
+							}
+						}
+						
+						separator.element.click(function(){ return false; });
+						
+						break;
+					}
+				}
+			};
+			this.prepareSeparator = function(index){
+				let limit = this.separators.length - 1;
+				
+				let separator = this.separators[index];// Obtenemos la posicion actual
+				
+				// Obtenemos el div respectivo al elemento
+				let panel = $(separator.element.attr("href"));
+				
+				if (index == limit){
+					// Encontramos el elemento next
+					let register = panel.find("[role-form='register']");
+					let _action = this.action;
+					
+					// Equivale a establecer el siguiente paso
+					register.click(function(){
+						var isVlid = true;
+						panel.find("[role-form='input']").each(function(index, input) {
+							$(input).validate(function(valid, elem) {
+								if (!valid) isVlid = false;
+								console.log('Element '+elem.name+' is '+( valid ? 'valid' : 'invalid'));
+							});
+							
+					    });
+						// En caso que todo este perfectamente correcto
+						if (isVlid) {
+							_action("Hola");
+						} else {
+							alertify.error("Los datos no son los adecuados!");
+						}
+						
+						
+						return false;
+					});	
+				}
+				
+				// En caso que existan paneles siguientes
+				if (index < limit){
+					let nexseparator = this.separators[index + 1];
+					
+					// Encontramos el elemento next
+					let next = panel.find("[role-form='next']");
+					
+					// Equivale a establecer el siguiente paso
+					next.click(function(){
+						var isVlid = true;
+						panel.find("[role-form='input']").each(function(index, input) {
+							$(input).validate(function(valid, elem) {
+								if (!valid) isVlid = false;
+							});
+							
+					    });
+						// En caso que todo este perfectamente correcto
+						if (isVlid) {
+							separator.setActive(false);
+							nexseparator.setActive(true);
+						} else {
+							alertify.error("Los datos no son los adecuados!");
+						}
+						
+						
+						return false;
+					});	
+				}
+				
+				// Aplicacom el boton de atras mientras 
+				if (index > 0){
+					let prevseparator = this.separators[index - 1];
+					let back = panel.find("[role-form='back']");
+					
+					back.click(function(){
+						//var isVlid = true;
+						panel.find("[role-form='input']").each(function(index, input) {
+							//$(input).val("");
+					    });
+						
+						separator.setActive(false);
+						prevseparator.setActive(true);
+						
+						
+						return false;
+					});
+				}
+			}
+			this.execute = function(){ // Ejecutar
+				this.changeClass();
+			
+				for(var index = 0; index < this.separators.length; index++)
+				{
+					this.prepareSeparator(index);
+				}
+			}
+		}
+	</script>
 	<script type="text/javascript">
 		$(document).ready( function () {
+			$.validate({
+			    lang: 'es'
+		  	});
+			
 			 $('#tbl_empleados').DataTable({
 			    "processing" : true,
 			    "ajax" : {
@@ -54,9 +366,203 @@
 			    	{ "data" : "address" },
 			    	{ "data" : "companyType" },
 			    	{ "data" : "pctComission" },
-					{ "defaultContent" : "<button id='btnModificar' class='btn btn-primary'><i class='fa fa-gears'></i></button><button id='btnEliminar' class='btn btn-danger'><i class='fa fa-eraser'></i></button>", "className" : "d-flex justify-content-around" }
+					{ "defaultContent" : "<button id='btnCompany' class='btn btn-primary'><i class='fa fa-bank'></i></button><button id='btnUserCompany' class='btn btn-light'><i class='fa fa-address-card-o'></i></button><button id='btnEliminar' class='btn btn-danger'><i class='fa fa-eraser'></i></button>", "className" : "d-flex justify-content-around" }
 			    ]
 			});
+			 
+			function changeInputValue(input, data){
+				input.attr("value", data);
+				input.val(data);
+				input.trigger('change');
+			}
+			
+			var idCompania, nameCompania;
+			
+			$('#tbl_empleados').on('click','tr #btnUserCompany', function() {
+			    var tr = $(this).closest('tr');
+			    var data = $('#tbl_empleados').DataTable().row(tr).data();
+			    
+				$('#mdlCompanyUserTitle').html(data.name);
+			    
+			    // Modal ///////////////////////////////////////////////////////
+			    let modal = $("#mdlCompanyUser");
+			    //changeInputValue($("#txtEditCode"), data.id);
+			    changeInputValue($("#txtEditContact"), data.contactName);
+			    changeInputValue($("#txtEditPhone"), data.telephone);
+			    changeInputValue($("#txtEditEmail"), data.email);
+			    
+			    idCompania = data.id;
+			    nameCompania = data.name;
+			    
+			    modal.modal("show");
+			});
+			
+			// Eliminar las compañias ///////////////////////////////////////////
+			$('#tbl_empleados').on('click','tr #btnCompany', function() {
+			    var tr = $(this).closest('tr');
+			    var data = $('#tbl_empleados').DataTable().row(tr).data();
+			    
+			    $('#mdlCompanyTitle').html(data.name);
+			    
+			    // Modal ///////////////////////////////////////////////////////
+			    let modal = $("#mdlCompany");
+			    //changeInputValue($("#txtEditCode"), data.id);
+			    changeInputValue($("#txtEditName"), data.name);
+			    changeInputValue($("#selEditType"), data.idcompanyType);
+			    changeInputValue($("#txtEditAddress"), data.address);
+			    changeInputValue($("#txtEditComission"), data.pctComission);
+			    
+			    idCompania = data.id;
+			    nameCompania = data.name;
+			    
+			    modal.modal("show");
+			});
+			
+			// Formulario para editar los campos
+			$("#frmEditCompany").submit(function(){
+				let form = $(this);
+				
+				$.confirm({
+			        title: "Datos de " + nameCompania,
+			        content: 'Esta seguro que desea realizar la modificacion?',
+			        buttons: {
+			            confirm: function () {
+			            	
+       						$.ajax({
+			  				  	url: form.attr("action") + "/" + idCompania,
+			  				  	data: form.serialize(),
+			  				  	dataType: "json",
+			  				  	method: "PUT",
+			  				  	success: function(data){
+		  					  		if (data.state) {
+		  				  				$('#tbl_empleados').DataTable().ajax.reload();
+		  				  				$("#mdlCompany").modal("hide");
+		  				  				form.trigger("reset");				
+			  						  	alertify.success("Los datos de la empresa han sido actualizados!");
+			  					  	} else {
+			  					  		alertify.error("No se ha podido actualizar la empresa");
+			  					  	}  
+			  				  	},
+			  				  	error: function(jqXHR, textStatus, errorThrown) {
+		  					  		alertify.error("Error: " + errorThrown);
+			  				  	}
+	  						});
+			            	
+			            	$('#mdlCompany').modal("hide");
+			            },
+			            cancel: function () {}
+			        }
+			    });
+				
+				event.preventDefault();
+			});
+			
+			$("#frmEditCompanyUser").submit(function(){
+				let form = $(this);
+				
+				$.confirm({
+			        title: "Datos de " + nameCompania,
+			        content: 'Esta seguro que desea realizar la modificacion?',
+			        buttons: {
+			            confirm: function () {
+			            	
+       						$.ajax({
+			  				  	url: form.attr("action") + "/" + idCompania,
+			  				  	data: form.serialize(),
+			  				  	dataType: "json",
+			  				  	method: "PUT",
+			  				  	success: function(data){
+		  					  		if (data.state) {
+		  				  				$('#tbl_empleados').DataTable().ajax.reload();
+		  				  				$("#mdlCompanyUser").modal("hide");
+		  				  				form.trigger("reset");				
+			  						  	alertify.success("Los datos de la empresa han sido actualizados!");
+			  					  	} else {
+			  					  		alertify.error("No se ha podido actualizar la empresa");
+			  					  	}  
+			  				  	},
+			  				  	error: function(jqXHR, textStatus, errorThrown) {
+		  					  		alertify.error("Error: " + errorThrown);
+			  				  	}
+	  						});
+			            	
+			            	$('#mdlCompany').modal("hide");
+			            },
+			            cancel: function () {}
+			        }
+			    });
+				
+				event.preventDefault();
+			});
+			 
+			// Eliminar las compañias ///////////////////////////////////////////
+			$('#tbl_empleados').on('click','tr #btnEliminar', function() {
+			    var tr = $(this).closest('tr');
+			    var data = $('#tbl_empleados').DataTable().row(tr).data();
+			    
+			    $.confirm({
+			        title: data.name,
+			        content: 'Esta seguro que desea eliminar la empresa?',
+			        buttons: {
+			            confirm: function () {
+			            	$.ajax({
+			  				  url: "/company/remove/"+data.id,
+			  				  data: "",
+			  				  dataType: "json",
+			  				  method: "DELETE",
+			  				  success: function(data){
+		  					  	if (data.state) {
+		  				  			$('#tbl_empleados').DataTable().ajax.reload();
+		  						  	alertify.success("La empresa ha sido eliminada con exido!");
+		  					  	} else {
+		  					  		alertify.error("No se ha podido eliminar la empresa");
+		  					  	}			  				
+			  				  },
+			  				  error: function(jqXHR, textStatus, errorThrown) {
+			  					  alertify.error("Error: " + textStatus);
+			  				  }
+			  				});
+			            },
+			            cancel: function () {}
+			        }
+			    });
+			});
+			
+			// Codigo para el manejo del modal
+			var modal = _M("mdlAdd");
+			// Añadimos los separadores
+			modal.addSeparator("company-tab", true);
+			modal.addSeparator("user-tab", false);
+			// Funcion a ejecutar una vez terminado todo
+			modal.action = function(){
+
+				let $form = $("#frmAddCompany");
+				
+				$.ajax({
+				  url: $form.attr("action"),
+				  data: $form.serialize(),
+				  dataType: "json",
+				  method: "POST",
+				  success: function(data){
+					  
+					  	if (data.state) {
+					  		modal.reset();
+				  			$('#tbl_empleados').DataTable().ajax.reload();
+					  		$form.trigger("reset");				
+						  	alertify.success("La empresa ha sido registrada!");
+					  	} else {
+					  		alertify.error("No se ha podido registrar la empresa");
+					  	}
+					  
+				  },
+				  error: function(jqXHR, textStatus, errorThrown) {
+					  alertify.error("Error: " + errorThrown);
+				  }
+				});
+				
+			}
+			// Preparamos el modal
+			modal.execute();
 		});
 	</script>
 </body>

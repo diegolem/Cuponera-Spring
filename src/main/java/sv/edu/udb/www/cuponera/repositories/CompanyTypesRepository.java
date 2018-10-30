@@ -7,5 +7,5 @@ import sv.edu.udb.www.cuponera.entities.CompanyTypes;
 
 @Repository("CompanyTypesRepository")
 public interface CompanyTypesRepository extends JpaRepository<CompanyTypes,Integer> {
-
+	
 }

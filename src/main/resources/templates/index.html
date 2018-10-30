@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="shortcut icon" href="/images/favicon.png" />
   
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/alertify.css">
+  <link rel="stylesheet" href="/css/jquery-confirm.css">
+  
   <th:block th:replace="${links} ?: _" />
 </head>
 <body th:fragment="bodyHome(listOption, container, menu, scripts)" >
@@ -121,6 +125,9 @@
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="/js/dashboard.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/alertify.js"></script>
+  <script src="/js/jquery-confirm.js"></script>
   <!-- End custom js for this page-->
   
   <th:block th:replace="${scripts} ?: _" />
