@@ -73,7 +73,7 @@ public class CompanyController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = this.usersRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
-		model.addAttribute("useType", this.companyTypesRepository.findAll());
+		model.addAttribute("types", this.companyTypesRepository.findAll());
 		return "admin/business";
 	}
 	

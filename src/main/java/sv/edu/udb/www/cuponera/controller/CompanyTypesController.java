@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,19 +18,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
-import sv.edu.udb.www.cuponera.entities.Sales;
+import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
-import sv.edu.udb.www.cuponera.repositories.SalesRepository;
+import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
 @RequestMapping("/company_type")
 public class CompanyTypesController {
 
 	@Autowired
+	@Qualifier("UsersRepository")
+	UsersRepository userRepository;
+	@Autowired
 	@Qualifier("CompanyTypesRepository")
 	CompanyTypesRepository companyTypesRepository;
+	
+	// ///////////////////////////////////////////////////////////////////////////////
+	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
+	public String index(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		
+		return "admin/categories";
+	}
+	// ///////////////////////////////////////////////////////////////////////////////
 	
 	@GetMapping("/list")
 	public String listCompanyTypes(Model model) {

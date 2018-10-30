@@ -19,7 +19,8 @@ import java.util.Set;
 @Table(name="company_type", catalog="cuponera")
 public class CompanyTypes implements java.io.Serializable{
 	
-	@Positive
+	@Id
+	@GeneratedValue(strategy=IDENTITY)
 	private int id;
 	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){1}[a-zA-Z ñÑáéíóú]*$",message="Ingrese un nombre de rubro válido")
 	@NotBlank(message="El rubro es obligatorio")

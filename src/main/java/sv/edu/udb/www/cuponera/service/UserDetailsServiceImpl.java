@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import sv.edu.udb.www.cuponera.entities.AllUsers;
-import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.AllUsersRepository;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
