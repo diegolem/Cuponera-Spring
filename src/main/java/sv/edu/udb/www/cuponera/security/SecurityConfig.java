@@ -13,6 +13,7 @@ import sv.edu.udb.www.cuponera.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
@@ -27,8 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/client").hasAuthority("CLIENT")
 				.antMatchers("/companies").hasAnyAuthority("COMPANY")
 				.antMatchers("/employees").hasAnyAuthority("EMPLOYEE")
-				.antMatchers("/promotion/list_company").hasAnyAuthority("COMPANY")
-				.antMatchers("/promotion/new").hasAnyAuthority("COMPANY")
+				// .antMatchers("/promotion/list_company").hasAnyAuthority("COMPANY")
+				// .antMatchers("/promotion/new").hasAnyAuthority("COMPANY")
+				// .antMatchers("/promotion/list_admin").hasAnyAuthority("ADMINISTRATOR")
 				.and()
 			.formLogin()
 				.loginPage("/login")

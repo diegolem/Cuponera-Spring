@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Administrator', ~{:: link})">
+<meta charset="utf-8">
+</head>
+<body
+	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-backup-restore"></i> <span
+			class="menu-title">Form elements</span>
+	</a></li>
+
+	<section id="container">
+		<h2 class="text-center">Detalles de promoción</h2>
+		<div class="row">
+			<div class="col col-md-10 offset-md-1 col-sm-12">
+				<ul class="list-group">
+					  <li class="list-group-item"><b>Título: </b><p th:text="${promotion.title}"></p></li>
+					  <li class="list-group-item"><b>Precio regular [$]: </b><p th:text="${promotion.regularPrice}"></p></li>
+					  <li class="list-group-item"><b>Precio de oferta [$]: </b><p th:text="${promotion.ofertPrice}"></p></li>
+					  <li class="list-group-item"><b>Fecha de Inicio: </b><p th:text="${promotion.initDate}"></p></li>
+					  <li class="list-group-item"><b>Fecha final: </b><p th:text="${promotion.endDate}"></p></li>
+					  <li class="list-group-item"><b>Fecha límite para canjear cupones </b><p th:text="${promotion.limitDate}"></p></li>
+					  <li class="list-group-item"><b>Cantidad límite: </b><p th:text="${promotion.limitCant}"></p></li>
+					  <li class="list-group-item"><b>Descripicón: </b><p th:utext="${promotion.description}"></p></li>
+					  <li class="list-group-item"><b>Otros detalles: </b><p th:text="${promotion.otherDetails}"></p></li>
+					  <li class="list-group-item"><b>Cupones vendidos: </b><p th:text="${promotion.couponsSold}"></p></li>
+					  <li class="list-group-item"><b>Cupones disponibles: </b><p th:text="${promotion.couponsAvailable}"></p></li>
+					  <li class="list-group-item"><b>Ganancias [$]: </b><p th:text="${promotion.earnings}"></p></li>
+					  <li class="list-group-item"><b>Cargos por servicio [$]: </b><p th:text="${promotion.chargeService}"></p></li>
+					  <li class="list-group-item"><b>Empresa: </b><p th:text="${promotion.company.name}"></p></li>
+					  <li class="list-group-item"><b>Estado: </b><p th:text="${promotion.state.state}"></p></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -59,8 +59,8 @@ public class PromotionsStateController {
 	
 	@GetMapping("/edit/{id}")
 	public String editPromotionState(@PathVariable("id")int id,Model model) {
-		Optional<PromotionsState> promotion_state = promotionStateRepository.findById(id);
-		if(promotion_state.isPresent()) {
+		PromotionsState promotion_state = promotionStateRepository.findById(id);
+		if(promotion_state != null) {
 			model.addAttribute("promotionState",promotion_state);
 			return "promotionState/editar";
 		}else {
@@ -87,8 +87,8 @@ public class PromotionsStateController {
 	
 	@DeleteMapping("/delete/{id}")
 	public String deletePromotionState(@PathVariable("id")int id) {
-		Optional<PromotionsState> promotion_state = promotionStateRepository.findById(id);
-		if(promotion_state.isPresent()) {
+		PromotionsState promotion_state = promotionStateRepository.findById(id);
+		if(promotion_state != null) {
 			promotionStateRepository.deleteById(id);
 			return "redirect:/promotion_state/list";
 		}else {

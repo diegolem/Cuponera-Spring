@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Company', ~{:: link})">
+<head th:insert="index :: headPage('Administrador', ~{:: link})">
 <meta charset="utf-8">
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/alertify.min.css"/>
 <!-- Default theme -->
@@ -46,12 +46,19 @@
 							<td th:text="${promotion.ofertPrice}"></td>
 							<td th:text="${promotion.state.state}"></td>
 							<td th:if="${promotion.state.id == 3}">
-								<a th:href="@{/promotion/edit/{id}(id=${promotion.id})}" role="button" class='btn btn-edit btnEditar'>Editar</a>
-								<button class='btn btn-danger btnEliminar' th:attr="idpromotion=${promotion.id}">Eliminar</button>
+								<button class='btn btn-edit'>Detalles</button>
+								<button disabled class='btn btn-danger'>Rechazar</button>
+								<button disabled class='btn btn-success'>Aceptar</button>
 							</td>
-							<td th:if="${promotion.state.id != 3}">
-								<button disabled class='btn btn-edit'>Editar</button>
-								<button disabled class='btn btn-danger'>Eliminar</button>
+							<td th:if="${promotion.state.id == 1}">
+								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-edit'>Detalles</a>
+								<button class='btn btn-danger btnRejected' th:attr="idpromotion=${promotion.id}">Rechazar</button>
+								<button class='btn btn-success btnApprove' th:attr="idpromotion=${promotion.id}">Aceptar</button>
+							</td>
+							<td th:if="${promotion.state.id != 1 && promotion.state.id != 3}">
+								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-edit'>Detalles</a>
+								<button disabled class='btn btn-danger'>Rechazar</button>
+								<button disabled class='btn btn-success'>Aceptar</button>
 							</td>
 						</tr>
 					</tbody>
@@ -63,23 +70,57 @@
 	<script type="text/javascript">
 		$(document).ready( function () {
 			$('#tbl_promotions').DataTable();
+			
+			$('.btnRejected').click(function(){
+				let idPromotion = $(this).attr('idpromotion');
+				
+				alertify.prompt('Rechazar promoción', 'Ingresar motivo de rechazo: ', '', 
+					function(evt, value){
+						/*$.post('/promotion/rejected/'+idPromotion, {
+							description: value
+						}, function(data){
+							alertify.success('Promoción rechazada');
+						}).done(function(){
+							console.log('Listo!');
+						}).fail(function(){
+							alertify.error('Error en el proceso de rechazo');
+						});*/
 
-			$('.btnEliminar').click(function(){
+						$.ajax({
+							url: '/promotion/rejected/'+idPromotion,
+							type: 'PUT',
+							/*contentType: 'application/json',
+							dataType: 'json',*/
+							data: {
+								description: value		
+							},
+							success: function(res){
+								alertify.success(res, 2000, function(){ location.reload(); });
+							},
+							error: function(jqXHR, textStatus, errorThrown){
+								alertify.error('Error en el proceso de rechazo');
+							}
+						});
+					}, function(){ }
+				).set('type', 'text'); 
+			});
+
+			$('.btnApprove').click(function(){
 				let idPromotion = $(this).attr('idpromotion');
 
-				alertify.confirm('Eliminar promoción', '¿Esta seguro de eliminar la promoción?', function(){
+				alertify.confirm('Aprobar promoción', '¿Esta seguro de aprobar la promoción?', function(){
 					$.ajax({
-						url: '/promotion/delete/'+idPromotion,
-						type: 'DELETE',
+						url: '/promotion/approve/'+idPromotion,
+						type: 'PUT',
 						success: function(res){
-							alertify.success(res, 2, function(){ location.reload(); });
+							alertify.success(res, 2000, function(){ location.reload(); });
 						},
 						error: function(jqXHR, textStatus, errorThrown){
 							alertify.error('Error en el proceso de aprobación');
 						}
 					});
 				}, function(){});
-			});
+			}); 
 		});
 	</script>
 </body>

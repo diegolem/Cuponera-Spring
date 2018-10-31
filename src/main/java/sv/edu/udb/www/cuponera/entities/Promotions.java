@@ -19,16 +19,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import sv.edu.udb.www.cuponera.validator.DatesPromotionConstraint;
+import sv.edu.udb.www.cuponera.validator.PricesPromotionConstraint;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name="promotion", catalog="cuponera")
+/* @PricesPromotionConstraint
+ @DatesPromotionConstraint*/
 public class Promotions implements java.io.Serializable{
 	
 	/**
@@ -40,22 +49,24 @@ public class Promotions implements java.io.Serializable{
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese un titulo de oferta válido")
 	@NotBlank(message="El titulo de la oferta es obligatorio")
 	private String title;
-	@Positive
+	@Positive(message = "Precio regular debe ser mayor a 0")
 	@NotNull(message="El precio regular es obligatorio")
-	@Min(value = 1,message="Ingrese un precio mayor a 0")
+	@Min(value = 1, message="Ingrese un precio mayor a 0")
 	private BigDecimal regularPrice;
-	@Positive
+	@Positive(message = "Precio de oferta debe ser mayor a 0")
 	@NotNull(message="El precio de la oferta es obligatorio")
-	@Min(value = 1,message="Ingrese un precio mayor a 0")
+	@Min(value = 1, message="Ingrese un precio mayor a 0")
 	private BigDecimal ofertPrice;
-	
 	@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de inicio es obligatoria")
 	private Date initDate;
 	@Future(message="La fecha debe ser mayor a la actual")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de finalización es obligatoria")
 	private Date endDate;
 	@Future(message="La fecha debe ser mayor a la actual")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha limite es obligatoria")
 	private Date limitDate;
 	@PositiveOrZero(message="la cantidad limite debe ser mayor o igual que 0")
@@ -66,20 +77,16 @@ public class Promotions implements java.io.Serializable{
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String otherDetails;
-	@Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")
-	@NotNull(message="La imagen es obligatoria")
+	// @Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")
+	// @NotNull(message="La imagen es obligatoria")
 	private String image;
-	@Positive
 	private int couponsSold;
-	@Positive
 	private int couponsAvailable;
-	@Positive
 	private BigDecimal earnings;
-	@Positive
 	private BigDecimal chargeService;
 	private Companies company;
 	private PromotionsState state;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese una descripcion válida")
+	// @Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese una descripcion válida")
 	private String rejectedDescription;
 	private Set<Sales> sales = new HashSet<Sales>(0);
 	
@@ -185,7 +192,8 @@ public class Promotions implements java.io.Serializable{
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	
+	@Temporal(TemporalType.DATE)
 	@Column(name="limit_date", nullable=false)
 	public Date getLimitDate() {
 		return limitDate;

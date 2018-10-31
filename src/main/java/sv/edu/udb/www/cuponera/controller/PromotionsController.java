@@ -1,11 +1,15 @@
 package sv.edu.udb.www.cuponera.controller;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,12 +21,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import sv.edu.udb.www.cuponera.entities.Companies;
 import sv.edu.udb.www.cuponera.entities.Promotions;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
+import sv.edu.udb.www.cuponera.repositories.PromotionStateRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
 import sv.edu.udb.www.cuponera.service.UploadFileService;
 
@@ -31,15 +38,17 @@ import sv.edu.udb.www.cuponera.service.UploadFileService;
 public class PromotionsController {
 	@Autowired
 	private UploadFileService uploadFileService;
-	
 	@Autowired
 	@Qualifier("PromotionsRepository")
 	PromotionsRepository promotionRepository;
-	
 	@Autowired
 	@Qualifier("CompaniesRepository")
 	CompaniesRepository companiesRepository;
+	@Autowired
+	@Qualifier("PromotionStateRepository")
+	PromotionStateRepository promotionStateRepository;
 	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -48,30 +57,69 @@ public class PromotionsController {
 		return "company/promotion/listar";
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
 	@GetMapping("/list_admin")
 	public String listPromotionToAdmin(Model model) {
 		model.addAttribute("lista", promotionRepository.findAll());
 		return "admin/promotion/listar";
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@GetMapping("/show_admin/{id}")
+	public String showPromotionToAdmin(@PathVariable("id")Integer id, Model model) {
+		Optional<Promotions> promotion = promotionRepository.findById(id);
+		
+		if(promotion.isPresent()) {
+			model.addAttribute("promotion", promotion.get());
+			return "admin/promotion/detalles";
+		}else {
+			return "redirect:/promotion/list_admin";
+		}
+	}
+	
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@GetMapping("/show_company/{id}")
+	public String showPromotionToCompany(@PathVariable("id")Integer id, Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<Promotions> promotion = promotionRepository.findByIdAndCompany(id, companiesRepository.findByEmail(auth.getName()));
+		
+		if(promotion.isPresent()) {
+			model.addAttribute("promotion", promotion.get());
+			return "company/promotion/detalles";
+		}else {
+			return "redirect:/promotion/list_company";
+		}
+	}
+	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/new")
 	public String newPromotion(Model model) {
 		model.addAttribute("promotion", new Promotions());
 		return "company/promotion/nuevo";
 	}
 	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@PostMapping("/new")
-	public String insertPromotion(@RequestParam("image") MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
+	public String insertPromotion(@RequestParam(name = "image_promotion", required = true) MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
 			BindingResult result, Model model) {
 		try {
 			if(result.hasErrors()) {
 				model.addAttribute("promotion",promotion);
-				return "company/promotion/nuevo";
+				return "/company/promotion/nuevo";
 			}else {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				promotion.setCompany(companiesRepository.findByEmail(auth.getName()));
 				promotion.setCouponsAvailable(promotion.getLimitCant());
-				promotionRepository.save(promotion);
-				
+				promotion.setCouponsSold(0);
+				promotion.setImage(image.getOriginalFilename());
+				promotion.setChargeService(BigDecimal.valueOf(0));
+				promotion.setEarnings(BigDecimal.valueOf(0));
+				promotion.setRejectedDescription("");
+				promotion.setState(promotionStateRepository.findById(1));
+
+				promotionRepository.saveAndFlush(promotion);
 				uploadFileService.saveImage(image);
+
 				return "redirect:/promotion/list_company";
 			}
 		}catch(Exception ex) {
@@ -80,42 +128,140 @@ public class PromotionsController {
 		}
 	}
 	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/edit/{id}")
 	public String editPromotion(@PathVariable("id")Integer id,Model model) {
-		Optional<Promotions> promotion = promotionRepository.findById(id);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies company = companiesRepository.findByEmail(auth.getName());
+		Optional<Promotions> promotion = promotionRepository.findByIdAndCompany(id, company);
+		
 		if(promotion.isPresent()) {
-			model.addAttribute("promotion",promotion);
-			return "promotion/editar";
+			model.addAttribute("promotion", promotion.get());
+			return "/company/promotion/modificar";
 		}else {
-			return "redirect:/promotion/list";
+			return "redirect:/promotion/list_company";
 		}
 	}
 	
-	@PutMapping("/edit")
-	public String editPromotion(@Valid @ModelAttribute("promotion") Promotions promotion,
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
+	@PostMapping("/edit")
+	public String editPromotion(@RequestParam("image_promotion") MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
 			BindingResult result, Model model) {
+		
 		try {
 			if(result.hasErrors()) {
-				model.addAttribute("promotion",promotion);
-				return "promotion/editar";
+				System.out.println("Errores");
+				model.addAttribute("promotion", promotion);
+				return "/company/promotion/modificar";
 			}else{
-				promotionRepository.save(promotion);
-				return "redirect:/promotion/list";
+				if(promotion.getId() != null) {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					Companies company = companiesRepository.findByEmail(auth.getName());
+					Optional<Promotions> _p = promotionRepository.findByIdAndCompany(promotion.getId(), company);
+					
+					if((_p.get().getState().getId() == 3) && (_p.isPresent())) { // Rechazada y pertenece a empresa logueada
+						promotion.setState(promotionStateRepository.findById(1));
+						promotion.setChargeService(BigDecimal.valueOf(0));
+						promotion.setEarnings(BigDecimal.valueOf(0));
+						promotion.setRejectedDescription("");
+						promotion.setCompany(company);
+						promotion.setCouponsAvailable(promotion.getLimitCant());
+						promotion.setCouponsSold(0);
+						
+						if(!image.isEmpty()) { //Mantener misma imagen
+							uploadFileService.saveImage(image);
+							promotion.setImage(image.getOriginalFilename());
+						}else {
+							promotion.setImage(_p.get().getImage());
+						}
+
+						promotionRepository.save(promotion);
+						return "redirect:/promotion/list_company";
+					}
+				}
+				return "redirect:/promotion/edit/"+promotion.getId();
 			}
 		}catch(Exception ex) {
-			model.addAttribute("promotion",promotion);
-			return "promotion/editar";			
+			model.addAttribute("promotion", promotion);
+			return "redirect:/promotion/edit/"+promotion.getId();			
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public String deletePromotion(@PathVariable("id")Integer id) {
-		Optional<Promotions> promotion = promotionRepository.findById(id);
-		if(promotion.isPresent()) {
-			promotionRepository.deleteById(id);
-			return "redirect:/promotion/list";
-		}else {
-			return "redirect:/promotion/list";
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@PutMapping("/rejected/{id}")
+	public ResponseEntity<?> rejectedPromotion(@PathVariable("id")Integer id, @RequestParam(required = true) String description) {
+		try {
+			Optional<Promotions> promotion = promotionRepository.findById(id);
+			
+			if(promotion.isPresent()) {
+				if(promotion.get().getState().getId() == 1) { //En espera de aprobación
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					String initDate = format.format(promotion.get().getInitDate()),
+							endDate = format.format(promotion.get().getEndDate()),
+							limitDate = format.format(promotion.get().getLimitDate());
+					
+					promotion.get().setInitDate(format.parse(initDate));
+					promotion.get().setEndDate(format.parse(endDate));
+					promotion.get().setLimitDate(format.parse(limitDate));
+					promotion.get().setRejectedDescription(description);
+					promotion.get().setState(promotionStateRepository.findById(3)); // Rechazada
+					
+					promotionRepository.saveAndFlush(promotion.get());			
+					return ResponseEntity.ok("Promoción rechazada");
+				}
+			}
+		}catch(Exception ex) {
+			return ResponseEntity.status(500).body("Error en el proceso de rechazo");			
 		}
+		return ResponseEntity.status(500).body("La promoción no cumple con los parametros para rechazar");
+	}
+	
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@PutMapping("/approve/{id}")
+	public ResponseEntity<?> approvePromotion(@PathVariable("id")Integer id){
+		try {
+			Optional<Promotions> promotion = promotionRepository.findById(id);
+			
+			if(promotion.isPresent()) {
+				if(promotion.get().getState().getId() == 1) { //En espera de aprobación
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					String initDate = format.format(promotion.get().getInitDate()),
+							endDate = format.format(promotion.get().getEndDate()),
+							limitDate = format.format(promotion.get().getLimitDate());
+					
+					promotion.get().setInitDate(format.parse(initDate));
+					promotion.get().setEndDate(format.parse(endDate));
+					promotion.get().setLimitDate(format.parse(limitDate));
+					promotion.get().setState(promotionStateRepository.findById(2)); // Aprobada
+				
+					promotionRepository.saveAndFlush(promotion.get());
+					
+					return ResponseEntity.ok("Promoción aprobada");
+				}
+			}
+		}catch(Exception ex) {
+			return ResponseEntity.status(500).body("Error en el proceso de aprobación");
+		}
+		return ResponseEntity.status(500).body("La promoción no cumple con los parametros para ser aprobada");
+	}
+	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deletePromotion(@PathVariable("id")Integer id) {
+		try {
+			Optional<Promotions> promotion = promotionRepository.findById(id);
+			if(promotion.isPresent()) {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				Companies company = companiesRepository.findByEmail(auth.getName());
+				
+				if((promotion.get().getState().getId() == 3) && (promotion.get().getCompany().getId().equals(company.getId()))) {
+					promotionRepository.delete(promotion.get());
+					return ResponseEntity.ok("Promoción eliminada");
+				}
+			}
+		}catch(Exception ex) {
+			return ResponseEntity.status(500).body("Error en el proceso de eliminación");
+		}
+		return ResponseEntity.status(500).body("La promoción no cumple con los parametros para ser eliminada");
 	}
 }

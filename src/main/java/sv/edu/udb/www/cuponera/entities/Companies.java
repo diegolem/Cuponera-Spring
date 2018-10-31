@@ -140,7 +140,7 @@ public class Companies implements java.io.Serializable{
 		this.email = email;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="type_company", nullable=false)
 	public CompanyTypes getCompanyType() {
 		return companyType;
@@ -173,7 +173,7 @@ public class Companies implements java.io.Serializable{
 		this.employees = employees;
 	}
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="company")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="company")
 	public Set<Promotions> getPromotions() {
 		return promotions;
 	}

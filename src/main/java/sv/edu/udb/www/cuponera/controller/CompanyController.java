@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
 import sv.edu.udb.www.cuponera.entities.Users;
-import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
+//import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
@@ -48,8 +48,8 @@ public class CompanyController {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		
-		String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
-		
+		//String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
+		String jsonInString = "";
 		
 		return jsonInString;
 		
