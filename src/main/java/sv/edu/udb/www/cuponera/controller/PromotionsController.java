@@ -1,11 +1,14 @@
 package sv.edu.udb.www.cuponera.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,9 +21,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sv.edu.udb.www.cuponera.entities.CompanyTypes;
 import sv.edu.udb.www.cuponera.entities.Promotions;
+import sv.edu.udb.www.cuponera.entities.PromotionsState;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanyTypes;
+import sv.edu.udb.www.cuponera.entities.simple.SimplePromotions;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
+import sv.edu.udb.www.cuponera.repositories.PromotionStateRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
 
 @Controller
@@ -34,6 +46,67 @@ public class PromotionsController {
 	@Autowired
 	@Qualifier("CompaniesRepository")
 	CompaniesRepository companiesRepository;
+	
+	@Autowired
+	@Qualifier("PromotionStateRepository")
+	PromotionStateRepository promotionStateRepository;
+	
+	// /////////////////////////////////////////////////////////////////////////////////////////
+	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String allTypes() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonInString = mapper.writeValueAsString(SimplePromotions.Parse(this.promotionRepository.findAll()));
+		
+		
+		return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getLocalizedMessage();
+		}
+	}
+	
+	@PutMapping("/action/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("state") int state) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			Optional<Promotions> promotion = this.promotionRepository.findById(id);
+			
+			if	(promotion.isPresent()) {
+				
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(state);
+				
+				if (promotionState.isPresent()) {
+					promotion.get().setState(promotionState.get());
+					
+					
+					this.promotionRepository.saveAndFlush(promotion.get());
+				} else {
+					data.put("state", false);
+					data.put("error", "El estado no existe");
+				}
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "La promocion no existe");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	// ////////////////////////////////////////////////////////////////////////////////////////
 	
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {

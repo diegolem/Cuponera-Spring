@@ -1,11 +1,14 @@
 package sv.edu.udb.www.cuponera.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,11 +22,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
+import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanyTypes;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleUsers;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
+import sv.edu.udb.www.cuponera.utils.Password;
 
 @Controller
 @RequestMapping("/company_type")
@@ -45,6 +56,120 @@ public class CompanyTypesController {
 		
 		return "admin/categories";
 	}
+	
+	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String allTypes() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonInString = mapper.writeValueAsString(SimpleCompanyTypes.Parse(this.companyTypesRepository.findAll()));
+		
+		
+		return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getLocalizedMessage();
+		}
+	}
+	
+	@PostMapping("/save")
+	public @ResponseBody String save(@RequestParam("type") String type) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+		
+			if( !this.companyTypesRepository.existsType(type) ) {
+				CompanyTypes companyType = new CompanyTypes();
+				
+				companyType.setType(type);
+				
+				this.companyTypesRepository.saveAndFlush(companyType);
+				
+				data.put("state", true);
+			} else {
+				data.put("state", false);
+				data.put("error", "Ya existe el rubro");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
+	@DeleteMapping("/remove/{id}")
+	public @ResponseBody String removeUser(@PathVariable("id")int id) {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		Optional<CompanyTypes> companyTypes = this.companyTypesRepository.findById(id);
+		
+		try {
+			if(companyTypes.isPresent()) {
+				this.companyTypesRepository.deleteById(id);
+				data.put("state", true);
+			}else {
+				data.put("state", false);
+				data.put("error", "El rubro no existe");
+			}
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
+	@PutMapping("/update/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("type") String type) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			Optional<CompanyTypes> types = this.companyTypesRepository.findById(id);
+			
+			if	(types.isPresent()) {
+				if( !this.companyTypesRepository.existsType(type, id) ) {
+					
+					types.get().setType(type);
+					
+					this.companyTypesRepository.saveAndFlush(types.get());
+					
+					data.put("state", true);
+				} else {
+					data.put("state", false);
+					data.put("error", "Ya existe un rubro");
+				}
+			} else {
+				data.put("state", false);
+				data.put("error", "El rubro no existe");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
 	// ///////////////////////////////////////////////////////////////////////////////
 	
 	@GetMapping("/list")
