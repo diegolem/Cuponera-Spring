@@ -10,4 +10,5 @@ import sv.edu.udb.www.cuponera.entities.PromotionsState;
 @Repository("PromotionStateRepository")
 public interface PromotionStateRepository extends JpaRepository<PromotionsState,Integer> {
 	public abstract PromotionsState findById(int id);
+	public abstract Optional<PromotionsState> findByState(String state);
 }

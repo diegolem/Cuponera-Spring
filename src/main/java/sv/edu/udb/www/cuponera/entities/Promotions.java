@@ -72,7 +72,7 @@ public class Promotions implements java.io.Serializable{
 	@NotNull(message="La fecha limite es obligatoria")
 	private Date limitDate;
 	@PositiveOrZero(message="la cantidad limite debe ser mayor o igual que 0")
-	private int limitCant;
+	private long limitCant;
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String description;
@@ -83,7 +83,7 @@ public class Promotions implements java.io.Serializable{
 	// @NotNull(message="La imagen es obligatoria")
 	private String image;
 	private int couponsSold;
-	private int couponsAvailable;
+	private Long couponsAvailable;
 	private BigDecimal earnings;
 	private BigDecimal chargeService;
 	private Companies company;
@@ -96,7 +96,7 @@ public class Promotions implements java.io.Serializable{
 	
 	public Promotions(Integer id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
 			Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold,
-			int couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
+			long couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
 			PromotionsState state, String rejectedDescription) {
 		this.id = id;
 		this.title = title;
@@ -121,7 +121,7 @@ public class Promotions implements java.io.Serializable{
 
 	public Promotions(Integer id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
 			Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold,
-			int couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
+			long couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
 			PromotionsState state, String rejectedDescription, Set<Sales> sales) {
 		this.id = id;
 		this.title = title;
@@ -246,10 +246,10 @@ public class Promotions implements java.io.Serializable{
 	}
 
 	@Column(name="coupons_available", nullable=false)
-	public int getCouponsAvailable() {
+	public long getCouponsAvailable() {
 		return couponsAvailable;
 	}
-	public void setCouponsAvailable(int couponsAvailable) {
+	public void setCouponsAvailable(long couponsAvailable) {
 		this.couponsAvailable = couponsAvailable;
 	}
 

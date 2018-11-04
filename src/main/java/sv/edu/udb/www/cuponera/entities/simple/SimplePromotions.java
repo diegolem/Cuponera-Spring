@@ -35,7 +35,7 @@ public class SimplePromotions {
 	private String otherDetails;
 	private String image;
 	private int couponsSold;
-	private int couponsAvailable;
+	private long couponsAvailable;
 	private BigDecimal earnings;
 	private BigDecimal chargeService;
 	private String idCompany;
@@ -177,11 +177,11 @@ public class SimplePromotions {
 		this.couponsSold = couponsSold;
 	}
 
-	public int getCouponsAvailable() {
+	public Long getCouponsAvailable() {
 		return couponsAvailable;
 	}
 
-	public void setCouponsAvailable(int couponsAvailable) {
+	public void setCouponsAvailable(Long couponsAvailable) {
 		this.couponsAvailable = couponsAvailable;
 	}
 

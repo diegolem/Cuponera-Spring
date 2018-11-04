@@ -60,9 +60,6 @@ public class PromotionsController {
 	PromotionStateRepository promotionStateRepository;
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
-	@Autowired
-	@Qualifier("PromotionStateRepository")
-	PromotionStateRepository promotionStateRepository;
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
@@ -91,11 +88,10 @@ public class PromotionsController {
 			
 			if	(promotion.isPresent()) {
 				
-				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(2);
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findByState("Aprobada");
 				
 				if (promotionState.isPresent()) {
 					promotion.get().setState(promotionState.get());
-					
 					
 					this.promotionRepository.saveAndFlush(promotion.get());
 					
@@ -134,7 +130,7 @@ public class PromotionsController {
 			
 			if	(promotion.isPresent()) {
 				
-				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(3);
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findByState("Rechazada");
 				
 				if (promotionState.isPresent()) {
 					promotion.get().setState(promotionState.get());
