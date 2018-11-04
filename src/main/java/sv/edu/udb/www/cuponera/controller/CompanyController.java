@@ -68,15 +68,6 @@ public class CompanyController {
 		}
 	}
 	
-	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
-	public String index(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.usersRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("types", this.companyTypesRepository.findAll());
-		return "admin/business";
-	}
-	
 	@PostMapping("/save")
 	public @ResponseBody String saveCompany(@RequestParam("code") String code, @RequestParam("name") String name, @RequestParam("type") int type, @RequestParam("address") String address, @RequestParam("pct_comission") int pct_comission, @RequestParam("contact_name") String contact_name, @RequestParam("phone") String phone, @RequestParam("email") String email) {
 		

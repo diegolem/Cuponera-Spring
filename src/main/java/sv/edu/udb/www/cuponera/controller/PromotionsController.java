@@ -67,8 +67,8 @@ public class PromotionsController {
 		}
 	}
 	
-	@PutMapping("/action/{id}")
-	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("state") int state) {
+	@PutMapping("/approve/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id) {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> data = new HashMap<>();
@@ -78,13 +78,59 @@ public class PromotionsController {
 			
 			if	(promotion.isPresent()) {
 				
-				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(state);
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(2);
 				
 				if (promotionState.isPresent()) {
 					promotion.get().setState(promotionState.get());
 					
 					
 					this.promotionRepository.saveAndFlush(promotion.get());
+					
+					data.put("state", true);
+					data.put("error", "Se ha aceptado la promocion");
+				} else {
+					data.put("state", false);
+					data.put("error", "El estado no existe");
+				}
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "La promocion no existe");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
+	@PutMapping("/reject/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("reject") String reject) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			Optional<Promotions> promotion = this.promotionRepository.findById(id);
+			
+			if	(promotion.isPresent()) {
+				
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(3);
+				
+				if (promotionState.isPresent()) {
+					promotion.get().setState(promotionState.get());
+					promotion.get().setRejectedDescription(reject);
+					
+					this.promotionRepository.saveAndFlush(promotion.get());
+					
+					data.put("state", true);
+					data.put("error", "Se ha aceptado la promocion");
 				} else {
 					data.put("state", false);
 					data.put("error", "El estado no existe");

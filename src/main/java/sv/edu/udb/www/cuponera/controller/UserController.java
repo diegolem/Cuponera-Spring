@@ -54,21 +54,12 @@ public class UserController {
 	
 	// /////////////////////////////////////////////////////////////////////////////////////
 	
-	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
-	public String index(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("types", this.userTypesRepository.findAll());
-		return "admin/users";
-	}
-	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String retrieveAllStudents() {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		
-		String jsonInString = mapper.writeValueAsString(SimpleUsers.Parse(this.userRepository.findAll()));
+		String jsonInString = mapper.writeValueAsString(SimpleUsers.Parse(this.userRepository.allAdmin()));
 		
 		
 		return jsonInString;

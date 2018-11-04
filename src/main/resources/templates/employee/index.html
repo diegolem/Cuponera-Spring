@@ -4,50 +4,43 @@
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
 </head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
-	<!-- Menu principal -->
-	<li class="nav-item option_list">
-	    <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	      <i class="menu-icon mdi mdi-backup-restore"></i>
-	      <span class="menu-title">Form elements</span>
-	    </a>
-     </li>
-     <li class="nav-item option_list">
-        <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	         <i class="menu-icon mdi mdi-backup-restore"></i>
-	         <span class="menu-title">Form elements</span>
-        </a>
-      </li>
-	<!-- //////////////////////////////////////////////////////////////////////////////// -->
 	
-	<!-- Menu lateral  -->
-	<li class="nav-item active menu_option">
-       <a href="#" class="nav-link">
-         <i class="mdi mdi-elevation-rise"></i>Compras</a>
-     </li>
-     <li class="nav-item menu_option">
-       <a href="#" class="nav-link">
-         <i class="mdi mdi-bookmark-plus-outline"></i>Vendas</a>
-     </li>
-	<!-- //////////////////////////////////////////////////////////////////////////////// -->
 	
-	<!-- Contenedor principal -->
 	<section id="container">
+		<div class="col-12 grid-margin stretch-card">
+        	<div class="card">
+            	<div class="card-body">
+            		<form id="frmDui" action="">
+	                	<h4 class="card-title">Buscar cliente</h4>
+	                   	<p class="card-description"> Buscar clientes por DUI </p>
+	                    <div class="form-group">
+	                    	<div class="input-group">                       
+	                          	<input type="text" name="dui" class="form-control" placeholder="XXXXXXXX-X" data-validation="custom" data-validation-regexp="^[0-9]{1}[0-9]{7}[-]{1}[0-9]{1}$">
+	                          	<div class="input-group-prepend bg-info">
+	                            	<button type="submit" class="input-group-text bg-primary"> <i class="fa fa-search text-white"></i></button>
+	                          	</div>
+	                      	</div>
+	               		</div>
+               		</form>
+          		</div>
+      		</div>
+       	</div>
 		
 		<!-- Tabla -->
-		<div class="col-lg-12 grid-margin stretch-card">
+		<div id="cardPromotions" class="col-lg-12 grid-margin stretch-card">
       		<div class="card">
 				<div class="card-body">
-                 	<h4 class="card-title">Empleados</h4>
-                  	<p class="card-description">Lista de empleados activos</p>
+                 	<h4 class="card-title">Promociones:</h4>
+                  	<p class="card-description">Promociones activas: <button type="button" class="btn btn-outline-primary float-right mb-1" data-toggle="modal" data-target="#mdlHistory">Ver Historial</button> </p>
                   	
                   	<div class="table-responsive">
-                    	<table id="tbl_empleados" class="table table-striped table-dark">
+                    	<table id="tbl_promotions" class="table table-striped table-dark">
                       		<thead>
                         		<tr>
-                          			<th>ID</th>
-                          			<th>Nombre</th>
-                          			<th>Apellido</th>
-                          			<th>E-Mail</th>
+                          			<th>Codigo</th>
+                          			<th>Promocion</th>
+                          			<th>Precio regular</th>
+                          			<th>Precio de oferta</th>
 									<th>Opciones</th>
 								</tr>
                       		</thead>
@@ -61,30 +54,190 @@
             
 		<!-- //////////////////////////////////////////////////////////////////////////////// -->
 		
+		<div class="modal fade" id="mdlHistory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header bg-primary text-white">
+		        <h5 class="modal-title" id="mdlHistoryTitle">Cliente</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body" id="mldHistoryBody">
+		       
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
 	</section>
 	<!-- //////////////////////////////////////////////////////////////////////////////// -->
 	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready( function () {
-			 $('#tbl_empleados').DataTable({
-			    "processing" : true,
-			    "ajax" : {
-			        "url" : "http://localhost:8080/employee/all",
-			        dataSrc : ''
-			    },
-			    "columns" : [ {
-			        "data" : "id"
-			    }, {
-			        "data" : "name"
-			    }, {
-			        "data" : "lastName"
-			    }, {
-			        "data" : "email"
-			    },
+			$.validate({
+			    lang: 'es'
+		  	});
+			
+			var dataSet = [];
+			
+			var table = $('#tbl_promotions').DataTable({
+                data: dataSet,
+                columns: [
+                    { data: "couponCode", "className" : "description" },
+                    { data: "promotion.title", "className" : "description" },
+                    { data: "promotion.regularPrice", "className" : "description" },
+                    { data: "promotion.ofertPrice", "className" : "description" },
+                    { "defaultContent" : "<button id='btnOk' class='btn btn-success'>Canjear</button>", "className" : "d-flex justify-content-around" }
+                ]
+            });
+			
+			var tip = null;
+			
+			$('#tbl_promotions').on('mouseenter','tr .description', function() {
+				var tr = $(this).closest('tr');
+			    var data = table.row(tr).data();
+			    
+			    if	(data !== undefined)
 			    {
-			        "defaultContent" : "<button id='btnEliminar' class='btn btn-danger'>Eliminar</button>"
-			    }]
+			    	tip = this._tippy;
+			    	
+			    	tip.set({
+		    		  content: data.promotion.description,
+		    		  arrow: true,
+		    		  duration: 1000,
+		    		  animation: 'perspective'
+		    		})
+			    	
+			    	tip.show();
+			    }
 			});
+			
+			$('#tbl_promotions').on('click','tr #btnOk', function() {
+			    var tr = $(this).closest('tr');
+			    var data = table.row(tr).data();
+			    
+			    $.confirm({
+			        title: "Desea canjear el cupon",
+			        content: data.promotion.title,
+			        buttons: {
+			            confirm: function () {
+			            	$.ajax({
+			  				  	url: "/employee_rest/promotions/approve/" + data.couponCode,
+			  				  	data: "",
+			  				  	dataType: "json",
+			  				  	method: "PUT",
+			  				  	success: function(info){
+		  					  		if (info.state) {
+		  					  			table.row(tr).remove();
+		  					  			table.draw();
+			  						  	alertify.success("Los datos del usuario han sido actualizado!");
+			  						  	
+			  						  	let element = '<li class="list-group-item d-flex justify-content-between align-items-center">';
+								  		
+			  						  	element += data.promotion.title;
+								  		
+			  							element += '<span class="badge badge-primary badge-pill">';
+								  		
+			  							element += data.date;
+										
+			  							element += '</span>';
+			  							element += '</li>';
+			  						  	
+			  						  	$("#list").append(element);
+			  					  	} else {
+			  					  		alertify.error(info.error);
+			  					  	}  
+			  				  	},
+			  				  	error: function(jqXHR, textStatus, errorThrown) {
+		  					  		alertify.error("Error: " + errorThrown);
+			  				  	}
+	  						});
+			            },
+			            cancel: function () {}
+			        }
+			    });
+			});
+			
+			$("#frmDui").submit(function(event){
+				let form = $(this);
+				
+				$.ajax({
+  				  	url: "/employee_rest/promotions",
+  				  	data: form.serialize(),
+  				  	dataType: "json",
+  				  	method: "GET",
+  				  	success: function(data){
+				  		if (data.state) {	
+				  			dataSet = data.sales;
+				  			table.clear();
+				  			table.rows.add(data.sales);
+				  			table.draw();
+				  			//if( $('#cardPromotions').hasClass("d-none") ) $('#cardPromotions').removeClass("d-none");
+  						  	alertify.success("El cliente existe");
+  						  	
+  						  	if (tip != null)
+  						  	{
+  						  		tip.destroy();
+  						  		tip = null;
+  						  	}
+  						  	
+  						  	tippy('#tbl_promotions tbody tr .description');
+  						  	
+  						  	$("#mldHistory").modal("hide");				
+  						  	
+						  	$("#mldHistoryBody").html("");
+						  	
+						  	var list = '<ul id="list" class="list-group">';
+						  	
+						  	var name = "";
+						  	
+						  	$.each(data.history, function( index, value ) {
+						  		list += '<li class="list-group-item d-flex justify-content-between align-items-center">';
+						  		
+						  		list += value.promotion.title;
+						  		
+						  		list += '<span class="badge badge-primary badge-pill">';
+						  		
+						  		list += value.date;
+						  		
+						  		name = value.client.name + ' ' + value.client.lastName 
+						  		
+						  		list += '</span>';
+						  		list += '</li>';
+							});
+						  	
+						  	$("#mdlHistoryTitle").html(name);
+						  	
+						  	list += '</ul>';
+						  	
+						  	$("#mldHistoryBody").html(list);
+  					  	} else {
+  					  		//if( !$('#cardPromotions').hasClass("d-none") ) $('#cardPromotions').addClass("d-none");
+  					  		alertify.error(data.error);
+	  					  	table.clear();
+				  			table.rows.add([]);
+				  			table.draw();
+				  			$("#mdlHistoryTitle").html("cliente");
+				  			$("#mldHistoryBody").html("");
+  					  	}  
+  				  	},
+  				  	error: function(jqXHR, textStatus, errorThrown) {
+			  			//if( !$('#cardPromotions').hasClass("d-none") ) $('#cardPromotions').addClass("d-none");
+				  		alertify.error("Error: " + errorThrown);
+				  		table.clear();
+			  			table.rows.add([]);
+			  			table.draw();
+			  			$("#mdlHistoryTitle").html("cliente");
+			  			$("#mldHistoryBody").html("");
+  				  	}
+				});
+				
+				return false;
+			});
+			
 		});
 	</script>
 </body>

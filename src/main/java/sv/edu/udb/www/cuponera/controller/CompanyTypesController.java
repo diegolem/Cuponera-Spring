@@ -48,14 +48,6 @@ public class CompanyTypesController {
 	CompanyTypesRepository companyTypesRepository;
 	
 	// ///////////////////////////////////////////////////////////////////////////////
-	@RequestMapping(value = {"/"}, method = RequestMethod.GET)
-	public String index(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		
-		return "admin/categories";
-	}
 	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String allTypes() {

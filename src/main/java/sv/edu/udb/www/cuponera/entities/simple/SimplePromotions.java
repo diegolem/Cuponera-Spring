@@ -30,7 +30,7 @@ public class SimplePromotions {
 	private String initDate;
 	private String endDate;
 	private String limitDate;
-	private int limitCant;
+	private long limitCant;
 	private String description;
 	private String otherDetails;
 	private String image;
@@ -137,11 +137,11 @@ public class SimplePromotions {
 		this.limitDate = limitDate;
 	}
 
-	public int getLimitCant() {
+	public long getLimitCant() {
 		return limitCant;
 	}
 
-	public void setLimitCant(int limitCant) {
+	public void setLimitCant(long limitCant) {
 		this.limitCant = limitCant;
 	}
 

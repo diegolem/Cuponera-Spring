@@ -25,7 +25,7 @@ public class Sales implements java.io.Serializable{
 	private Promotions promotion;
 	private Users client;
 	private byte verified;
-	@PastOrPresent(message="Ingrese una fecha válida")
+	//@PastOrPresent(message="Ingrese una fecha válida")
 	@NotNull(message="La fecha de compra es obligatoria")
 	private Date date;
 	private SalesState state;

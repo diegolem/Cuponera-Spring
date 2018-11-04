@@ -140,6 +140,31 @@
 		    	</div>
 		  	</div>
 		</div>
+		
+		<div class="modal fade" id="mdlBad" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  		<div class="modal-dialog modal-lg" role="document">
+		    	<div class="modal-content">
+		      		<div class="modal-header bg-primary text-white">
+		        		<h5 class="modal-title" id="mdlBadTittle">Modal title</h5>
+			        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          			<span aria-hidden="true">&times;</span>
+		        		</button>
+			      	</div>
+			      	<form id="frmReject">
+		      			<div class="modal-body">
+				  			<div class="form-group">
+					    		<label for="txtDescription">Motivos del rechazo</label>
+								<input type="text" name="reject" class="form-control" id="txtDescription" aria-describedby="emailHelp" placeholder="No es apropiado" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+				  			</div>
+		      			</div>
+		      			<div class="modal-footer">
+		        			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        			<button type="submit" class="btn btn-primary">Rachazar</button>
+		      			</div>
+	      			</form>
+		    	</div>
+		  	</div>
+		</div>
 	</article>
 
 <script type="text/javascript" src="/js/jquery.steps.min.js"></script>
@@ -217,6 +242,61 @@
 		      	}]
 			});
 			 
+			 var id = 0;
+			 var title = "";
+			 
+			 $('#tbl_promotions').on('click','tr #btnBad', function() {
+			    var tr = $(this).closest('tr');
+			    var data = $('#tbl_promotions').DataTable().row(tr).data();
+			    
+			    id = data.id;
+			    title = data.title;
+			    
+			    $("#mdlBadTittle").html("Promocion: " + data.title);
+			    
+			    $("#mdlBad").modal("show");
+			 });
+			 
+	 		$('#mdlBad').on('hidden.bs.modal', function (e) {
+	 			$("#frmReject").trigger("reset");	
+			});
+	 		
+			 
+			 $("#frmReject").submit(function(event){
+				 let form = $(this);
+				 
+				 $.confirm({
+				        title: 'Promocion: ' + title,
+				        content: 'Esta seguro de rechazar la promocion?',
+				        buttons: {
+				            confirm: function () {
+				            	$.ajax({
+				  				  	url: "/promotion/reject/" + id,
+				  				  	data: form.serialize(),
+				  				  	dataType: "json",
+				  				  	method: "PUT",
+				  				  	success: function(data){
+			  					  		if (data.state) {
+			  				  				$('#tbl_promotions').DataTable().ajax.reload();
+				  				  			$("#mdlBad").modal("hide");
+					  				  		form.trigger("reset");	
+				  						  	alertify.success("Se ha rechazado con exito la promocion");
+				  					  	} else {
+				  					  		alertify.error("Error: " + data.error);
+				  					  	}  
+				  				  	},
+				  				  	error: function(jqXHR, textStatus, errorThrown) {
+			  					  		alertify.error("No se ha podido rechazar la promocion");
+				  				  	}
+		  						});
+				            },
+				            cancel: function () {}
+				        }
+				    });
+				
+				return false;
+			});
+			 
 			 $('#tbl_promotions').on('click','tr #btnOk', function() {
 				    var tr = $(this).closest('tr');
 				    var data = $('#tbl_promotions').DataTable().row(tr).data();
@@ -227,8 +307,8 @@
 				        buttons: {
 				            confirm: function () {
 				            	$.ajax({
-				  				  	url: "/promotion/action/" + data.id,
-				  				  	data: "state=2",
+				  				  	url: "/promotion/approve/" + data.id,
+				  				  	data: "",
 				  				  	dataType: "json",
 				  				  	method: "PUT",
 				  				  	success: function(data){

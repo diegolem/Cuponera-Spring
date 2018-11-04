@@ -33,6 +33,7 @@ import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanyTypes;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleUsers;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
+import sv.edu.udb.www.cuponera.repositories.UserTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 import sv.edu.udb.www.cuponera.utils.Password;
 
@@ -46,9 +47,12 @@ public class AdminController {
 	@Autowired
 	@Qualifier("CompanyTypesRepository")
 	CompanyTypesRepository companyTypesRepository;
+	@Autowired
+	@Qualifier("UserTypesRepository")
+	UserTypesRepository userTypesRepository;
 	
 	@RequestMapping(value = {"/promotions/"}, method = RequestMethod.GET)
-	public String index(Model model) {
+	public String indexPromotions(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
@@ -57,4 +61,30 @@ public class AdminController {
 		return "admin/promotions";
 	}
 	
+	@RequestMapping(value = {"/companies/"}, method = RequestMethod.GET)
+	public String indexCompany(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("types", this.companyTypesRepository.findAll());
+		return "admin/business";
+	}
+	
+	@RequestMapping(value = {"/company_type/"}, method = RequestMethod.GET)
+	public String indexCompanyType(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		
+		return "admin/categories";
+	}
+	
+	@RequestMapping(value = {"/users/"}, method = RequestMethod.GET)
+	public String indexUsers(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("types", this.userTypesRepository.allWithoutClient());
+		return "admin/users";
+	}
 }

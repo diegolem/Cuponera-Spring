@@ -13,13 +13,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -49,39 +51,40 @@ public class Promotions implements java.io.Serializable{
 	@NotNull(message="El precio de la oferta es obligatorio")
 	@Min(value = 1,message="Ingrese un precio mayor a 0")
 	private BigDecimal ofertPrice;
-	
-	@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
 	@NotNull(message="La fecha de inicio es obligatoria")
+	@Temporal(TemporalType.DATE)
+	//@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
 	private Date initDate;
-	@Future(message="La fecha debe ser mayor a la actual")
+	//@Future(message="La fecha debe ser mayor a la actual")
 	@NotNull(message="La fecha de finalización es obligatoria")
 	private Date endDate;
-	@Future(message="La fecha debe ser mayor a la actual")
+	//@Future(message="La fecha debe ser mayor a la actual")
 	@NotNull(message="La fecha limite es obligatoria")
 	private Date limitDate;
-	@Min(value= 0,message="La cantidad no puede ser negativa")
-	@NotNull(message="La cantidad es obligatoria")
-	private int limitCant;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
+	@NotNull(message="La cantidad limite de cupones es requerida")
+	@Min(value = 0,message="la cantidad limite debe ser mayor o igual que 0")
+	@Column(name = "limit_cant", unique = false, nullable = false)	
+	private long limitCant;
+	//@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-<>/]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String description;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
+	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-%]*$",message="Ingrese caracteres válidos en los detalles")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String otherDetails;
 	@Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")
 	@NotBlank(message="La imagen es obligatoria")
 	private String image;
-	@Positive
+	@Min(value = 0,message="Ingrese los cupones vendidos mayor o igaul a 0")
 	private int couponsSold;
-	@Positive
+	@Min(value = 0,message="Ingrese los cupones activos mayor o igaul a 0")
 	private int couponsAvailable;
-	@Positive
+	@Min(value = 0)
 	private BigDecimal earnings;
-	@Positive
+	@Min(value = 0,message="Ingrese un precio del servicio mayor o igual a 0")
 	private BigDecimal chargeService;
 	private Companies company;
 	private PromotionsState state;
-	
+	//@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese una descripcion válida")
 	private String rejectedDescription;
 	private Set<Sales> sales = new HashSet<Sales>(0);
 	
@@ -197,10 +200,10 @@ public class Promotions implements java.io.Serializable{
 	}
 
 	@Column(name="limit_cant", nullable=false)
-	public int getLimitCant() {
+	public long getLimitCant() {
 		return limitCant;
 	}
-	public void setLimitCant(int limitCant) {
+	public void setLimitCant(long limitCant) {
 		this.limitCant = limitCant;
 	}
 
