@@ -77,7 +77,7 @@ public class PromotionsController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/show_company/{id}")
 	public String showPromotionToCompany(@PathVariable("id")Integer id, Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

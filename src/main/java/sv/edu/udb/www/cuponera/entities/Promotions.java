@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
@@ -34,10 +35,9 @@ import javax.persistence.OneToMany;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+
 @Entity
 @Table(name="promotion", catalog="cuponera")
-/* @PricesPromotionConstraint
- @DatesPromotionConstraint*/
 public class Promotions implements java.io.Serializable{
 	
 	/**
@@ -56,6 +56,7 @@ public class Promotions implements java.io.Serializable{
 	@Positive(message = "Precio de oferta debe ser mayor a 0")
 	@NotNull(message="El precio de la oferta es obligatorio")
 	@Min(value = 1, message="Ingrese un precio mayor a 0")
+	// @PricesPromotionConstraint
 	private BigDecimal ofertPrice;
 	@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -64,6 +65,7 @@ public class Promotions implements java.io.Serializable{
 	@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de finalización es obligatoria")
+	@DatesPromotionConstraint(initDate = "initDate", endDate ="endDate")
 	private Date endDate;
 	@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -91,6 +93,7 @@ public class Promotions implements java.io.Serializable{
 	private Set<Sales> sales = new HashSet<Sales>(0);
 	
 	public Promotions() {}
+	
 	public Promotions(Integer id, String title, BigDecimal regularPrice, BigDecimal ofertPrice, Date initDate, Date endDate,
 			Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold,
 			int couponsAvailable, BigDecimal earnings, BigDecimal chargeService, Companies company,
@@ -159,7 +162,7 @@ public class Promotions implements java.io.Serializable{
 		this.title = title;
 	}
 	
-	@Column(name="regular_price", nullable=false, precision=18)
+	@Column(name="regular_price", nullable=false, precision=18, scale=2)
 	public BigDecimal getRegularPrice() {
 		return regularPrice;
 	}
@@ -167,7 +170,7 @@ public class Promotions implements java.io.Serializable{
 		this.regularPrice = regularPrice;
 	}
 
-	@Column(name="ofert_price", nullable=false, precision=18)
+	@Column(name="ofert_price", nullable=false, precision=18, scale=2)
 	public BigDecimal getOfertPrice() {
 		return ofertPrice;
 	}

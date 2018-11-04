@@ -10,9 +10,9 @@ public class Mail {
 		
 	}
 	
-	public Mail(String from, String subject, String content) {
-		this.from = from;
-		this.to = "";
+	public Mail(String to, String subject, String content) {
+		this.from = "ezic2017@gmail.com";
+		this.to = to;
 		this.subject = subject;
 		this.content = content;
 	}

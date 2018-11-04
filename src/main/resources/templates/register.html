@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>Cuponera | Register</title>
+    	
+  <link rel="stylesheet" href="/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/iconfonts/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="shortcut icon" href="/images/favicon.png" />
+</head>
+
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
+      <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+        <div class="row w-100">
+          <div class="col-lg-4 mx-auto">
+            <div class="auto-form-wrapper">
+            
+			<form role="form" method="POST" th:action="@{/users/new_client}" th:object="${user}">
+				<ul th:if="${#fields.hasAnyErrors()}">
+			  		<li th:each="err : ${#fields.allErrors()}" th:text="${err}">Input is incorrect</li>
+				</ul>
+				<div class="form-row">
+					<div class="form-group col-md-12 col-lg-12 cols-sm-12">
+	               		<label for="name" class="label">Nombre</label>
+	                  	<div class="input-group">
+	                    	<input type="text" name="name" id="name" required="true" th:field="*{name}" class="form-control" placeholder="Jorge Ernesto" />
+	                   		<div class="input-group-append">
+	                    		<span class="input-group-text">
+	                       			<i class="fa fa-asterisk"></i>
+	                     		</span>
+	                    	</div>
+	                  	</div>
+	                </div>
+	                <div class="form-group col-md-12 col-lg-12 cols-sm-12">
+	                	<label for="lastName" class="label">Apellido</label>
+	                  	<div class="input-group">
+	                    	<input id="LastName" name="lastName" type="text" required="true"  th:field="*{lastName}" class="form-control" placeholder="Menjivar Conorado">
+	                    	<div class="input-group-append">
+	                      		<span class="input-group-text">
+	                        		<i class="fa fa-asterisk"></i>
+	                      		</span>
+	                   		</div>
+	                	</div>
+	                </div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-12 col-lg-12 cols-sm-12">
+	               		<label for="dui" class="label">DUI</label>
+	                  	<div class="input-group">
+	                    	<input type="text" name="dui" id="dui" required="true" th:field="*{dui}" class="form-control" placeholder="12345678-9" />
+	                   		<div class="input-group-append">
+	                    		<span class="input-group-text">
+	                       			<i class="fa fa-asterisk"></i>
+	                     		</span>
+	                    	</div>
+	                  	</div>
+	                </div>
+	                <div class="form-group col-md-12 col-lg-12 cols-sm-12">
+	                	<label for="nit" class="label">NIT</label>
+	                  	<div class="input-group">
+	                    	<input id="nit" name="nit" type="text" required="true" th:field="*{nit}" class="form-control" placeholder="1234-020288-123-1">
+	                    	<div class="input-group-append">
+	                      		<span class="input-group-text">
+	                        		<i class="fa fa-asterisk"></i>
+	                      		</span>
+	                   		</div>
+	                	</div>
+	                </div>
+				</div>
+				
+				<div class="form-row">
+					<div class="form-group col-md-12 col-lg-12 cols-sm-12">
+	               		<label for="email" class="label">Correo Electrónico</label>
+	                  	<div class="input-group">
+	                    	<input type="email" name="email" id="email" required="true" th:field="*{email}" class="form-control" placeholder="example@example.com" />
+	                   		<div class="input-group-append">
+	                    		<span class="input-group-text">
+	                       			<i class="fa fa-asterisk"></i>
+	                     		</span>
+	                    	</div>
+	                  	</div>
+	                </div>
+				</div>
+               	
+                <div class="form-group">
+                  	<button class="btn btn-primary submit-btn btn-block">Registrarme</button>
+                </div>
+                
+                <div class="text-block text-center my-3">
+                  <span class="text-small font-weight-semibold">¿Posee una cuenta? </span><a th:href="@{/login}" class="text-black text-small">Iniciar Sesión</a>
+                </div>
+            </form>
+            </div>
+            
+            <p class="footer-text text-center">copyright © 2018 El Salvador. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/vendors/js/vendor.bundle.addons.js"></script>
+      	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script>
+	  $.validate({
+	    lang: 'es'
+	  });
+	</script>
+</body>
+
+</html>

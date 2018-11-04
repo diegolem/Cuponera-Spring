@@ -11,6 +11,9 @@ public class PricesPromotionValidator implements ConstraintValidator<PricesPromo
  
     @Override
     public boolean isValid(Promotions promotion, ConstraintValidatorContext context) {
-        return promotion.getRegularPrice().compareTo(promotion.getOfertPrice()) < 0;
+    	if(promotion.getRegularPrice() !=  null && promotion.getOfertPrice() != null) {
+    		return promotion.getRegularPrice().compareTo(promotion.getOfertPrice()) < 0;
+    	}
+    	return false;
     }
 }

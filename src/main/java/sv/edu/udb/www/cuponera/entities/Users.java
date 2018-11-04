@@ -22,7 +22,11 @@ import java.util.Set;
 @Table(name="user", catalog="cuponera")
 public class Users implements java.io.Serializable{
 	
-	@Positive
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// @Positive
 	private int id;
 	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un nombre correcto")
 	@NotBlank(message="El nombre del usuario es obligatorio")
@@ -33,7 +37,7 @@ public class Users implements java.io.Serializable{
 	@Email(message="Ingrese un correo correcto")
 	@NotBlank(message="El correo es obligatorio")
 	private String email;
-	@NotBlank(message="La contraseña es obligatoria")
+	// @NotBlank(message="La contraseña es obligatoria")
 	private String password;
 	private UserTypes userType;
 	@NotBlank(message="El DUI es obligatorio")
@@ -91,7 +95,7 @@ public class Users implements java.io.Serializable{
 	
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
-	@Column(name="id", nullable=false)
+	@Column(name="id", nullable=false, unique = true)
 	public int getId() {
 		return id;
 	}

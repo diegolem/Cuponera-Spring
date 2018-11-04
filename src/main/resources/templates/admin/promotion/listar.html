@@ -51,12 +51,12 @@
 								<button disabled class='btn btn-success'>Aceptar</button>
 							</td>
 							<td th:if="${promotion.state.id == 1}">
-								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-edit'>Detalles</a>
+								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-primary'>Detalles</a>
 								<button class='btn btn-danger btnRejected' th:attr="idpromotion=${promotion.id}">Rechazar</button>
 								<button class='btn btn-success btnApprove' th:attr="idpromotion=${promotion.id}">Aceptar</button>
 							</td>
 							<td th:if="${promotion.state.id != 1 && promotion.state.id != 3}">
-								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-edit'>Detalles</a>
+								<a th:href="@{/promotion/show_admin/{id}(id=${promotion.id})}" role="button" class='btn btn-primary'>Detalles</a>
 								<button disabled class='btn btn-danger'>Rechazar</button>
 								<button disabled class='btn btn-success'>Aceptar</button>
 							</td>

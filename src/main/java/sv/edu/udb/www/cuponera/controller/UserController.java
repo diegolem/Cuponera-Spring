@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,6 +37,8 @@ public class UserController {
 	@Autowired
 	@Qualifier("UserTypesRepository")
 	UserTypesRepository userTypesRepository;
+	@Autowired
+	EmailService mailService = new EmailService();
 	
 	@GetMapping("/list")
 	public String listUsers(Model model) {
@@ -66,36 +69,59 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping("/confirmaccount/{token}")
+	public String confirmClient(@PathVariable("token")String token, Model model) {
+		try {
+			Users user = userRepository.findByIdConfirmation(token);
+			if(user != null) {
+				if(user.getConfirmed() == 0) { //Confirmar
+					byte confirmed = 1;
+					user.setConfirmed(confirmed);
+					userRepository.save(user);
+					
+					model.addAttribute("messageConfirm", "Usuario verificado");
+					return "login";
+				}
+			}
+		}catch(Exception ex) {
+			model.addAttribute("messageError", "Ha ocurrido un error");
+			return "login";
+		}
+		model.addAttribute("messageError", "Ha ocurrido un error");
+		return "login";
+	}
+	
 	@PostMapping("/new_client")
-	public String insertClient(@ModelAttribute("user") Users user, BindingResult result, Model model) {
+	public String insertClient(@Valid @ModelAttribute("user") Users user, BindingResult result, Model model) {
 		try {
 			if(result.hasErrors()) {
-				return "";
+				return "register";
 			}else {
 				// Validar que no exista el correo, DUI o NIT.
-				
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 				String password = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
 				String token = UUID.randomUUID().toString(); // ID de confirmación
 				UserTypes userTypes = userTypesRepository.findByType("client"); // Se obtiene tipo de usuario
 				
-				user.setPassword(password);
+				user.setPassword(passwordEncoder.encode(password));
 				user.setIdConfirmation(token);
 				user.setUserType(userTypes);
-				userRepository.save(user); // Se guarda el usuario
+				byte confirmed = 0;
+				user.setConfirmed(confirmed);
+				userRepository.saveAndFlush(user); // Se guarda el usuario
+
 				
 				String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
-						+ "Contraseña: "+password+""
-						+ "Antes debes verificar tú cuenta" + token;
+						+ "Contraseña: "+password+" <br>"
+						+ "Antes debes verificar tú cuenta <a href='localhost:8080/users/confirmaccount/"+ token +"'> Click Aquí</a>";
 				
-				Mail mail = new Mail(user.getEmail(), "Verifiación de cuenta", message);
-				EmailService mailService = new EmailService();
-				mailService.SendSimpleMessage(mail);
+				mailService.SendSimpleMessage(user.getEmail(), "Verifiación de cuenta", message);
 				
-				return "";
+				return "redirect:/login";
 			}
 		}catch(Exception ex) {
 			model.addAttribute("user", user);
-			return "";
+			return "redirect:/register";
 		}
 	}
 	

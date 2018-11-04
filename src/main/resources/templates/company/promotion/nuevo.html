@@ -38,8 +38,8 @@
 		<div class="row">
 			<form th:action="@{/promotion/new}" enctype="multipart/form-data" method="POST" th:object="${promotion}" class="col-md-10 offset-md-1">
 				<ul th:if="${#fields.hasAnyErrors()}">
-			  <li th:each="err : ${#fields.allErrors()}" th:text="${err}">Input is incorrect</li>
-			</ul>
+			  		<li th:each="err : ${#fields.allErrors()}" th:text="${err}">Input is incorrect</li>
+				</ul>
 				<div class="form-group">
                		<label for="title" class="label">Título</label>
                   	<div class="input-group">

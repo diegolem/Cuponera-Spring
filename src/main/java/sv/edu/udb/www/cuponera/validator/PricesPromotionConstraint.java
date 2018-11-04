@@ -6,6 +6,7 @@ import javax.validation.Payload;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.METHOD, ElementType.FIELD })
 @Constraint(validatedBy = {PricesPromotionValidator.class})
 public @interface PricesPromotionConstraint {
 	String message() default "El precio de oferta debe ser menor al precio regular";
