@@ -1,24 +1,18 @@
 package sv.edu.udb.www.cuponera.controller;
 
-<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-=======
 import java.util.HashMap;
 import java.util.Map;
->>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-<<<<<<< HEAD
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-=======
 import org.springframework.http.MediaType;
->>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -33,17 +27,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-<<<<<<< HEAD
 import org.springframework.web.multipart.MultipartFile;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
-=======
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
->>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import sv.edu.udb.www.cuponera.entities.Promotions;
 import sv.edu.udb.www.cuponera.entities.PromotionsState;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanyTypes;
@@ -68,9 +59,7 @@ public class PromotionsController {
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
 	
-<<<<<<< HEAD
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
-=======
 	@Autowired
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
@@ -178,7 +167,6 @@ public class PromotionsController {
 	}
 	// ////////////////////////////////////////////////////////////////////////////////////////
 	
->>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
