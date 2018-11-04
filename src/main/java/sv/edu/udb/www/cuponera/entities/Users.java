@@ -10,16 +10,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
 
 @Entity
 @Table(name="user", catalog="cuponera")
@@ -29,10 +28,6 @@ public class Users implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// @Positive
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
 	private int id;
 	@Pattern(regexp="^[A-Za-zÑñáéíóú]{1}[A-Za-zÑñáéíóú ]*$",message="Ingrese un nombre correcto")
 	@NotBlank(message="El nombre del usuario es obligatorio")
@@ -99,9 +94,9 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = user.getIdConfirmation();
 	}
 	
-	/* @Id
-	@GeneratedValue(strategy=IDENTITY)
-	@Column(name="id", nullable=false, unique = true)*/
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id", nullable=false, unique = true)
 	public int getId() {
 		return id;
 	}
@@ -182,7 +177,7 @@ public class Users implements java.io.Serializable{
 		this.idConfirmation = idConfirmation;
 	}
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="client")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
 	public Set<Sales> getSales() {
 		return sales;
 	}

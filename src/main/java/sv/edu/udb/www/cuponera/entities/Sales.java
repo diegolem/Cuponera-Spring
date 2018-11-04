@@ -12,13 +12,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name="sales", catalog="cuponera")
 public class Sales implements java.io.Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Pattern(regexp="^([a-z]|[A-Z]|[ñÑ]){3}[0-9]{3}[0-9]{7}$",message="El formato del código del cupón no es válido")
 	@NotNull(message="El codigo del cupon es obligatorio")
 	private String couponCode;
@@ -57,7 +60,7 @@ public class Sales implements java.io.Serializable{
 		this.promotion = promotion;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="client_id", nullable=false)
 	public Users getClient() {
 		return client;

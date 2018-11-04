@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -38,14 +39,14 @@ public class SalesController {
 	@Qualifier("UsersRepository")
 	UsersRepository usersRepository;
 	
-	@Autowired
-	private ServletContext servletContext; 
 	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@GetMapping("/index")
 	public String indexClientSales() {
 		return "client/index";		
 	}
 	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@GetMapping("/list")
 	public String listSales(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -54,6 +55,7 @@ public class SalesController {
 		return "client/sales/listar";
 	}
 	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@GetMapping("/new")
 	public String newSales(Model model) {
 		model.addAttribute("sales", new Sales());
@@ -61,6 +63,7 @@ public class SalesController {
 		return "client/sales/nuevo";
 	}
 	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@PostMapping("/new")
 	public String insertSales(@Valid @ModelAttribute("sales") Sales sales,
 			BindingResult result, Model model) {
@@ -106,6 +109,7 @@ public class SalesController {
 		}
 	}
 	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@DeleteMapping("/delete/{id}")
 	public String deleteSales(@PathVariable("id")String id) {
 		Optional<Sales> sales = salesRepository.findById(id);
