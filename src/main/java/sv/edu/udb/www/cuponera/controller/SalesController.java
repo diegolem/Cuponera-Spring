@@ -1,7 +1,9 @@
 package sv.edu.udb.www.cuponera.controller;
 
+import java.util.Date;
 import java.util.Optional;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class SalesController {
 	@Qualifier("UsersRepository")
 	UsersRepository usersRepository;
 	
+	@Autowired
+	private ServletContext servletContext; 
+	
 	@GetMapping("/index")
 	public String indexClientSales() {
 		return "client/index";		
@@ -52,7 +57,8 @@ public class SalesController {
 	@GetMapping("/new")
 	public String newSales(Model model) {
 		model.addAttribute("sales", new Sales());
-		return "sales/nuevo";
+		model.addAttribute("listPromotion", salesRepository.listPromotionsAvailable());
+		return "client/sales/nuevo";
 	}
 	
 	@PostMapping("/new")
@@ -68,7 +74,7 @@ public class SalesController {
 			}
 		}catch(Exception ex) {
 			model.addAttribute("sales",sales);
-			return "sales/nuevo";			
+			return "client/sales/nuevo";			
 		}
 	}
 	
@@ -110,5 +116,4 @@ public class SalesController {
 			return "redirect:/client/sales/list";
 		}
 	}
-	
 }

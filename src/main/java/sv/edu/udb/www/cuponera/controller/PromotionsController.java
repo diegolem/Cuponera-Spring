@@ -1,15 +1,24 @@
 package sv.edu.udb.www.cuponera.controller;
 
+<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+=======
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+<<<<<<< HEAD
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+=======
+import org.springframework.http.MediaType;
+>>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,10 +33,21 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+<<<<<<< HEAD
 import org.springframework.web.multipart.MultipartFile;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
+=======
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sv.edu.udb.www.cuponera.entities.CompanyTypes;
+>>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 import sv.edu.udb.www.cuponera.entities.Promotions;
+import sv.edu.udb.www.cuponera.entities.PromotionsState;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanyTypes;
+import sv.edu.udb.www.cuponera.entities.simple.SimplePromotions;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionStateRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
@@ -48,7 +68,117 @@ public class PromotionsController {
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
 	
+<<<<<<< HEAD
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
+=======
+	@Autowired
+	@Qualifier("PromotionStateRepository")
+	PromotionStateRepository promotionStateRepository;
+	
+	// /////////////////////////////////////////////////////////////////////////////////////////
+	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String allTypes() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonInString = mapper.writeValueAsString(SimplePromotions.Parse(this.promotionRepository.findAll()));
+		
+		
+		return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getLocalizedMessage();
+		}
+	}
+	
+	@PutMapping("/approve/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			Optional<Promotions> promotion = this.promotionRepository.findById(id);
+			
+			if	(promotion.isPresent()) {
+				
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(2);
+				
+				if (promotionState.isPresent()) {
+					promotion.get().setState(promotionState.get());
+					
+					
+					this.promotionRepository.saveAndFlush(promotion.get());
+					
+					data.put("state", true);
+					data.put("error", "Se ha aceptado la promocion");
+				} else {
+					data.put("state", false);
+					data.put("error", "El estado no existe");
+				}
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "La promocion no existe");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
+	@PutMapping("/reject/{id}")
+	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("reject") String reject) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			Optional<Promotions> promotion = this.promotionRepository.findById(id);
+			
+			if	(promotion.isPresent()) {
+				
+				Optional<PromotionsState> promotionState = this.promotionStateRepository.findById(3);
+				
+				if (promotionState.isPresent()) {
+					promotion.get().setState(promotionState.get());
+					promotion.get().setRejectedDescription(reject);
+					
+					this.promotionRepository.saveAndFlush(promotion.get());
+					
+					data.put("state", true);
+					data.put("error", "Se ha aceptado la promocion");
+				} else {
+					data.put("state", false);
+					data.put("error", "El estado no existe");
+				}
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "La promocion no existe");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	// ////////////////////////////////////////////////////////////////////////////////////////
+	
+>>>>>>> c5eacfad3bf578c07ce88a092d1a43fa93640788
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

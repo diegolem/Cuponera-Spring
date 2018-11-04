@@ -23,8 +23,8 @@ import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import sv.edu.udb.www.cuponera.validator.DatesPromotionConstraint;
-import sv.edu.udb.www.cuponera.validator.PricesPromotionConstraint;
+// import sv.edu.udb.www.cuponera.validator.DatesPromotionConstraint;
+// import sv.edu.udb.www.cuponera.validator.PricesPromotionConstraint;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -65,7 +65,7 @@ public class Promotions implements java.io.Serializable{
 	@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de finalización es obligatoria")
-	@DatesPromotionConstraint(initDate = "initDate", endDate ="endDate")
+	 // @DatesPromotionConstraint(initDate = "initDate", endDate ="endDate")
 	private Date endDate;
 	@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -76,7 +76,7 @@ public class Promotions implements java.io.Serializable{
 	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String description;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
+	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-%]*$",message="Ingrese caracteres válidos en los detalles")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String otherDetails;
 	// @Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")
@@ -206,10 +206,10 @@ public class Promotions implements java.io.Serializable{
 	}
 
 	@Column(name="limit_cant", nullable=false)
-	public int getLimitCant() {
+	public long getLimitCant() {
 		return limitCant;
 	}
-	public void setLimitCant(int limitCant) {
+	public void setLimitCant(long limitCant) {
 		this.limitCant = limitCant;
 	}
 

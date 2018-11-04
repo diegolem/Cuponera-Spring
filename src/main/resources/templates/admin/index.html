@@ -6,59 +6,26 @@
 <body th:fragment="adminBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
 
 	<!-- // Menu lateral //////////////////////////////////////////////// -->
-	<li class="nav-item option_list">
-	    <a class="nav-link" data-toggle="collapse" href="#company" aria-expanded="false" aria-controls="company">
-      		<i class="menu-icon fa fa-building"></i>
-	      	<span class="menu-title">Empresas</span>
-	      	<i class="menu-arrow"></i>
-	    </a>
-	    <div class="collapse" id="company">
-	      	<ul class="nav flex-column sub-menu">
-	        	<li class="nav-item">
-	          		<a class="nav-link" th:href="@{/company/}">Registrar</a>
-	        	</li>
-	        	<li class="nav-item">
-	          		<a class="nav-link" href="#">Buscar</a>
-	        	</li>
-	      	</ul>
-    	</div>
-  	</li>
   	<li class="nav-item option_list">
-	    <a class="nav-link" data-toggle="collapse" href="#category" aria-expanded="false" aria-controls="category">
-      		<i class="menu-icon fa fa-folder"></i>
-	      	<span class="menu-title">Rubros</span>
-	      	<i class="menu-arrow"></i>
-	    </a>
-	    <div class="collapse" id="category">
-	      	<ul class="nav flex-column sub-menu">
-	        	<li class="nav-item">
-	          		<a class="nav-link" href="#">Registrar</a>
-	        	</li>
-	        	<li class="nav-item">
-	          		<a class="nav-link" href="#">Buscar</a>
-	        	</li>
-	      	</ul>
-    	</div>
-  	</li>
+       <a class="nav-link" th:href="@{/admin/companies/}">
+         <i class="menu-icon fa fa-building"></i>
+         <span class="menu-title">Empresas</span>
+       </a>
+    </li>
   	<li class="nav-item option_list">
-	    <a class="nav-link" data-toggle="collapse" href="#user" aria-expanded="false" aria-controls="user">
-      		<i class="menu-icon fa fa-users"></i>
-	      	<span class="menu-title">Usuarios</span>
-	      	<i class="menu-arrow"></i>
-	    </a>
-	    <div class="collapse" id="user">
-	      	<ul class="nav flex-column sub-menu">
-	        	<li class="nav-item">
-	          		<a class="nav-link" href="#">Registrar</a>
-	        	</li>
-	        	<li class="nav-item">
-	          		<a class="nav-link" href="#">Buscar</a>
-	        	</li>
-	      	</ul>
-    	</div>
-  	</li>
+       <a class="nav-link" th:href="@{/admin/company_type/}">
+         <i class="menu-icon fa fa-folder"></i>
+         <span class="menu-title">Rubros</span>
+       </a>
+    </li>
   	<li class="nav-item option_list">
-       <a class="nav-link" href="pages/charts/chartjs.html">
+       <a class="nav-link" th:href="@{/admin/users/}">
+         <i class="menu-icon fa fa-users"></i>
+         <span class="menu-title">usuarios</span>
+       </a>
+    </li>
+  	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/admin/promotions/}">
          <i class="menu-icon fa fa-money"></i>
          <span class="menu-title">Promociones</span>
        </a>

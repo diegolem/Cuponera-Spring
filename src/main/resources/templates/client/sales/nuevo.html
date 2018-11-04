@@ -1,22 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" ></head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
-	<li class="nav-item option_list">
-	    <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	      <i class="menu-icon mdi mdi-backup-restore"></i>
-	      <span class="menu-title">Form elements</span>
-	    </a>
-     </li>
-     <li class="nav-item option_list">
-        <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	         <i class="menu-icon mdi mdi-backup-restore"></i>
-	         <span class="menu-title">Form elements</span>
-        </a>
-      </li>
-	
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Employee', ~{:: link})"></head>
+<body
+	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+	<li class="nav-item option_list"><a class="nav-link"
+		href="/client/"> <i class="menu-icon mdi mdi-home"></i> <span
+			class="menu-title">Home</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="/sales/list"> <i class="menu-icon mdi mdi-ticket-account"></i>
+			<span class="menu-title">Listado de cupones</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link" href="">
+			<i class="menu-icon mdi mdi-wallet-giftcard"></i> <span
+			class="menu-title">Comprar promociones</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="../../pages/forms/basic_elements.html"> <i
+			class="menu-icon mdi mdi-settings"></i> <span class="menu-title">Configurar</span>
+	</a></li>
+	<li class="nav-item option_list"><a class="nav-link"
+		href="/logout"> <i class="menu-icon mdi mdi-exit-to-app"></i> <span
+			class="menu-title">Cerrar sesion</span>
+	</a></li>
 	<section id="container">
-		Modo cliente
+
+		<div class="card-group">
+			<div class="row">
+				<div class="card col-sm-4" style="width:500px;heigth:400px;" th:each="promotion : ${listPromotion}"
+					th:if="${promotion.state.id == 2}">
+					<img class="card-img-top"
+						th:src="@{${'/promotions_images/' + promotion.image}}"
+						alt="${promotion.title}">
+					<div class="card-body">
+
+						<h5 th:inline="text" class="card-title">
+						<span th:text="${promotion.title}"></span> - Precio: 
+						<span th:text="${promotion.ofertPrice}"></span>
+						</h5>
+
+						<p class="card-text" th:utext="${promotion.description}"></p>
+					</div>
+					<div class="card-footer">
+						<p class="text-muted">
+							Cupones disponibles: <small class="text-muted"
+								th:utext="${promotion.couponsAvailable}"> </small> |
+						</p>
+						<p class="text-muted">
+							Oferta disponible hasta : <small class="text-muted"
+								th:utext="${promotion.endDate}"> </small> |
+						</p>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
 	</section>
+	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+		});
+	</script>
 </body>
-</html>>
+</html>
