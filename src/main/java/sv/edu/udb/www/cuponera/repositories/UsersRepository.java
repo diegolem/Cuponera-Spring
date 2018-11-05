@@ -40,4 +40,7 @@ public interface UsersRepository extends JpaRepository<Users, Integer>{
 	
 	@Query("select u from Users u where u.userType.id != 1")
 	public abstract List<Users> allAdmin();
+	
+	@Query("select count(u) > 0 from AllUsers u where u.email = :email")
+	public boolean existsEmailOnAllTable(@Param("email") String email);
 }

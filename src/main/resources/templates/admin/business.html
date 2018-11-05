@@ -551,12 +551,12 @@
 					  		$form.trigger("reset");				
 						  	alertify.success("La empresa ha sido registrada!");
 					  	} else {
-					  		alertify.error("No se ha podido registrar la empresa");
+					  		alertify.error("Error: " + data.error);
 					  	}
 					  
 				  },
 				  error: function(jqXHR, textStatus, errorThrown) {
-					  alertify.error("Error: " + errorThrown);
+					  alertify.error("No se ha podido registrar la empresa");
 				  }
 				});
 				

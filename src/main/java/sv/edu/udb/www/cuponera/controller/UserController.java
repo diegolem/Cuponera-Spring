@@ -82,9 +82,12 @@ public class UserController {
 		
 			if( !this.userRepository.existsDui(dui) ) {
 				if (!this.userRepository.existsNit(nit)) {
-					if (!this.userRepository.existsEmail(email)) {
+					if (!this.userRepository.existsEmailOnAllTable(email)) {
 						Users user = new Users();
 						Optional<UserTypes> userType = this.userTypesRepository.findById(type);
+						
+						BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+						String password = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
 						
 						user.setId(0);
 						user.setName(name);
@@ -95,13 +98,19 @@ public class UserController {
 						user.setNit(nit);
 						user.setConfirmed((byte)1);
 						user.setIdConfirmation("");
-						String pass = Password.RandomPassword(6);
 						
-						user.setPassword(pass);
+						user.setPassword(passwordEncoder.encode(password));
 						
 						this.userRepository.saveAndFlush(user);
 						
 						data.put("state", true);
+						
+						String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
+								+ "Contraseña: "+password+" <br>"
+								+ "¡En hora buena nuevo administrador! acaba de ser registrado, debe <a href='localhost:8080/login'>Iniciar Sesion</a>";
+						
+						mailService.SendSimpleMessage(user.getEmail(), "Bienvenido a la cuponera", message);
+						
 					} else {
 						data.put("state", false);
 						data.put("error", "Ya existe un E-Mail ha registrar");
@@ -184,6 +193,86 @@ public class UserController {
 		}
 	}
 
+	@PutMapping("/update/account")
+	public @ResponseBody String updateUser(@RequestParam("name") String name, @RequestParam("lastname") String lastname, @RequestParam("email") String email, @RequestParam("dui") String dui, @RequestParam("nit") String nit, @RequestParam("passnew") String passnew, @RequestParam("passnew2") String passnew2, @RequestParam("pass") String pass, @RequestParam("pass2") String pass2) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Users user = this.userRepository.findByEmail(auth.getName());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			if( !this.userRepository.existsDui(dui, user.getId()) ) {
+				if (!this.userRepository.existsNit(nit, user.getId())) {
+					if ( !this.userRepository.existsEmailOnAllTable(email) || !this.userRepository.existsEmail(email, user.getId())) {
+						BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+						
+						if (pass.equals(pass2) && !pass.trim().equals("")) {
+							if(passwordEncoder.matches(pass, user.getPassword())) {
+								
+								if (passnew.equals(passnew2)) {
+									
+									Optional<Users> newUser = this.userRepository.findById(user.getId());
+									
+									if (!passnew.trim().equals("")) newUser.get().setPassword(passwordEncoder.encode(passnew));
+									
+									newUser.get().setName(name);
+									newUser.get().setLastName(lastname);
+									newUser.get().setEmail(email);
+									newUser.get().setDui(dui);
+									newUser.get().setNit(nit);
+									
+									this.userRepository.saveAndFlush(newUser.get());
+									
+									user.setName(name);
+									user.setLastName(lastname);
+									user.setEmail(email);
+									user.setDui(dui);
+									user.setNit(nit);
+									user.setPassword(newUser.get().getPassword());
+									
+									data.put("state", true);
+									
+								} else {
+									data.put("state", false);
+									data.put("error", "Las nuevas claves no coinciden");
+								}
+								
+							} else {
+								data.put("state", false);
+								data.put("error", "Las clave no es la misma del usuario.");
+							}
+						} else {
+							data.put("state", false);
+							data.put("error", "Las claves no coinciden");
+						}
+					} else {
+						data.put("state", false);
+						data.put("error", "Ya existe un E-Mail registrado");
+					}
+					
+				} else {
+					data.put("state", false);
+					data.put("error", "Ya existe el nit ha registrar");
+				}
+			} else {
+				data.put("state", false);
+				data.put("error", "Ya existe un dui registrado");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
 	@DeleteMapping("/remove/{id}")
 	public @ResponseBody String removeUser(@PathVariable("id")int id) {
 		ObjectMapper mapper = new ObjectMapper();

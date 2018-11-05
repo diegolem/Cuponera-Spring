@@ -23,6 +23,7 @@ import sv.edu.udb.www.cuponera.entities.Sales;
 import sv.edu.udb.www.cuponera.entities.SalesState;
 import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleSales;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleUsers;
 import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
 import sv.edu.udb.www.cuponera.repositories.SalesRepository;
 import sv.edu.udb.www.cuponera.repositories.SalesStateRepository;
@@ -98,18 +99,17 @@ public class EmployeesRestController {
 			if( this.userRepository.existsDuiOfClient(dui) ) {
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 				
-				/*
 				Employees employee = this.employeesRepository.findByEmail(auth.getName());
 				String idCompany =  employee.getCompany().getId();
-				*/
 				
 				Users client = this.userRepository.findByDui(dui);
 				
 				int idUser = client.getId();
 				
 				data.put("state", true);
-				data.put("sales", SimpleSales.Parse(this.salesRepository.findByIdClient(idUser, "ABC123")));
-				data.put("history", SimpleSales.Parse(this.salesRepository.findByIdClientHistory(idUser, "ABC123")));
+				data.put("client", new SimpleUsers(client));
+				data.put("sales", SimpleSales.Parse(this.salesRepository.findByIdClient(idUser, idCompany)));
+				data.put("history", SimpleSales.Parse(this.salesRepository.findByIdClientHistory(idUser, idCompany)));
 				
 			} else {
 				data.put("state", false);

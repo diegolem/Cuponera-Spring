@@ -3,14 +3,17 @@ package sv.edu.udb.www.cuponera.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,11 +32,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
+import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 //import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
+import sv.edu.udb.www.cuponera.service.EmailService;
 import sv.edu.udb.www.cuponera.utils.Password;
 
 
@@ -53,13 +59,15 @@ public class CompanyController {
 	@Qualifier("CompanyTypesRepository")
 	CompanyTypesRepository companyTypesRepository;
 	
+	@Autowired
+	EmailService mailService = new EmailService();
+	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String retrieveAllStudents() {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		
-		//String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
-		String jsonInString = "";
+		String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
 		
 		return jsonInString;
 		
@@ -76,22 +84,37 @@ public class CompanyController {
 		
 		try {
 		
-			Companies company = new Companies();
-			Optional<CompanyTypes> companyType = this.companyTypesRepository.findById(type);
-			
-			company.setId(code);
-			company.setName(name);
-			company.setCompanyType(companyType.get());
-			company.setAddress(address);
-			company.setPctComission(pct_comission);
-			company.setContactName(contact_name);
-			company.setTelephone(phone);
-			company.setEmail(email);
-			company.setPassword(Password.RandomPassword(6));
-			
-			this.companiesRepository.saveAndFlush(company);
-			
-			data.put("state", true);
+			if (!this.usersRepository.existsEmailOnAllTable(email)) {
+				Companies company = new Companies();
+				Optional<CompanyTypes> companyType = this.companyTypesRepository.findById(type);
+				
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				String password = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
+				
+				company.setId(code);
+				company.setName(name);
+				company.setCompanyType(companyType.get());
+				company.setAddress(address);
+				company.setPctComission(pct_comission);
+				company.setContactName(contact_name);
+				company.setTelephone(phone);
+				company.setEmail(email);
+				company.setPassword(passwordEncoder.encode(password));
+				
+				this.companiesRepository.saveAndFlush(company);
+				
+				data.put("state", true);
+
+				
+				String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
+						+ "Contraseña: "+password+" <br>"
+						+ "Su empresa acaba de ser registrada, debe <a href='localhost:8080/login'>Iniciar Sesion</a>";
+				
+				mailService.SendSimpleMessage(company.getEmail(), "Bienvenido a la cuponera", message);
+			} else {
+				data.put("state", false);
+				data.put("error", "El correo ya existe");
+			}
 			
 		} catch(Exception error) {
 			data.put("state", false);
