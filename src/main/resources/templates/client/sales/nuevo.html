@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})"></head>
-<body
-	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+<head th:insert="index :: headPage('Cliente', ~{:: link})"></head>
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list"><a class="nav-link"
 		href="/client/"> <i class="menu-icon mdi mdi-home"></i> <span
 			class="menu-title">Home</span>
@@ -17,10 +16,6 @@
 			class="menu-title">Comprar promociones</span>
 	</a></li>
 	<li class="nav-item option_list"><a class="nav-link"
-		href="../../pages/forms/basic_elements.html"> <i
-			class="menu-icon mdi mdi-settings"></i> <span class="menu-title">Configurar</span>
-	</a></li>
-	<li class="nav-item option_list"><a class="nav-link"
 		href="/logout"> <i class="menu-icon mdi mdi-exit-to-app"></i> <span
 			class="menu-title">Cerrar sesion</span>
 	</a></li>
@@ -28,34 +23,42 @@
 
 		<div class="card-group">
 			<div class="row">
-				<div class="card col-sm-4" style="width:500px;heigth:400px;" th:each="promotion : ${listPromotion}"
+				<div class="card border-dark" style="width:333px;heigth:400px; margin: 0.3%;" th:each="promotion : ${listPromotion.content}"
 					th:if="${promotion.state.id == 2}">
-					<img class="card-img-top"
+					<img class="card-img-top" style="width:325px;heigth:350px;"
 						th:src="@{${'/promotions_images/' + promotion.image}}"
 						alt="${promotion.title}">
-					<div class="card-body">
+					<div class="card-body text-info">
 
-						<h5 th:inline="text" class="card-title">
-						<span th:text="${promotion.title}"></span> - Precio: 
-						<span th:text="${promotion.ofertPrice}"></span>
-						</h5>
-
-						<p class="card-text" th:utext="${promotion.description}"></p>
+						<h4 th:inline="text" class="card-title">
+						<span th:text="${promotion.title}" class="badge-light badge-secondary">Info</span>
+						</h4>
+						
+						<p class="card-text">
+							<b>Oferta disponible hasta :</b> <span class="text-dark"
+								th:utext="${promotion.endDate}"> </span> |
+						</p>
+						
+						<a th:href="@{${'/sales/buy/' + promotion.id}}" class="btn btn-dark btn-fw btn-block">
+						<i class="fa fa-shopping-cart"></i>
+						Ver oferta
+						</a>
+                          
 					</div>
 					<div class="card-footer">
-						<p class="text-muted">
-							Cupones disponibles: <small class="text-muted"
-								th:utext="${promotion.couponsAvailable}"> </small> |
-						</p>
-						<p class="text-muted">
-							Oferta disponible hasta : <small class="text-muted"
-								th:utext="${promotion.endDate}"> </small> |
+						<p class="text-dark">
+							<b>Cupones disponibles: <span class="text-dark"
+								th:utext="${promotion.couponsAvailable}"> </span></b>
 						</p>
 					</div>
-
 				</div>
 			</div>
-
+		</div>
+		<div th:if="${listPromotion.totalPages > 0}" class="pagination"
+		th:each="pageNumber : ${pageNumbers}">
+			<a th:href="@{new(size=${listPromotion.size}, page=${pageNumber})}"
+			th:text=${pageNumber}
+			th:class="${pageNumber==listPromotion.number + 1} ? active"></a>
 		</div>
 	</section>
 	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>

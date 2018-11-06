@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Client', ~{:: link})" ></head>
+<head th:insert="index :: headPage('Cliente', ~{:: link})" ></head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list">
 	    <a class="nav-link" href="/client/">
@@ -18,12 +18,6 @@
         <a class="nav-link" href="/sales/new">
 	         <i class="menu-icon mdi mdi-wallet-giftcard"></i>
 	         <span class="menu-title">Comprar promociones</span>
-        </a>
-      </li>
-      <li class="nav-item option_list">
-        <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	         <i class="menu-icon mdi mdi-settings"></i>
-	         <span class="menu-title">Configurar</span>
         </a>
       </li>
       <li class="nav-item option_list">
