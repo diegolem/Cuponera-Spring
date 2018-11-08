@@ -1,13 +1,16 @@
 package sv.edu.udb.www.cuponera.controller;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,16 +24,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import sv.edu.udb.www.cuponera.entities.Promotions;
 import sv.edu.udb.www.cuponera.entities.Sales;
 import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.repositories.SalesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
+import sv.edu.udb.www.cuponera.service.SalesService;
 
 @Controller
 @RequestMapping(value= {"client/sales","/sales"})
 public class SalesController {
 
+	private static int currentPage = 1;
+	private static int pageSize = 9;
+	
 	@Autowired
 	@Qualifier("SalesRepository")
 	SalesRepository salesRepository;
@@ -39,6 +48,8 @@ public class SalesController {
 	@Qualifier("UsersRepository")
 	UsersRepository usersRepository;
 	
+	@Autowired
+	SalesService salesService;	
 	
 	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@GetMapping("/index")
@@ -57,9 +68,22 @@ public class SalesController {
 	
 	@PreAuthorize("hasAnyAuthority('CLIENT')")
 	@GetMapping("/new")
-	public String newSales(Model model) {
-		model.addAttribute("sales", new Sales());
-		model.addAttribute("listPromotion", salesRepository.listPromotionsAvailable());
+	public String newSales(Model model,
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("size") Optional<Integer> size) {
+		page.ifPresent(p -> currentPage = p);
+		size.ifPresent(s -> pageSize = s);
+		
+		Page<Promotions> promoPage = salesService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+		model.addAttribute("listPromotion", promoPage);
+
+		int totalPages = promoPage.getTotalPages();
+		if(totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+			
+		}
+		//model.addAttribute("listPromotion", salesRepository.listPromotionsAvailable());
 		return "client/sales/nuevo";
 	}
 	
