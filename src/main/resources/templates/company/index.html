@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" ></head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+<head th:fragment="companyHead" th:insert="index :: headPage('Employee', ~{:: link})" ></head>
+<body th:fragment="companyBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
+	
+	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/company/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
+	
 	<li class="nav-item option_list">
 	    <a class="nav-link" href="../../pages/forms/basic_elements.html">
 	      <i class="menu-icon mdi mdi-backup-restore"></i>
@@ -16,7 +24,12 @@
       </li>
 	
 	<section id="container">
-		Modo Empresa
+		<div th:replace="${data} ?: _"></div>
 	</section>
+	
+	<span id="script">
+		<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+		<th:block th:replace="${dataScript} ?: _" />
+	</span>
 </body>
 </html>

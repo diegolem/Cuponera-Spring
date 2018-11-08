@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Employee', ~{:: link})" >
+	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
+</head>
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: article}, ~{:: .menu_option}, ~{:: script})">
+	
+	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/employee/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
+    
+	<article class="d-flex justify-content-between mb-2">
+	    <h3>Configuracion de cuenta</h3>
+     </article>
+
+	<article>
+		<div class="row">
+			<div class="col-12">
+            	<div class="card">
+              		<div class="card-body">
+	                	<h4 class="card-title" th:text="${userType}"></h4>
+	                	<p class="card-description" th:text="${user.name + ' ' + user.lastName }"></p>
+                		<form id="frmConfig" class="forms-sample">
+                			<div class="form-row">
+                				<div class="form-group col-12 col-md-6">
+		                    		<label for="txtName">Nombre</label>
+		                    		<input th:value="${user.name}" type="text" name="name" class="form-control" id="txtName" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+		                  		</div>
+		                  		<div class="form-group col-12 col-md-6">
+				                    <label for="txtLastName">Apellido</label>
+				                    <input th:value="${user.lastName}" type="text" name="lastname" class="form-control" id="txtLastName" data-validation="custom" data-validation-regexp="^([a-zA-Z ]+)$">
+			                  	</div>
+                			</div>
+                			
+                			<div class="form-group">
+	                    		<label for="txtEmail">E-Mail</label>
+	                    		<input th:value="${user.email}" type="email" name="email" class="form-control" id="txtEmail" placeholder="xxxxx@XXX.com" data-validation="email" >
+	                  		</div>
+	                  		
+	                  		<div class="form-row">
+                				<div class="form-group col-12 col-md-6">
+		                    		<label for="txtNewPass">Clave nueva</label>
+		                    		<input type="password" name="passnew" class="form-control" id="txtNewPass" >
+		                  		</div>
+		                  		<div class="form-group col-12 col-md-6">
+				                    <label for="txtNewPass2">Confirmar clave nueva</label>
+				                    <input type="password" name="passnew2" class="form-control" id="txtNewPass2" data-validation="confirmation" data-validation-confirm="passnew" >
+			                  	</div>
+                			</div>
+	                  		
+	                  		<hr>
+	                  		
+	                  		<div class="form-row">
+                				<div class="form-group col-12 col-md-6">
+		                    		<label for="txtPass">Clave actual</label>
+		                    		<input type="password" name="pass" class="form-control" id="txtPass" required>
+		                  		</div>
+		                  		<div class="form-group col-12 col-md-6">
+				                    <label for="txtPass2">Confirmar clave actual</label>
+				                    <input type="password" name="pass2" class="form-control" id="txtPass2" data-validation="confirmation" data-validation-confirm="pass" required>
+			                  	</div>
+                			</div>
+                			
+                			<div class="form-group">
+               					<div class="btn-group" role="group" aria-label="Basic example">
+							  		<button type="reset" class="btn btn-outline-primary">Reset</button>
+							  		<button type="submit" class="btn btn-outline-success">Aceptar</button>
+								</div>
+                			</div>
+                		</form>
+              		</div>
+            	</div>
+          	</div>
+		</div>
+	</article>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready( function () {
+			$.validate({
+			    lang: 'es',
+			    modules : 'security'
+		  	});
+			
+			$("#frmConfig").submit(function(event){
+				let form = $(this);
+				
+				$.confirm({
+			        title: "Configurar cuenta",
+			        content: 'Esta seguro que desea realizar la modificacion?',
+			        buttons: {
+			            confirm: function () {
+			            	
+			            	$.ajax({
+			  				  	url: "/employee/update/account",
+			  				  	data: form.serialize(),
+			  				  	dataType: "json",
+			  				  	method: "PUT",
+			  				  	success: function(data){
+		  					  		if (data.state) {
+		  					  			location.reload();
+			  					  	} else {
+			  					  		alertify.error("Error: " + data.error);
+			  					  	}  
+			  				  	},
+			  				  	error: function(jqXHR, textStatus, errorThrown) {
+		  					  		alertify.error("No se ha podido cambiar los datos de la cuenta");
+			  				  	}
+	  						});
+       						
+			            },
+			            cancel: function () {}
+			        }
+			    });
+				
+				event.preventDefault();
+			});
+		});
+	</script>
+
+</body>
+</html>

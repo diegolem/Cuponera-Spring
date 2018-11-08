@@ -44,8 +44,9 @@
         
         <ul th:switch="${user != null}" class="navbar-nav navbar-nav-right">
           <li th:case="true" class="nav-item dropdown d-none d-xl-inline-block">
-            <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="profile-text" th:text="${user.name + ' ' + user.lastName }"></span>
+            <a th:switch='${userType.equals("empresa")}' class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+            	<span th:case="true" class="profile-text" th:text="${user.name}"></span>
+              	<span th:case="*" class="profile-text" th:text='${user.name + " " + user.lastName }'></span>
               <img class="img-xs rounded-circle" src="/images/settings.png" alt="Profile image">
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
@@ -75,7 +76,11 @@
                   <img src="/images/ghost.png" alt="profile image">
                 </div>
                 <div class="text-wrapper">
-                  <p class="profile-name" th:text="${user.name + ' ' + user.lastName }"></p>
+                  
+                  <span th:switch='${userType.equals("empresa")}'>
+                  	<p th:case="true" class="profile-name" th:text='${user.name}'></p>
+                  	<p th:case="*" class="profile-name" th:text='${user.name + " " + user.lastName }'></p>
+                  </span>
                   <div>
                     <small class="designation text-muted" th:text="${userType}"></small>
                     <span class="status-indicator online"></span>
