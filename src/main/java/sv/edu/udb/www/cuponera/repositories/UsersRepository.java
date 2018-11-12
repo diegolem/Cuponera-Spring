@@ -2,6 +2,7 @@ package sv.edu.udb.www.cuponera.repositories;
 
 import org.springframework.stereotype.Repository;
 
+import sv.edu.udb.www.cuponera.entities.AllUsers;
 import sv.edu.udb.www.cuponera.entities.Users;
 
 import java.util.List;
@@ -43,4 +44,7 @@ public interface UsersRepository extends JpaRepository<Users, Integer>{
 	
 	@Query("select count(u) > 0 from AllUsers u where u.email = :email")
 	public boolean existsEmailOnAllTable(@Param("email") String email);
+	
+	@Query("select u from AllUsers u where u.email = :email")
+	public AllUsers findAllUser(@Param("email") String email);
 }

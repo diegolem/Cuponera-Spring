@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/client/configuration/").hasAuthority("CLIENT")
 				.antMatchers("/company/configuration/").hasAuthority("COMPANY")
 				.antMatchers("/employee/configuration/").hasAuthority("EMPLOYEE")
+				.antMatchers("/recover_password").anonymous()
 				.and()
 			.formLogin()
 				.loginPage("/login")

@@ -32,6 +32,11 @@ public class IndexController {
 	@Qualifier("CompaniesRepository")
 	CompaniesRepository companiesRepository;
 	
+	@RequestMapping(value = "/recover_password", method = RequestMethod.GET)
+	public String RecoverPassword(Model model) {
+		return "/recoverPassword";
+	}
+	
 	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String index() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

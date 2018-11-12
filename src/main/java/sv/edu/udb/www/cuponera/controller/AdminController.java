@@ -57,7 +57,7 @@ public class AdminController {
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("types", this.companyTypesRepository.findAll());
-		
+		model.addAttribute("userType", user.getUserType().getType());
 		return "admin/promotions";
 	}
 	
@@ -76,6 +76,7 @@ public class AdminController {
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("types", this.companyTypesRepository.findAll());
+		model.addAttribute("userType", user.getUserType().getType());
 		return "admin/business";
 	}
 	
@@ -84,7 +85,7 @@ public class AdminController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
-		
+		model.addAttribute("userType", user.getUserType().getType());
 		return "admin/categories";
 	}
 	
@@ -94,6 +95,7 @@ public class AdminController {
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("types", this.userTypesRepository.allWithoutClient());
+		model.addAttribute("userType", user.getUserType().getType());
 		return "admin/users";
 	}
 }

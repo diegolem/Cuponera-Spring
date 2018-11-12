@@ -33,12 +33,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import sv.edu.udb.www.cuponera.service.EmailService;
 import sv.edu.udb.www.cuponera.utils.Mail;
 import sv.edu.udb.www.cuponera.utils.Password;
+import sv.edu.udb.www.cuponera.entities.AllUsers;
 import sv.edu.udb.www.cuponera.entities.Companies;
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
+import sv.edu.udb.www.cuponera.entities.Employees;
 import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 import sv.edu.udb.www.cuponera.entities.simple.SimpleUsers;
+import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
+import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
 import sv.edu.udb.www.cuponera.repositories.UserTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
@@ -54,8 +58,72 @@ public class UserController {
 	UserTypesRepository userTypesRepository;
 	@Autowired
 	EmailService mailService = new EmailService();
-	
+	@Autowired
+	@Qualifier("CompaniesRepository")
+	CompaniesRepository companiesRepository;
+	@Autowired
+	@Qualifier("EmployeesRepository")
+	EmployeesRepository employeesRepository;
 	// /////////////////////////////////////////////////////////////////////////////////////
+	@PostMapping(value = "/exist_mail", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+	public @ResponseBody String existMail(@RequestParam("mail") String mail) {
+		try {
+			
+			Map<String, Object> data = new HashMap<>();
+			
+			if (this.userRepository.existsEmailOnAllTable(mail)) {
+				
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				String pass = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
+				String passnew = passwordEncoder.encode(pass);							
+				
+				AllUsers user = this.userRepository.findAllUser(mail);
+				
+				switch (user.getUserType()) 
+				{
+					case "company":
+						Companies companies = this.companiesRepository.findByEmail(mail);
+						companies.setPassword(passnew);
+						this.companiesRepository.saveAndFlush(companies);
+						break;
+						
+					case "employee":
+						Employees employee = this.employeesRepository.findByEmail(mail);
+						employee.setPassword(passnew);
+						this.employeesRepository.saveAndFlush(employee);
+						break;
+					
+					default:
+						Users confUser = this.userRepository.findByEmail(mail);
+						confUser.setPassword(passnew);
+						this.userRepository.saveAndFlush(confUser);
+						break;
+				}
+				
+				data.put("state", true);
+				
+				String message = "La Cuponera S.A de C.V. le da la bievenida por ese motivo le damos la notificamos que su nueva clave es <br><br>"
+						+ "Contraseña: "+ pass +" <br>"
+						+ "Puede iniciar session en <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"localhost:8080/login\">Iniciar Sesion</a>";
+				
+				mailService.SendSimpleMessage(user.getEmail(), "Bienvenido a la cuponera", message);
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "No existe el correo");
+			}
+			
+			ObjectMapper mapper = new ObjectMapper();
+		
+			String jsonInString = mapper.writeValueAsString(data);
+		
+		
+			return jsonInString;
+		
+		} catch(Exception error) {
+			return error.getLocalizedMessage();
+		}
+	}
 	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String retrieveAllStudents() {
