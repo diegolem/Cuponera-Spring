@@ -3,14 +3,17 @@ package sv.edu.udb.www.cuponera.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,11 +32,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
 import sv.edu.udb.www.cuponera.entities.CompanyTypes;
+import sv.edu.udb.www.cuponera.entities.UserTypes;
 import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 //import sv.edu.udb.www.cuponera.entities.simple.SimpleCompanies;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.CompanyTypesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
+import sv.edu.udb.www.cuponera.service.CompanyDetailsImpl;
+import sv.edu.udb.www.cuponera.service.EmailService;
 import sv.edu.udb.www.cuponera.utils.Password;
 
 
@@ -53,13 +60,96 @@ public class CompanyController {
 	@Qualifier("CompanyTypesRepository")
 	CompanyTypesRepository companyTypesRepository;
 	
+	@Autowired
+	EmailService mailService = new EmailService();
+	
+	@PutMapping("/update/account")
+	public @ResponseBody String updateUser(@RequestParam("name") String name, @RequestParam("contactname") String contactname, @RequestParam("address") String address, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("type") int type, @RequestParam("passnew") String passnew, @RequestParam("passnew2") String passnew2, @RequestParam("pass") String pass, @RequestParam("pass2") String pass2) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies user = this.companiesRepository.findByEmail(auth.getName());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> data = new HashMap<>();
+		
+		try {
+			if( !this.companiesRepository.existsName(name, user.getId()) ) {
+				
+				if ( !this.usersRepository.existsEmailOnAllTable(email) || !this.companiesRepository.existsEmail(email, user.getId())) {
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					
+					if (pass.equals(pass2) && !pass.trim().equals("")) {
+						if(passwordEncoder.matches(pass, user.getPassword())) {
+							
+							if (passnew.equals(passnew2)) {
+								
+								Optional<Companies> newUser = this.companiesRepository.findById(user.getId());
+								Optional<CompanyTypes> types = this.companyTypesRepository.findById(type);
+								
+								if (!passnew.trim().equals("")) newUser.get().setPassword(passwordEncoder.encode(passnew));
+								
+								newUser.get().setName(name);
+								newUser.get().setContactName(contactname);
+								newUser.get().setEmail(email);
+								newUser.get().setAddress(address);
+								newUser.get().setTelephone(phone);
+								newUser.get().setCompanyType(types.get());
+								
+								this.companiesRepository.saveAndFlush(newUser.get());
+								
+								data.put("state", true);
+								
+							} else {
+								data.put("state", false);
+								data.put("error", "Las nuevas claves no coinciden");
+							}
+							
+						} else {
+							data.put("state", false);
+							data.put("error", "Las clave no es la misma del usuario.");
+						}
+					} else {
+						data.put("state", false);
+						data.put("error", "Las claves no coinciden");
+					}
+				} else {
+					data.put("state", false);
+					data.put("error", "Ya existe un E-Mail registrado");
+				}
+					
+			} else {
+				data.put("state", false);
+				data.put("error", "Ya existe un dui registrado");
+			}
+			
+		} catch(Exception error) {
+			data.put("state", false);
+			data.put("error", error.getLocalizedMessage());
+		}
+		
+		try {
+			return mapper.writeValueAsString(data);
+		} catch(Exception error) {
+			return error.getMessage();
+		}
+	}
+	
+	@RequestMapping(value = {"/configuration/"}, method = RequestMethod.GET)
+	public String Configuration(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies user = this.companiesRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("types", this.companyTypesRepository.findAll());
+		model.addAttribute("userType", "empresa");
+		return "company/configuration";
+	}
+	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String retrieveAllStudents() {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
 		
-		//String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
-		String jsonInString = "";
+		String jsonInString = mapper.writeValueAsString(SimpleCompanies.Parse(this.companiesRepository.findAll()));
 		
 		return jsonInString;
 		
@@ -76,22 +166,37 @@ public class CompanyController {
 		
 		try {
 		
-			Companies company = new Companies();
-			Optional<CompanyTypes> companyType = this.companyTypesRepository.findById(type);
-			
-			company.setId(code);
-			company.setName(name);
-			company.setCompanyType(companyType.get());
-			company.setAddress(address);
-			company.setPctComission(pct_comission);
-			company.setContactName(contact_name);
-			company.setTelephone(phone);
-			company.setEmail(email);
-			company.setPassword(Password.RandomPassword(6));
-			
-			this.companiesRepository.saveAndFlush(company);
-			
-			data.put("state", true);
+			if (!this.usersRepository.existsEmailOnAllTable(email)) {
+				Companies company = new Companies();
+				Optional<CompanyTypes> companyType = this.companyTypesRepository.findById(type);
+				
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				String password = RandomStringUtils.random(8, true, true); // Contraseña aleatoria
+				
+				company.setId(code);
+				company.setName(name);
+				company.setCompanyType(companyType.get());
+				company.setAddress(address);
+				company.setPctComission(pct_comission);
+				company.setContactName(contact_name);
+				company.setTelephone(phone);
+				company.setEmail(email);
+				company.setPassword(passwordEncoder.encode(password));
+				
+				this.companiesRepository.saveAndFlush(company);
+				
+				data.put("state", true);
+
+				
+				String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
+						+ "Contraseña: "+password+" <br>"
+						+ "Su empresa acaba de ser registrada, debe <a href='localhost:8080/login'>Iniciar Sesion</a>";
+				
+				mailService.SendSimpleMessage(company.getEmail(), "Bienvenido a la cuponera", message);
+			} else {
+				data.put("state", false);
+				data.put("error", "El correo ya existe");
+			}
 			
 		} catch(Exception error) {
 			data.put("state", false);

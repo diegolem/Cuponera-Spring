@@ -38,8 +38,8 @@ import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 import sv.edu.udb.www.cuponera.utils.Password;
 
 @Controller
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/client")
+public class ClientController {
 
 	@Autowired
 	@Qualifier("UsersRepository")
@@ -50,52 +50,14 @@ public class AdminController {
 	@Autowired
 	@Qualifier("UserTypesRepository")
 	UserTypesRepository userTypesRepository;
-	
-	@RequestMapping(value = {"/promotions/"}, method = RequestMethod.GET)
-	public String indexPromotions(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("types", this.companyTypesRepository.findAll());
-		model.addAttribute("userType", user.getUserType().getType());
-		return "admin/promotions";
-	}
-	
+
 	@RequestMapping(value = {"/configuration/"}, method = RequestMethod.GET)
 	public String Configuration(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = this.userRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("userType", user.getUserType().getType());
-		return "admin/configuration";
+		return "client/configuration";
 	}
 	
-	@RequestMapping(value = {"/companies/"}, method = RequestMethod.GET)
-	public String indexCompany(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("types", this.companyTypesRepository.findAll());
-		model.addAttribute("userType", user.getUserType().getType());
-		return "admin/business";
-	}
-	
-	@RequestMapping(value = {"/company_type/"}, method = RequestMethod.GET)
-	public String indexCompanyType(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("userType", user.getUserType().getType());
-		return "admin/categories";
-	}
-	
-	@RequestMapping(value = {"/users/"}, method = RequestMethod.GET)
-	public String indexUsers(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Users user = this.userRepository.findByEmail(auth.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("types", this.userTypesRepository.allWithoutClient());
-		model.addAttribute("userType", user.getUserType().getType());
-		return "admin/users";
-	}
 }

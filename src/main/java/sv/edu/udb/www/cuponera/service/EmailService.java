@@ -1,5 +1,10 @@
 package sv.edu.udb.www.cuponera.service;
+
+import java.util.Properties;
+
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 /*
@@ -24,6 +29,7 @@ public class EmailService {
 	
 	public void SendSimpleMessage(String to, String subject, String body){
 		MimeMessage mimeMessage = emailSender.createMimeMessage();
+		
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 			helper.setTo(to);

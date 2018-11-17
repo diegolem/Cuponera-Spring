@@ -60,9 +60,6 @@ public class PromotionsController {
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
 	
-	
-	
-	// /////////////////////////////////////////////////////////////////////////////////////////
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String allTypes() {
@@ -79,7 +76,7 @@ public class PromotionsController {
 		}
 	}
 	
-	/*@PutMapping("/approve/{id}")
+	/*@PutMapping("/approved/{id}")
 	public @ResponseBody String update(@PathVariable("id")int id) {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -163,7 +160,6 @@ public class PromotionsController {
 			return error.getMessage();
 		}
 	}
-	// ////////////////////////////////////////////////////////////////////////////////////////
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/list_company")
@@ -381,10 +377,11 @@ public class PromotionsController {
 					return ResponseEntity.ok("Promoción aprobada");
 				}
 			}
+			
+			return ResponseEntity.status(500).body("La promoción no cumple con los parametros para ser aprobada");
 		}catch(Exception ex) {
 			return ResponseEntity.status(500).body("Error en el proceso de aprobación");
 		}
-		return ResponseEntity.status(500).body("La promoción no cumple con los parametros para ser aprobada");
 	}
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")

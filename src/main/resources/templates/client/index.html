@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="es" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Cliente', ~{:: link})" >
-	<meta charset="utf-8">
-</head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+<head th:fragment="clientHead" th:insert="index :: headPage('Cliente', ~{:: link})" ></head>
+<body th:fragment="clientBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
+	
+	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/client/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
 	<li class="nav-item option_list">
 	    <a class="nav-link" href="">
 	      <i class="menu-icon mdi mdi-home"></i>
@@ -23,19 +28,20 @@
         </a>
       </li>
       <li class="nav-item option_list">
-        <a class="nav-link" href="../../pages/forms/basic_elements.html">
-	         <i class="menu-icon mdi mdi-settings"></i>
-	         <span class="menu-title">Configurar</span>
-        </a>
+        	<a class="nav-link" href="/logout">
+	         <i class="menu-icon mdi mdi-exit-to-app"></i>
+	         <span class="menu-title">Cerrar sesion</span>
+        	</a>
       </li>
-      <li class="nav-item option_list">
-      	<a class="nav-link" th:href="@{/logout}">
-	    	<i class="menu-icon mdi mdi-exit-to-app"></i>
-	        <span class="menu-title">Cerrar sesión</span>
-        </a>
-      </li>
+	
 	<section id="container">
-		
+		<div th:replace="${data} ?: _"></div>
 	</section>
+	
+	<span id="script">
+		<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+		<th:block th:replace="${dataScript} ?: _" />
+	</span>
+
 </body>
 </html>

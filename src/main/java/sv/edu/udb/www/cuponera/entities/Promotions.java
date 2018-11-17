@@ -57,25 +57,25 @@ public class Promotions implements java.io.Serializable{
 	@Min(value = 1, message="Ingrese un precio mayor a 0")
 	// @PricesPromotionConstraint
 	private BigDecimal ofertPrice;
-	@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
+	//@FutureOrPresent(message="La fecha de inicio debe ser igual o mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de inicio es obligatoria")
 	private Date initDate;
-	@Future(message="La fecha debe ser mayor a la actual")
+	//@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha de finalización es obligatoria")
-	 // @DatesPromotionConstraint(initDate = "initDate", endDate ="endDate")
+	// @DatesPromotionConstraint(initDate = "initDate", endDate ="endDate")
 	private Date endDate;
-	@Future(message="La fecha debe ser mayor a la actual")
+	//@Future(message="La fecha debe ser mayor a la actual")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="La fecha limite es obligatoria")
 	private Date limitDate;
 	@PositiveOrZero(message="la cantidad limite debe ser mayor o igual que 0")
 	private long limitCant;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
+	//@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-]*$",message="Ingrese caracteres válidos en la descripción")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String description;
-	@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-%]*$",message="Ingrese caracteres válidos en los detalles")
+	//@Pattern(regexp="^([A-Z]|[a-z]|[ñÑ])[a-zA-Z ñÑáéíóú,0-9.#-%]*$",message="Ingrese caracteres válidos en los detalles")
 	@NotBlank(message="La descripcion es obligatoria")
 	private String otherDetails;
 	// @Pattern(regexp="^[a-zA-Z ñÑáéíóú,0-9.#-]{1}[a-zA-Z ñÑáéíóú,0-9.#-]*.[([jpg]|[png]|[jpeg]|[gif])]$",message="Ingrese un nombre de archivo valido")

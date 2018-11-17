@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" >
+<head th:fragment="employeeHead" th:insert="index :: headPage('Employee', ~{:: link})" >
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
 </head>
-<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
+<body th:fragment="employeeBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	
+	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/employee/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
 	
 	<section id="container">
 		<div class="col-12 grid-margin stretch-card">
@@ -58,7 +64,7 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header bg-primary text-white">
-		        <h5 class="modal-title" id="mdlHistoryTitle">Cliente</h5>
+		        <h5 class="modal-title" id="mdlHistoryTitle">Sin historial previo</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
@@ -192,7 +198,7 @@
 						  	
 						  	var list = '<ul id="list" class="list-group">';
 						  	
-						  	var name = "";
+						  	var name = data.client.name + ' ' + data.client.lastName ;
 						  	
 						  	$.each(data.history, function( index, value ) {
 						  		list += '<li class="list-group-item d-flex justify-content-between align-items-center">';

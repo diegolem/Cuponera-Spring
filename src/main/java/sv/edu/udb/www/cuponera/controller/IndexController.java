@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import sv.edu.udb.www.cuponera.entities.Companies;
+import sv.edu.udb.www.cuponera.entities.Employees;
 import sv.edu.udb.www.cuponera.entities.Users;
+import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
+import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
 @Controller
@@ -19,6 +23,19 @@ public class IndexController {
 	@Autowired
 	@Qualifier("UsersRepository")
 	UsersRepository usersRepository;
+	
+	@Autowired
+	@Qualifier("EmployeesRepository")
+	EmployeesRepository employeesRepository;
+	
+	@Autowired
+	@Qualifier("CompaniesRepository")
+	CompaniesRepository companiesRepository;
+	
+	@RequestMapping(value = "/recover_password", method = RequestMethod.GET)
+	public String RecoverPassword(Model model) {
+		return "/recoverPassword";
+	}
 	
 	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String index() {
@@ -91,6 +108,7 @@ public class IndexController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = usersRepository.findByEmail(auth.getName());
 		model.addAttribute("user", user);
+		model.addAttribute("userType", user.getUserType().getType());
 		return "admin/index";
 	}
 	
@@ -100,18 +118,27 @@ public class IndexController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Users user = usersRepository.findByEmail(auth.getName());
 		model.addAttribute("user",user);
+		model.addAttribute("userType", user.getUserType().getType());
 		return "client/index";
 	}
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@RequestMapping(value = "/companies", method = RequestMethod.GET)
 	public String companyIndex(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies user = companiesRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("userType", "empresa");
 		return "company/index";
 	}
 	
 	@PreAuthorize("hasAnyAuthority('EMPLOYEE')")
 	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public String employeeIndex(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Employees user = employeesRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("userType", "empleado");
 		return "employee/index";
 	}
 	
