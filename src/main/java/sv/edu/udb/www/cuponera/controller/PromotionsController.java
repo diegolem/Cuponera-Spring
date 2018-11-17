@@ -2,6 +2,8 @@ package sv.edu.udb.www.cuponera.controller;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import sv.edu.udb.www.cuponera.entities.Companies;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,9 +60,10 @@ public class PromotionsController {
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
 	
-	@PreAuthorize("hasAnyAuthority('COMPANY')")
+	
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String allTypes() {
 		try {
@@ -74,7 +79,7 @@ public class PromotionsController {
 		}
 	}
 	
-	@PutMapping("/approve/{id}")
+	/*@PutMapping("/approve/{id}")
 	public @ResponseBody String update(@PathVariable("id")int id) {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -115,7 +120,7 @@ public class PromotionsController {
 			return error.getMessage();
 		}
 	}
-	
+	*/
 	@PutMapping("/reject/{id}")
 	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("reject") String reject) {
 		
@@ -160,10 +165,10 @@ public class PromotionsController {
 	}
 	// ////////////////////////////////////////////////////////////////////////////////////////
 	
+	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
 		model.addAttribute("lista", promotionRepository.findByCompany(companiesRepository.findByEmail(auth.getName())));
 		return "company/promotion/listar";
 	}
@@ -212,12 +217,34 @@ public class PromotionsController {
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@PostMapping("/new")
 	public String insertPromotion(@RequestParam(name = "image_promotion", required = true) MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, RedirectAttributes attributes) {
 		try {
 			if(result.hasErrors()) {
 				model.addAttribute("promotion",promotion);
 				return "/company/promotion/nuevo";
 			}else {
+				if(promotion.getOfertPrice().compareTo(promotion.getRegularPrice()) > 0) {
+					result.addError(new ObjectError("ofertPrice", "El precio de oferta debe ser menor al regular"));
+				}
+				
+				LocalDate initDate = promotion.getInitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+						endDate = promotion.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+						limitDate = promotion.getLimitDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				if(!endDate.isAfter(initDate)) {
+					result.addError(new ObjectError("endDate", "Fecha de finalización debe ser mayor a la inicial"));
+				}
+				
+				if(!limitDate.isAfter(endDate)) {
+					result.addError(new ObjectError("limitDate", "Fecha limite debe ser mayor a la final"));
+				}
+				
+				if(result.hasErrors()) {
+					System.out.println("Errores");
+					model.addAttribute("promotion", promotion);
+					return "/company/promotion/nuevo";
+				}
+				
 				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 				promotion.setCompany(companiesRepository.findByEmail(auth.getName()));
 				promotion.setCouponsAvailable(promotion.getLimitCant());
@@ -231,11 +258,13 @@ public class PromotionsController {
 				promotionRepository.saveAndFlush(promotion);
 				uploadFileService.saveImage(image);
 
+				attributes.addFlashAttribute("confirmMsg", "Promoción registrada exitosamente");
 				return "redirect:/promotion/list_company";
 			}
 		}catch(Exception ex) {
-			model.addAttribute("promotion",promotion);
-			return "promotion/nuevo";	
+			attributes.addFlashAttribute("errorMsg", "Ha ocurrido un error en el proceso");
+			model.addAttribute("promotion", promotion);
+			return "/company/promotion/nuevo";	
 		}
 	}
 	
@@ -257,11 +286,10 @@ public class PromotionsController {
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@PostMapping("/edit")
 	public String editPromotion(@RequestParam("image_promotion") MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, RedirectAttributes attributes) {
 		
 		try {
 			if(result.hasErrors()) {
-				System.out.println("Errores");
 				model.addAttribute("promotion", promotion);
 				return "/company/promotion/modificar";
 			}else{
@@ -287,12 +315,15 @@ public class PromotionsController {
 						}
 
 						promotionRepository.save(promotion);
+						
+						attributes.addFlashAttribute("confirmMsg", "Promoción modificada exitosamente");
 						return "redirect:/promotion/list_company";
 					}
 				}
 				return "redirect:/promotion/edit/"+promotion.getId();
 			}
 		}catch(Exception ex) {
+			attributes.addFlashAttribute("errorMsg", "Ha ocurrido un error en el proceso");
 			model.addAttribute("promotion", promotion);
 			return "redirect:/promotion/edit/"+promotion.getId();			
 		}

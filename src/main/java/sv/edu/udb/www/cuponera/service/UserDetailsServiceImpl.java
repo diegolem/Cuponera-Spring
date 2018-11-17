@@ -2,6 +2,7 @@ package sv.edu.udb.www.cuponera.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,15 +13,19 @@ import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.EmployeesRepository;
 import sv.edu.udb.www.cuponera.repositories.UsersRepository;
 
-@Service
+@Service("UserDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
+	@Qualifier("AllUsersRepository")
 	private AllUsersRepository allUsersRepository;
 	@Autowired
+	@Qualifier("UsersRepository")
 	private UsersRepository usersRepository;
 	@Autowired
+	@Qualifier("CompaniesRepository")
 	private CompaniesRepository companiesRepository;
 	@Autowired
+	@Qualifier("EmployeesRepository")
 	private EmployeesRepository employeesRepository;
 	
 	@Override

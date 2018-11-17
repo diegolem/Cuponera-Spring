@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadFileService {
-	public String promotionsImagesUrl = ".//src//main//resources//promotions_images//";
+	public String promotionsImagesUrl = ".//src//main//resources//static//promotions_images//";
 	
 	public void saveImage(MultipartFile image) throws IOException {
 		if(!image.isEmpty()) {

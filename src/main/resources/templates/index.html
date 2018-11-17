@@ -50,7 +50,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <a class="dropdown-item">
-              	<form action="/logout" method="post">
+              	<form th:action="@{/logout}" method="POST">
 					<button class="btn btn-danger btn-block" type="submit">Sign Out <i class="fa fa-sign-out"></i></button>
 				</form>
               </a>

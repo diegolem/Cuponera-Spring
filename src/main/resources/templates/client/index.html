@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Cliente', ~{:: link})" ></head>
+<head th:insert="index :: headPage('Cliente', ~{:: link})" >
+	<meta charset="utf-8">
+</head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list">
 	    <a class="nav-link" href="">
@@ -27,10 +29,10 @@
         </a>
       </li>
       <li class="nav-item option_list">
-        	<a class="nav-link" href="/logout">
-	         <i class="menu-icon mdi mdi-exit-to-app"></i>
-	         <span class="menu-title">Cerrar sesion</span>
-        	</a>
+      	<a class="nav-link" th:href="@{/logout}">
+	    	<i class="menu-icon mdi mdi-exit-to-app"></i>
+	        <span class="menu-title">Cerrar sesión</span>
+        </a>
       </li>
 	<section id="container">
 		

@@ -9,16 +9,19 @@
 </head>
 <body
 	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
-	<li class="nav-item option_list"><a class="nav-link"
-		href="../../pages/forms/basic_elements.html"> <i
-			class="menu-icon mdi mdi-backup-restore"></i> <span
-			class="menu-title">Form elements</span>
-	</a></li>
-	<li class="nav-item option_list"><a class="nav-link"
-		href="../../pages/forms/basic_elements.html"> <i
-			class="menu-icon mdi mdi-backup-restore"></i> <span
-			class="menu-title">Form elements</span>
-	</a></li>
+	<li class="nav-item option_list">
+	    <a class="nav-link" th:href="@{promotion/new}">
+	      <i class="menu-icon mdi mdi-backup-restore"></i>
+	      <span class="menu-title">Ingresar Promoción</span>
+	    </a>
+     </li>
+	<li class="nav-item option_list">
+    	<a class="nav-link" th:href="@{promotion/list_company}">
+	    	<i class="menu-icon mdi mdi-backup-restore"></i>
+	        <span class="menu-title">Lista de promociones</span>
+        </a>
+    </li>
+	
 
 	<section id="container">
 		<h2 class="text-center">Ingresar promoción</h2>
@@ -37,13 +40,15 @@
 		</div>
 		<div class="row">
 			<form th:action="@{/promotion/new}" enctype="multipart/form-data" method="POST" th:object="${promotion}" class="col-md-10 offset-md-1">
-				<ul th:if="${#fields.hasAnyErrors()}">
-			  		<li th:each="err : ${#fields.allErrors()}" th:text="${err}">Input is incorrect</li>
-				</ul>
 				<div class="form-group">
                		<label for="title" class="label">Título</label>
                   	<div class="input-group">
-                    	<input type="text" name="title" id="title" th:field="*{title}" requerid="true" class="form-control" data-validation="custom"  />
+                    	<input type="text" name="title" id="title" th:field="*{title}" requerid="true"
+                    	th:class="${#fields.hasErrors('title')}? 'is-invalid form-control' : 'form-control'"
+                    	 class="form-control" data-validation="custom"  />
+                    	 <span th:if="${#fields.hasErrors('title')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('title')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -55,7 +60,12 @@
                 <div class="form-group">
                		<label for="regularPrice" class="label">Precio regular [$]</label>
                   	<div class="input-group">
-                    	<input type="number" step="0.01" min="0.01" name="regularPrice" th:field="*{regularPrice}" id="regularPrice" requerid="true" class="form-control" data-validation="custom"  />
+                    	<input type="number" step="0.01" min="0.01" name="regularPrice" th:field="*{regularPrice}" 
+                    	th:class="${#fields.hasErrors('regularPrice')}? 'is-invalid form-control' : 'form-control'"
+                    	id="regularPrice" requerid="true" class="form-control" data-validation="custom"  />
+                    	<span th:if="${#fields.hasErrors('regularPrice')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('regularPrice')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -67,7 +77,12 @@
                 <div class="form-group">
                		<label for="ofertPrice" class="label">Precio de oferta [$]</label>
                   	<div class="input-group">
-                    	<input type="number" step="0.01" min="0.01" name="ofertPrice" th:field="*{ofertPrice}" id="ofertPrice" requerid="true" class="form-control" data-validation="custom"  />
+                    	<input type="number" step="0.01" min="0.01" name="ofertPrice" 
+                    	th:class="${#fields.hasErrors('ofertPrice')}? 'is-invalid form-control' : 'form-control'"
+                    	th:field="*{ofertPrice}" id="ofertPrice" requerid="true" class="form-control" data-validation="custom"  />
+                    	<span th:if="${#fields.hasErrors('ofertPrice')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('ofertPrice')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -79,7 +94,12 @@
                 <div class="form-group">
                		<label for="initDate" class="label">Fecha de inicio de promoción</label>
                   	<div class="input-group">
-                    	<input type="date" name="initDate" id="initDate" requerid="true" th:field="*{initDate}" class="form-control" data-validation="custom"  />
+                    	<input type="date" name="initDate" id="initDate" requerid="true"
+                    	th:class="${#fields.hasErrors('initDate')}? 'is-invalid form-control' : 'form-control'"
+                    	 th:field="*{initDate}" class="form-control" data-validation="custom"  />
+                    	 <span th:if="${#fields.hasErrors('initDate')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('initDate')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -90,7 +110,12 @@
                 <div class="form-group">
                		<label for="endDate" class="label">Fecha final de promoción</label>
                   	<div class="input-group">
-                    	<input type="date" name="endDate" id="endDate" requerid="true" class="form-control" th:field="*{endDate}" data-validation="custom"  />
+                    	<input type="date" name="endDate" id="endDate" requerid="true" class="form-control" 
+                    	th:class="${#fields.hasErrors('endDate')}? 'is-invalid form-control' : 'form-control'"
+                    	th:field="*{endDate}" data-validation="custom"  />
+                    	<span th:if="${#fields.hasErrors('endDate')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('endDate')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -101,7 +126,12 @@
                 <div class="form-group">
                		<label for="limitDate" class="label">Fecha límite para canjear cupón</label>
                   	<div class="input-group">
-                    	<input type="date" name="limitDate" id="limitDate" requerid="true" class="form-control" data-validation="custom" th:field="*{limitDate}"  />
+                    	<input type="date" name="limitDate" id="limitDate" requerid="true" class="form-control" 
+                    	th:class="${#fields.hasErrors('limitDate')}? 'is-invalid form-control' : 'form-control'"
+                    	data-validation="custom" th:field="*{limitDate}"  />
+                    	<span th:if="${#fields.hasErrors('limitDate')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('limitDate')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -112,7 +142,12 @@
                 <div class="form-group">
                		<label for="limitCant" class="label">Cantidad límite</label>
                   	<div class="input-group">
-                    	<input type="number" min="0" value="0" step="1.0" name="limitCant" id="limitCant" requerid="true" class="form-control" data-validation="custom" th:field="*{limitCant}"  />
+                    	<input type="number" min="0" value="0" step="1.0" name="limitCant"
+                    	th:class="${#fields.hasErrors('limitCant')} ? 'is-invalid form-control' : 'form-control'"
+                    	 id="limitCant" requerid="true" data-validation="custom" th:field="*{limitCant}"  />
+                    	 <span th:if="${#fields.hasErrors('limitCant')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('limitCant')}"></strong>
+                          </span>
                    		<div class="input-group-append">
                     		<span class="input-group-text">
                        			<i class="fa fa-asterisk"></i>
@@ -123,18 +158,29 @@
                 <div class="form-group">
                		<label for="description" class="label">Descripción [*]</label>
                   	<div class="input-group">
-                   		<textarea id="description" class="form-control" rows="3" name="description" th:field="*{description}"></textarea>
+                   		<textarea id="description" class="form-control" rows="3" name="description"
+                   		th:class="${#fields.hasErrors('description')}? 'is-invalid form-control' : 'form-control'"
+                   		 th:field="*{description}"></textarea>
+                   		 <span th:if="${#fields.hasErrors('description')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('description')}"></strong>
+                          </span>
                   	</div>
                 </div>
                 <div class="form-group">
                		<label for="otherDetails" class="label">Otros Detalles [*]</label>
                   	<div class="input-group">
-                   		<textarea class="form-control" id="otherDetails" name="otherDetails" rows="3" th:field="*{otherDetails}"></textarea>
+                   		<textarea class="form-control" id="otherDetails" name="otherDetails" 
+                   		th:class="${#fields.hasErrors('otherDetails')}? 'is-invalid form-control' : 'form-control'"
+                   		rows="3" th:field="*{otherDetails}"></textarea>
+                   		<span th:if="${#fields.hasErrors('otherDetails')}" class="invalid-feedback" role="alert">
+                         	<strong th:text="${#fields.errors('otherDetails')}"></strong>
+                          </span>
                   	</div>
                 </div>
                 <div class="form-group">
                 	<div class="custom-file">
-                		<input type="file" class="custom-file-input" id="image" name="image_promotion"/>
+                		<input type="file" class="custom-file-input" id="image"
+                		 name="image_promotion"/>
   						<label class="custom-file-label" for="image">Seleccionar imagen</label>
                 	</div>
                 </div>

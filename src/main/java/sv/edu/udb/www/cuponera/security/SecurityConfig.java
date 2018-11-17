@@ -7,8 +7,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import sv.edu.udb.www.cuponera.service.UserDetailsServiceImpl;
 
 @Configuration
@@ -16,6 +17,7 @@ import sv.edu.udb.www.cuponera.service.UserDetailsServiceImpl;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
+	@Qualifier("UserDetailsServiceImpl")
 	private UserDetailsServiceImpl userDetailsService;
 	
 	@Override
@@ -23,22 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-				.antMatchers("/resources/**").permitAll()
-				.antMatchers("/admin").hasAuthority("ADMINISTRATOR")
-				.antMatchers("/client").hasAuthority("CLIENT")
-				.antMatchers("/companies").hasAnyAuthority("COMPANY")
-				.antMatchers("/employees").hasAnyAuthority("EMPLOYEE")
+				.antMatchers("/css/**", "/js/**", "/font/**", "/images/**", "/promotions_images/**", "/scss/**", "/vendors/**").permitAll()
+				.anyRequest().authenticated()
+				// .antMatchers("/admin").hasAuthority("ADMINISTRATOR")
+				// .antMatchers("/client").hasAuthority("CLIENT")
+				// .antMatchers("/companies").hasAnyAuthority("COMPANY")
+				// .antMatchers("/employees").hasAnyAuthority("EMPLOYEE")
 				// .antMatchers("/promotion/list_company").hasAnyAuthority("COMPANY")
 				// .antMatchers("/promotion/new").hasAnyAuthority("COMPANY")
 				// .antMatchers("/promotion/list_admin").hasAnyAuthority("ADMINISTRATOR")
 				.and()
 			.formLogin()
+				.usernameParameter("email")
+				.passwordParameter("password")
 				.loginPage("/login")
 				.successForwardUrl("/loginsucess")
 				.permitAll()
 				.and()
 			.logout()
-				.logoutSuccessUrl("/")
+				.logoutSuccessUrl("/login")
 				.permitAll()
 				.and()
 			.exceptionHandling().accessDeniedPage("/denied")
@@ -47,10 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
-	public PasswordEncoder getPasswordEncoder() {
+	/*public PasswordEncoder getPasswordEncoder() {
 		return new PasswordEncoder() {
 			@Override
 			public String encode(CharSequence rawPassword) {
@@ -61,5 +66,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				return true;
 			}
 		};
-	}
+	}*/
 }
