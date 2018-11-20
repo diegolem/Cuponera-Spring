@@ -20,14 +20,11 @@
 			class="menu-title">Cerrar sesion</span>
 	</a></li>
 	<section id="container">
-
 		<div class="card-group">
 			<div class="row">
-				<div class="card border-dark" style="width:333px;heigth:400px; margin: 0.3%;" th:each="promotion : ${listPromotion.content}"
-					th:if="${promotion.state.id == 2}">
-					<img class="card-img-top" style="width:325px;heigth:350px;"
-						th:src="@{${'/promotions_images/' + promotion.image}}"
-						alt="${promotion.title}">
+				<div class="card border-dark" style="width:333px;heigth:400px; margin: 0.3%;" th:each="promotion : ${listPromotion.content}" th:if="${promotion.state.id == 2}">
+					
+					<img class="card-img-top" style="width:325px;heigth:350px;" th:src="@{${'/promotions_images/' + promotion.image}}" >
 					<div class="card-body text-info">
 
 						<h4 th:inline="text" class="card-title">
@@ -36,10 +33,10 @@
 						
 						<p class="card-text">
 							<b>Oferta disponible hasta :</b> <span class="text-dark"
-								th:utext="${promotion.endDate}"> </span> |
+								th:text="${promotion.endDate}"> </span> |
 						</p>
 						
-						<a th:href="@{${'/sales/buy/' + promotion.id}}" class="btn btn-dark btn-fw btn-block">
+						<a th:href="@{${'/promotion/details/' + promotion.id}}" class="btn btn-dark btn-fw btn-block">
 						<i class="fa fa-shopping-cart"></i>
 						Ver oferta
 						</a>
@@ -48,7 +45,7 @@
 					<div class="card-footer">
 						<p class="text-dark">
 							<b>Cupones disponibles: <span class="text-dark"
-								th:utext="${promotion.couponsAvailable}"> </span></b>
+								th:text="${promotion.couponsAvailable}"> </span></b>
 						</p>
 					</div>
 				</div>

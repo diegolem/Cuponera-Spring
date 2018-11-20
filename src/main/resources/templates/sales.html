@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="index :: headPage('Employee', ~{:: link})" >
+	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
+</head>
+<body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
+
+	<section id="container">
+		<div class="card-group">
+			<div class="row">
+				<div class="card border-dark" style="width:333px;heigth:400px; margin: 0.3%;" th:each="promotion : ${listPromotion.content}" th:if="${promotion.state.id == 2}">
+					
+					<img class="card-img-top" style="width:325px;heigth:350px;" th:src="@{${'/promotions_images/' + promotion.image}}" >
+					<div class="card-body text-info">
+
+						<h4 th:inline="text" class="card-title">
+						<span th:text="${promotion.title}" class="badge-light badge-secondary">Info</span>
+						</h4>
+						
+						<p class="card-text">
+							<b>Oferta disponible hasta :</b> <span class="text-dark"
+								th:text="${promotion.endDate}"> </span> |
+						</p>
+						
+						<a th:href="@{${'/coupon/' + promotion.id}}" class="btn btn-dark btn-fw btn-block">
+						<i class="fa fa-shopping-cart"></i>
+						Ver oferta
+						</a>
+                          
+					</div>
+					<div class="card-footer">
+						<p class="text-dark">
+							<b>Cupones disponibles: <span class="text-dark"
+								th:text="${promotion.couponsAvailable}"> </span></b>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div th:if="${listPromotion.totalPages > 0}" class="pagination"
+		th:each="pageNumber : ${pageNumbers}">
+			<a th:href="@{coupons(size=${listPromotion.size}, page=${pageNumber})}"
+			th:text=${pageNumber}
+			th:class="${pageNumber==listPromotion.number + 1} ? active"></a>
+		</div>
+	</section>
+	
+	<span id="script">
+		<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			});
+		</script>
+	</span>
+	
+</body>
+</html>

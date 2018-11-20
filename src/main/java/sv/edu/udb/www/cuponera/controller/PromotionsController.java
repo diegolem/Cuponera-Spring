@@ -4,12 +4,17 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,21 +34,39 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import sv.edu.udb.www.cuponera.entities.AllUsers;
 import sv.edu.udb.www.cuponera.entities.Companies;
+import sv.edu.udb.www.cuponera.entities.Employees;
+
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.pdf.codec.Base64.OutputStream;
 
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import sv.edu.udb.www.cuponera.entities.Promotions;
 import sv.edu.udb.www.cuponera.entities.PromotionsState;
+import sv.edu.udb.www.cuponera.entities.Sales;
+import sv.edu.udb.www.cuponera.entities.SalesState;
+import sv.edu.udb.www.cuponera.entities.Users;
 import sv.edu.udb.www.cuponera.entities.simple.SimplePromotions;
 import sv.edu.udb.www.cuponera.repositories.CompaniesRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionStateRepository;
 import sv.edu.udb.www.cuponera.repositories.PromotionsRepository;
+import sv.edu.udb.www.cuponera.repositories.SalesRepository;
+import sv.edu.udb.www.cuponera.repositories.SalesStateRepository;
+import sv.edu.udb.www.cuponera.repositories.UsersRepository;
+import sv.edu.udb.www.cuponera.service.EmailService;
+import sv.edu.udb.www.cuponera.service.SalesService;
 import sv.edu.udb.www.cuponera.service.UploadFileService;
 
 @Controller
@@ -59,6 +83,157 @@ public class PromotionsController {
 	@Autowired
 	@Qualifier("PromotionStateRepository")
 	PromotionStateRepository promotionStateRepository;
+	@Autowired
+	@Qualifier("UsersRepository")
+	UsersRepository userRepository;
+	@Autowired
+	EmailService mailService = new EmailService();
+	@Autowired
+	@Qualifier("SalesRepository")
+	SalesRepository salesRepository;
+	@Autowired
+	@Qualifier("SalesStateRepository")
+	SalesStateRepository salesStateRepository;
+	@Autowired
+	SalesService salesService;	
+	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
+	@GetMapping("/bill")
+	 public void export(ModelAndView model, HttpServletResponse response, @RequestParam("code") List<String> codes) throws Exception{
+	  JasperPrint jasperPrint = null;
+
+	  response.setContentType("application/x-download");
+	  response.setHeader("Content-Disposition", String.format("attachment; filename=\"factura.pdf\""));
+	  
+	  ServletOutputStream out = response.getOutputStream();
+	  jasperPrint = this.salesService.exportPdfFile(codes);
+	  JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+	 }
+	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
+	@PostMapping("/buy")
+	public @ResponseBody String buy(@RequestParam("id") int id, @RequestParam("cant") int cant) 
+	{
+		try {
+			Map<String, Object> data = new HashMap<>();
+			
+			if (this.promotionRepository.existsById(id)) {
+										
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				Users user = this.userRepository.findByEmail(auth.getName());
+				
+				if (user != null) 
+				{
+					
+					Optional<Promotions> promo = promotionRepository.findById(id);
+					
+					if (promo.get().getLimitCant() >= cant) {
+						if (promo.get().getCouponsAvailable() >= cant) {
+							
+							//promo.get().setCouponsAvailable(promo.get().getCouponsAvailable() - cant);
+							//promo.get().setCouponsSold(promo.get().getCouponsSold() + cant);
+							
+							List<String> ids = new ArrayList();
+							List<String> codes = new ArrayList();
+							
+							Optional<SalesState> stat = this.salesStateRepository.findById(2);
+							
+							for (int i = 0; i < cant; i++) {
+			                    Sales salesN = new Sales();
+
+			                    //Asignando el codigo del cupon
+			                    salesN.setCouponCode(this.generateCode(promo.get().getCompany()));
+			                    //Asignando el codigo de la promotion
+			                    salesN.setPromotion(promo.get());
+			                    //Asignando el Cliente
+			                    salesN.setClient(user);
+			                    //Falta asignar el estado
+			                    salesN.setState(stat.get());
+			                    //Realizando el proceso 
+			                    if (this.salesService.insertSales(salesN)) {
+			                    //Añadiendo el codigo del cupon a un array 
+			                    	codes.add(salesN.getCouponCode());
+			                        ids.add("Codigo del cupon: " + salesN.getCouponCode() + ", promocion: " + promo.get().getTitle());
+			                    }
+			                }
+							
+							if (ids.size() == cant) {
+								data.put("state", true);
+								data.put("codes", codes);
+								
+								String message = "La Cuponera S.A de C.V. Le avisa sobre una compra realizada recientemente <br><br>"
+										+ "Total de cupones: "+ cant +" <br>";
+								
+								for(String msg : ids) 
+								{
+									message += msg + "<br>";
+								}
+								
+								
+								mailService.SendSimpleMessage(user.getEmail(), "Compra realizada", message);
+			                } else {
+			                	data.put("state", false);
+								data.put("error", "No se ha podido comprar los cupones");
+			                }
+							
+							
+						} else {
+							data.put("state", false);
+							data.put("error", "No hay suficiente existencia para realizar la compra");
+						}
+					} else {
+						data.put("state", false);
+						data.put("error", "La cantidad sobrepasa el limite de compra");
+					}
+					
+				} else {
+					data.put("state", false);
+					data.put("error", "Usuario no identificado");
+				}
+				
+			} else {
+				data.put("state", false);
+				data.put("error", "La promocion no existe");
+			}
+			
+			ObjectMapper mapper = new ObjectMapper();
+		
+			String jsonInString = mapper.writeValueAsString(data);
+		
+		
+			return jsonInString;
+		
+		} catch(Exception error) {
+			return "Error: " + error.getMessage();
+		}
+	}
+	
+	@PreAuthorize("hasAnyAuthority('CLIENT')")
+	@GetMapping("/details/{id}")
+	public String details(@PathVariable("id")int id,Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		Optional<Promotions> promo = promotionRepository.findById(id);
+		
+		boolean state = false;
+		
+		if (promo.isPresent()) 
+		{
+			model.addAttribute("promotion",promo.get());
+			state = promo.get().getState().getId() == 2 && promo.get().getCouponsAvailable() > 0;
+			model.addAttribute("max", ( promo.get().getLimitCant() <= promo.get().getCouponsAvailable() )? promo.get().getLimitCant() : promo.get().getCouponsAvailable() );
+		}
+		
+		model.addAttribute("state",state);
+		
+		Users user = this.userRepository.findByEmail(auth.getName());
+		if ( user != null ) {
+			model.addAttribute("user", user);
+			model.addAttribute("userType", user.getUserType().getType());
+		}
+		
+		return "client/sales/details";
+	}
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
@@ -403,4 +578,38 @@ public class PromotionsController {
 		}
 		return ResponseEntity.status(500).body("La promoción no cumple con los parametros para ser eliminada");
 	}
+	
+	public String generateCode(Companies company) {
+        try {
+            int cuenta = 0;
+            String codigo = "";
+            
+            cuenta = Integer.parseInt(this.salesService.count(company.getId()));
+            
+            if (cuenta > 0) {
+                cuenta += 1;
+                if (cuenta < 10) {
+                    codigo = company.getId() + "000000" + cuenta;
+                } else if (cuenta >= 10 && cuenta < 100) {
+                    codigo = company.getId() + "00000" + cuenta;
+                } else if (cuenta >= 100 && cuenta < 1000) {
+                    codigo = company.getId() + "0000" + cuenta;
+                } else if (cuenta >= 1000 && cuenta < 10000) {
+                    codigo = company.getId() + "000" + cuenta;
+                } else if (cuenta >= 10000 && cuenta < 100000) {
+                    codigo = company.getId() + "00" + cuenta;
+                } else if (cuenta >= 100000 && cuenta < 1000000) {
+                    codigo = company.getId() + "0" + cuenta;
+                } else {
+                    codigo = company.getId() + cuenta;
+                }
+            } else {
+                codigo = company.getId() + "0000001";
+            }
+            
+            return codigo;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-				.antMatchers("/css/**", "/js/**", "/font/**", "/images/**", "/promotions_images/**", "/scss/**", "/vendors/**").permitAll()
+				.antMatchers("/coupons", "/coupons/**", "/coupon/**").anonymous()
+				.antMatchers("/css/**", "/js/**", "/font/**", "/images/**", "/jasper/**", "/promotions_images/**", "/scss/**", "/vendors/**", "/").permitAll()
 				.anyRequest().authenticated()
 				// .antMatchers("/admin").hasAuthority("ADMINISTRATOR")
 				// .antMatchers("/client").hasAuthority("CLIENT")
@@ -46,8 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessUrl("/login")
 				.permitAll()
 				.and()
-			.exceptionHandling().accessDeniedPage("/denied")
+			.exceptionHandling().accessDeniedPage("/denied");
 		;
+	}
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+	    web.ignoring().antMatchers("/recover_password").and().ignoring().antMatchers("/users/exist_mail");
 	}
 	
 	@Autowired
