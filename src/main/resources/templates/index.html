@@ -35,7 +35,7 @@
       <div class="navbar-menu-wrapper d-flex align-items-center">
         <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
           <li th:switch="${user == null}" class="nav-item">
-            <a th:case="true" href="#" class="nav-link">Cupones
+            <a th:case="true" href="/coupons" class="nav-link">Cupones
               <span class="badge badge-primary ml-1">New</span>
             </a>
           </li>
@@ -88,12 +88,19 @@
                 </div>
               </div>
             </div>
-			<!--             <div th:case="*" class="nav-link">
-            	<button class="btn btn-success btn-block"> Comprar Cupon
+			<div th:case="*" class="nav-link">
+            	<a href="/" class="btn btn-success btn-block">promociones
                 	<i class="fa fa-money"></i>
-              	</button>
-            </div> -->
+              	</a>
+            </div>
           </li>
+          
+          <li th:if="${user == null}" class="nav-item">
+          	<a href="/login" class="nav-link">
+              	<i class="menu-icon fa fa-user-circle-o"></i><span class="menu-title">Iniciar session</span>
+            </a>
+          </li>
+          
           <span th:replace="${listOption} ?: _"></span>
         </ul>
       </nav>

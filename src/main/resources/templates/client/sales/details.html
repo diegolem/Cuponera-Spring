@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head  th:insert="client/index :: clientHead" ></head>
+<body th:insert="client/index :: clientBody(~{:: article}, ~{:: script})">
+	<article th:if="${state}" class="d-flex justify-content-between mb-2">
+	    <h3 th:text="${ 'Oferta: ' + promotion.title}" ></h3>
+     </article>
+
+	<article th:if="${state}">
+		<div class="card border-success">
+	     	<div class="card-body">
+	   			<h5 class="card-title" th:utext="${'Compañia distribuidora: ' + promotion.company.name}" ></h5>
+	    		<p class="card-text" th:utext="${promotion.description}"></p>
+	    		<p class="card-text">
+	    			<small class="text-muted" th:text="${ 'Fecha de inicio: ' + promotion.initDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha limite: ' + promotion.limitDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha de vencimiento: ' + promotion.endDate}" ></small>
+    			</p>
+	    		<p class="card-text">
+	    			<button id="btnConfirm" class="btn btn-outline-primary">Comprar cupon</button>
+	    		</p>
+	  		</div>
+	  
+	  		<img class="card-img-bottom" th:src="@{${'/promotions_images/' + promotion.image}}" alt="Card image cap">
+		</div>
+	</article>
+	
+	<article th:if="${!state}">
+		<div class="alert alert-danger" role="alert">
+	  		La promocion no es valida
+		</div>
+	</article>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#btnConfirm').click(function(){
+					
+					$.confirm({
+						title: '[[${promotion.title}]]',
+					    content: '<p>¿Esta seguro que desa comprar el cupon?</p>' +
+					    '<form action="" class="formName">' +
+					    '<div class="form-group">' +
+					    '<label>Cantidad cupones:</label>' +
+					    '<input type="number" min="1" max="[[${max}]]" value="1" placeholder="Cantidad" class="cant form-control" required />' +
+					    '</div>' +
+					    '</form>',
+					    buttons: {
+					        formSubmit: {
+					            text: 'Submit',
+					            btnClass: 'btn-blue',
+					            action: function () {
+					                var cant = this.$content.find('.cant').val();
+					                if(parseInt(cant) > 0 && parseInt(cant) <= [[${max}]]){
+					                    
+					                	$.ajax({
+		    			  				  	url: "/promotion/buy",
+		    			  				  	data: { 'id' : [[${promotion.id}]], 'cant' : cant },
+		    			  				  	dataType: "json",
+		    			  				  	method: "POST",
+		    			  				  	success: function(data){
+		    		  					  		if (data.state) {
+			    		  					  		var url = "/promotion/bill";
+		    		  					  			var first = true;
+			    		  					  		$.each(data.codes, function( index, value ) {
+			    		  					  			url += ((first)? "?" : "&") + "code=" + value;
+			    		  					  			first = false;
+			    		  					  		});
+			    		  					  		location.replace(url);		    		  		
+		    			  					  	} else {
+		    			  					  		alertify.error("Error: " + data.error);
+		    			  					  	}  
+		    			  				  	},
+		    			  				  	error: function(jqXHR, textStatus, errorThrown) {
+		    		  					  		alertify.error("No se ha podido realizar la compra");
+		    			  				  	}
+		    	  						});
+					                	
+					                } else {
+					                	$.alert('Por favor ingrese una cantidad valida ' + cant);
+					                }
+					            }
+					        },
+					        cancel: function () {
+					            //close
+					        },
+					    },
+					    onContentReady: function () {
+					        // bind to events
+					        var jc = this;
+					        this.$content.find('form').on('submit', function (e) {
+					            // if the user submits the form by pressing enter in the field.
+					            e.preventDefault();
+					            jc.$$formSubmit.trigger('click'); // reference the button and click it
+					        });
+					    }
+					});
+				});
+			});
+		</script>
+
+</body>
+</html>

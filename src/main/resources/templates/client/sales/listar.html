@@ -49,6 +49,7 @@
 							<th>Fecha de compra</th>
 							<th>Fecha de vencimiento</th>
 							<th>Estado</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -58,6 +59,12 @@
 							<td th:text="${sales.date}"></td>
 							<td th:text="${sales.promotion.limitDate}"></td>
 							<td th:text="${sales.state.state}"></td>
+							<td class="text-white d-flex justify-content-around">
+								<a class="text-white" th:href="${ '/promotion/bill?code=' + sales.couponCode }" > <i class="fa fa-barcode"></i> </a> 
+								<a data-toggle="modal" style="cursor: pointer;" data-target="#mdlInfo" th:onclick="javascript:getSaleInformation([[${sales.couponCode}]])">
+									  <i class="fa fa-eye"></i>
+								</a>									
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -73,6 +80,7 @@
 							<th>Fecha de compra</th>
 							<th>Fecha de vencimiento</th>
 							<th>Estado</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -82,6 +90,12 @@
 							<td th:text="${sales.date}"></td>
 							<td th:text="${sales.promotion.limitDate}"></td>
 							<td th:text="${sales.state.state}"></td>
+							<td class="text-white d-flex justify-content-around">
+								<a class="text-white" th:href="${ '/promotion/bill?code=' + sales.couponCode }" > <i class="fa fa-barcode"></i> </a> 
+								<a data-toggle="modal" style="cursor: pointer;" data-target="#mdlInfo" th:onclick="javascript:getSaleInformation([[${sales.couponCode}]])">
+									  <i class="fa fa-eye"></i>
+								</a>									
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -97,6 +111,7 @@
 							<th>Fecha de compra</th>
 							<th>Fecha de vencimiento</th>
 							<th>Estado</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -106,12 +121,45 @@
 							<td th:text="${sales.date}"></td>
 							<td th:text="${sales.promotion.limitDate}"></td>
 							<td th:text="${sales.state.state}"></td>
+							<td class="text-white d-flex justify-content-around">
+								<a class="text-white" th:href="${ '/promotion/bill?code=' + sales.couponCode }" > <i class="fa fa-barcode"></i> </a> 
+								<a data-toggle="modal" style="cursor: pointer;" data-target="#mdlInfo" th:onclick="javascript:getSaleInformation([[${sales.couponCode}]])">
+									  <i class="fa fa-eye"></i>
+								</a>									
+							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
   </div>
 </div>
+	
+	<div class="modal fade" id="mdlInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+	      		<div class="modal-header">
+	        		
+	        		<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+	        
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+	      		</div>
+	      		<div class="modal-body">
+    				<div class="card border-success">
+			     		<div class="card-body">
+				   			<h5 class="card-title" id="promotion_title" ></h5>
+				   			<p class="card-text" id="company"></p>
+				    		<p class="card-text" id="description"></p>
+				    		<p class="card-text">
+				    			<small class="text-muted" id="compra" ></small> | <small class="text-muted" id="vencimiento" ></small>
+			    			</p>				    
+				  		</div>
+				  
+				  		<img id="imgCupon" class="card-img-bottom" src="" alt="Card image cap">
+					</div>    		
+	      		</div>
+	    	</div>
+	  	</div>
+	</div>
 	
 	</section>
 	<script type="text/javascript" src="/js/datatables.bootstrap4.min.js"></script>
@@ -121,6 +169,34 @@
 			 $('#tbl_d').DataTable();
 			 $('#tbl_v').DataTable();
 		});
+		
+		function getSaleInformation(code)
+		{
+			$.ajax({
+			  	url: "/sales/find/" + code,
+			  	data: "",
+			  	dataType: "json",
+			  	method: "GET",
+			  	success: function(data){
+			  		if (data.state) {
+			  			
+			  			$("#promotion_title").html("Titulo: " + data.sale.promotion.title);
+			  			$("#company").html("Empresa: " + data.sale.promotion.company);
+			  			$("#description").html("Descripcion" + data.sale.promotion.description);
+			  			
+			  			$("#compra").html("Compra: " + data.sale.date);
+			  			$("#vencimiento").html("Vencimiento: " + data.sale.promotion.limitDate);
+			  			
+			  			$("#imgCupon").attr("src", "/promotions_images/" + data.sale.promotion.image);
+				  	} else {
+				  		alertify.error("Error: " + data.error);
+				  	}  
+			  	},
+			  	error: function(jqXHR, textStatus, errorThrown) {
+			  		alertify.error("No se ha podido obtener los datos");
+			  	}
+			});
+		}
 	</script>
 	</body>
 </html>
