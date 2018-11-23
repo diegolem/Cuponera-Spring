@@ -125,7 +125,7 @@ public class IndexController {
 		if (promo.isPresent()) 
 		{
 			model.addAttribute("promotion",promo.get());
-			state = promo.get().getState().getId() == 2 && promo.get().getCouponsAvailable() > 0;
+			state = promo.get().getState().getId() == 2 && (promo.get().getCouponsAvailable() > 0 || promo.get().getLimitCant() == 0);
 			model.addAttribute("max", ( promo.get().getLimitCant() <= promo.get().getCouponsAvailable() )? promo.get().getLimitCant() : promo.get().getCouponsAvailable() );
 		}
 		
