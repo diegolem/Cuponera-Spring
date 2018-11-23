@@ -3,13 +3,13 @@
 <head th:insert="index :: headPage('Cliente', ~{:: link})" ></head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list">
-	    <a class="nav-link" href="/client/">
-	      <i class="menu-icon mdi mdi-home"></i>
-	      <span class="menu-title">Home</span>
-	    </a>
-     </li>
+       <a class="nav-link" th:href="@{/client/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
      <li class="nav-item option_list">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="/sales/list">
 	         <i class="menu-icon mdi mdi-ticket-account"></i>
 	         <span class="menu-title">Listado de cupones</span>
         </a>
@@ -21,12 +21,10 @@
         </a>
       </li>
       <li class="nav-item option_list">
-        <form>
         	<a class="nav-link" href="/logout">
 	         <i class="menu-icon mdi mdi-exit-to-app"></i>
 	         <span class="menu-title">Cerrar sesion</span>
         	</a>
-        </form>
       </li>
 	
 	<section id="container">
@@ -139,7 +137,7 @@
     		<div class="modal-content">
 	      		<div class="modal-header">
 	        		
-	        		<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+	        		<h5 class="modal-title" id="exampleModalLabel">Cupon</h5>
 	        
 	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
 	      		</div>

@@ -127,7 +127,7 @@ public class PromotionsController {
 					
 					Optional<Promotions> promo = promotionRepository.findById(id);
 					
-					if (promo.get().getLimitCant() >= cant) {
+					if (promo.get().getLimitCant() == 0 || promo.get().getLimitCant() >= cant) {
 						if (promo.get().getCouponsAvailable() >= cant) {
 							
 							//promo.get().setCouponsAvailable(promo.get().getCouponsAvailable() - cant);
@@ -221,7 +221,10 @@ public class PromotionsController {
 		{
 			model.addAttribute("promotion",promo.get());
 			state = promo.get().getState().getId() == 2 && promo.get().getCouponsAvailable() > 0;
-			model.addAttribute("max", ( promo.get().getLimitCant() <= promo.get().getCouponsAvailable() )? promo.get().getLimitCant() : promo.get().getCouponsAvailable() );
+			if (promo.get().getLimitCant() > 0)
+				model.addAttribute("max", ( promo.get().getLimitCant() <= promo.get().getCouponsAvailable() )? promo.get().getLimitCant() : promo.get().getCouponsAvailable() );
+			else
+				model.addAttribute("max", promo.get().getCouponsAvailable());
 		}
 		
 		model.addAttribute("state",state);
@@ -339,7 +342,12 @@ public class PromotionsController {
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/list_company")
 	public String listPromotionToCompany(Model model) {
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies user = companiesRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("userType", "empresa");
+		
 		model.addAttribute("lista", promotionRepository.findByCompany(companiesRepository.findByEmail(auth.getName())));
 		return "company/promotion/listar";
 	}
@@ -381,6 +389,12 @@ public class PromotionsController {
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@GetMapping("/new")
 	public String newPromotion(Model model) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Companies user = companiesRepository.findByEmail(auth.getName());
+		model.addAttribute("user", user);
+		model.addAttribute("userType", "empresa");
+		
 		model.addAttribute("promotion", new Promotions());
 		return "company/promotion/nuevo";
 	}
@@ -390,6 +404,13 @@ public class PromotionsController {
 	public String insertPromotion(@RequestParam(name = "image_promotion", required = true) MultipartFile image, @Valid @ModelAttribute("promotion") Promotions promotion,
 			BindingResult result, Model model, RedirectAttributes attributes) {
 		try {
+
+
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Companies user = companiesRepository.findByEmail(auth.getName());
+			model.addAttribute("user", user);
+			model.addAttribute("userType", "empresa");
+			
 			if(result.hasErrors()) {
 				model.addAttribute("promotion",promotion);
 				return "/company/promotion/nuevo";
@@ -417,7 +438,7 @@ public class PromotionsController {
 					return "/company/promotion/nuevo";
 				}
 				
-				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				
 				promotion.setCompany(companiesRepository.findByEmail(auth.getName()));
 				promotion.setCouponsAvailable(promotion.getLimitCant());
 				promotion.setCouponsSold(0);
