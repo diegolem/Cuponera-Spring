@@ -208,7 +208,7 @@ public class PromotionsController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyAuthority('CLIENT')")
+	
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id")int id,Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -235,7 +235,7 @@ public class PromotionsController {
 		return "client/sales/details";
 	}
 	
-	@PreAuthorize("hasAnyAuthority('COMPANY')")
+	
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
 	public @ResponseBody String allTypes() {
 		try {
@@ -412,6 +412,7 @@ public class PromotionsController {
 				
 				if(result.hasErrors()) {
 					System.out.println("Errores");
+					System.out.println(result.getAllErrors());
 					model.addAttribute("promotion", promotion);
 					return "/company/promotion/nuevo";
 				}
