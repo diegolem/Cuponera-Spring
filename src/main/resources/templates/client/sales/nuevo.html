@@ -3,22 +3,30 @@
 	xmlns:th="http://www.thymeleaf.org">
 <head th:insert="index :: headPage('Cliente', ~{:: link})"></head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
-	<li class="nav-item option_list"><a class="nav-link"
-		href="/client/"> <i class="menu-icon mdi mdi-home"></i> <span
-			class="menu-title">Home</span>
-	</a></li>
-	<li class="nav-item option_list"><a class="nav-link"
-		href="/sales/list"> <i class="menu-icon mdi mdi-ticket-account"></i>
-			<span class="menu-title">Listado de cupones</span>
-	</a></li>
-	<li class="nav-item option_list"><a class="nav-link" href="">
-			<i class="menu-icon mdi mdi-wallet-giftcard"></i> <span
-			class="menu-title">Comprar promociones</span>
-	</a></li>
-	<li class="nav-item option_list"><a class="nav-link"
-		href="/logout"> <i class="menu-icon mdi mdi-exit-to-app"></i> <span
-			class="menu-title">Cerrar sesion</span>
-	</a></li>
+	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/client/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
+     <li class="nav-item option_list">
+        <a class="nav-link" href="/sales/list">
+	         <i class="menu-icon mdi mdi-ticket-account"></i>
+	         <span class="menu-title">Listado de cupones</span>
+        </a>
+      </li>
+      <li class="nav-item option_list">
+        <a class="nav-link" href="/sales/new">
+	         <i class="menu-icon mdi mdi-wallet-giftcard"></i>
+	         <span class="menu-title">Comprar promociones</span>
+        </a>
+      </li>
+      <li class="nav-item option_list">
+        	<a class="nav-link" href="/logout">
+	         <i class="menu-icon mdi mdi-exit-to-app"></i>
+	         <span class="menu-title">Cerrar sesion</span>
+        	</a>
+      </li>
 	<section id="container">
 		<div class="card-group">
 			<div class="row">
