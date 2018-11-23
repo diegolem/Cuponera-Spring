@@ -1,87 +1,126 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
-  <title>Cuponera | Login</title>
-    	
-  <link rel="stylesheet" href="/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="/vendors/iconfonts/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
-  <link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="shortcut icon" href="/images/favicon.png" />
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>Cuponera | Login</title>
+
+<link rel="stylesheet"
+	href="/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet"
+	href="/vendors/iconfonts/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+<link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="shortcut icon" href="/images/favicon.png" />
 </head>
 
 <body>
-  <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper auth-page">
-      <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+	<div class="container-scroller">
+		<div
+			class="container-fluid page-body-wrapper full-page-wrapper auth-page">
+			<div
+				class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
 
-        <div class="row w-100">
-          <div class="col-lg-4 mx-auto">
-            <div class="auto-form-wrapper">
-            <div th:if="${param.error}" class="alert alert-danger">
-					Usuario y/o contraseña incorrecta
+				<div class="row w-100">
+					<div class="col-lg-4 mx-auto">
+						<div class="auto-form-wrapper">
+							<div th:if="${param.error}" class="alert alert-danger">
+								Usuario y/o contraseña incorrecta</div>
+							<div th:if="${errorMsg != null}">
+								<div
+									class="alert alert-danger alert-dismissible fade show text-center"
+									role="alert">
+									<strong th:text="${errorMsg}"></strong>
+									<button type="button" class="close" data-dismiss="alert"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+							</div>
+							<div th:if="${confirmMsg != null}">
+								<div
+									class="alert alert-success alert-dismissible fade show text-center"
+									role="alert">
+									<strong th:text="${confirmMsg}"></strong>
+									<button type="button" class="close" data-dismiss="alert"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+							</div>
+							<form role="form" method="POST" th:action="'/login'">
+								<div class="form-group">
+									<label for="email" class="label">Username</label>
+									<div class="input-group">
+										<input type="email" name="email" id="email" required="true"
+											class="form-control" placeholder="example@company.com"
+											data-validation="email" />
+										<!--  input type="email" name="username" id="username" required="true" class="form-control" placeholder="example@company.com" data-validation="custom"  /-->
+										<div class="input-group-append">
+											<span class="input-group-text"> <i
+												class="fa fa-asterisk"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="password" class="label">Password</label>
+									<div class="input-group">
+										<input id="password" name="password" type="password"
+											required="true" class="form-control" placeholder="*********"
+											data-validation="length" data-validation-length="min2">
+										<div class="input-group-append">
+											<span class="input-group-text"> <i
+												class="fa fa-asterisk"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<button class="btn btn-primary submit-btn btn-block">Login</button>
+								</div>
+
+								<div class="form-group d-flex justify-content-between">
+									<a th:href="@{'/recover_password'}"
+										class="text-small forgot-password text-black">¿Ha olvidado
+										la conteseña?</a>
+								</div>
+
+								<div class="form-group">
+									<a class="btn btn-block g-login" href="/"><i
+										class="fa fa-money"></i>Ver cupones</a>
+								</div>
+
+								<div class="text-block text-center my-3">
+									<span class="text-small font-weight-semibold">¿No posee
+										una cuenta? </span><a th:href="@{'/register'}"
+										class="text-black text-small">Registrese</a>
+								</div>
+							</form>
+						</div>
+
+						<p class="footer-text text-center">copyright © 2018 El
+							Salvador. All rights reserved.</p>
+					</div>
 				</div>
-			<form role="form" method="POST" th:action="'/login'">
-               	<div class="form-group">
-               		<label for="email" class="label">Username</label>
-                  	<div class="input-group">
-                    	<input type="email" name="email" id="email" requerid="true" class="form-control" placeholder="example@company.com" data-validation="email"  />
-                    	<!--  input type="email" name="username" id="username" required="true" class="form-control" placeholder="example@company.com" data-validation="custom"  /-->
-                   		<div class="input-group-append">
-                    		<span class="input-group-text">
-                       			<i class="fa fa-asterisk"></i>
-                     		</span>
-                    	</div>
-                  	</div>
-                </div>
-                <div class="form-group">
-                	<label for="password" class="label">Password</label>
-                  	<div class="input-group">
-                    	<input id="password" name="password" type="password" required="true" class="form-control" placeholder="*********" data-validation="length" data-validation-length="min2">
-                    	<div class="input-group-append">
-                      		<span class="input-group-text">
-                        		<i class="fa fa-asterisk"></i>
-                      		</span>
-                   		</div>
-                	</div>
-                </div>
-                
-                <div class="form-group">
-                  	<button class="btn btn-primary submit-btn btn-block">Login</button>
-                </div>
-                
-                <div class="form-group d-flex justify-content-between">
-                  	<a th:href="@{'/recover_password'}" class="text-small forgot-password text-black">¿Ha olvidado la conteseña?</a>
-                </div>
-                
-                <div class="form-group">
-                 	<a class="btn btn-block g-login" href="/"><i class="fa fa-money"></i>Ver cupones</a>
-                </div>
-                
-                <div class="text-block text-center my-3">
-                  <span class="text-small font-weight-semibold">¿No posee una cuenta? </span><a th:href="@{'/register'}" class="text-black text-small">Registrese</a>
-                </div>
-            </form>
-            </div>
-            
-            <p class="footer-text text-center">copyright © 2018 El Salvador. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script src="/vendors/js/vendor.bundle.base.js"></script>
-  <script src="/vendors/js/vendor.bundle.addons.js"></script>
-      	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="/js/off-canvas.js"></script>
-  <script src="/js/misc.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+			</div>
+		</div>
+	</div>
+
+	<script src="/vendors/js/vendor.bundle.base.js"></script>
+	<script src="/vendors/js/vendor.bundle.addons.js"></script>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="/js/off-canvas.js"></script>
+	<script src="/js/misc.js"></script>
+	<script
+		src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 	<script>
 	  $.validate({
 	    lang: 'es'
