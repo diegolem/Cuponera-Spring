@@ -10,6 +10,13 @@
 <body
 	th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: script})">
 	<li class="nav-item option_list">
+       <a class="nav-link" th:href="@{/company/configuration/}">
+         <i class="menu-icon fa fa-user-circle-o"></i>
+         <span class="menu-title">Configurar Cuenta</span>
+       </a>
+    </li>
+	
+	<li class="nav-item option_list">
 	    <a class="nav-link" th:href="@{promotion/new}">
 	      <i class="menu-icon mdi mdi-backup-restore"></i>
 	      <span class="menu-title">Ingresar Promoción</span>
@@ -21,7 +28,6 @@
 	        <span class="menu-title">Lista de promociones</span>
         </a>
     </li>
-	
 	<section id="container">
 		<h2 class="text-center">Modificar promoción</h2>
 		<div class="row">

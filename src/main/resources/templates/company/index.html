@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="companyHead" th:insert="index :: headPage('Employee', ~{:: link})" ></head>
+<head th:fragment="companyHead" th:insert="index :: headPage('Empresa', ~{:: link})" >
+	<meta charset="utf-8">
+</head>
 <body th:fragment="companyBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
 	
 	<li class="nav-item option_list">

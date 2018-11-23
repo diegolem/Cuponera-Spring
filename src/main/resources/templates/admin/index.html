@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="adminHead" th:insert="index :: headPage('Employee', ~{:: link})" >
+<head th:fragment="adminHead" th:insert="index :: headPage('Admin', ~{:: link})" >
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
 </head>
 <body th:fragment="adminBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
