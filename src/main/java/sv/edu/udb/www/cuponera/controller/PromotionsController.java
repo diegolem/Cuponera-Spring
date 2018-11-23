@@ -254,7 +254,8 @@ public class PromotionsController {
 		}
 	}
 	
-	/*@PutMapping("/approved/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	@PutMapping("/approved/{id}")
 	public @ResponseBody String update(@PathVariable("id")int id) {
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -295,7 +296,8 @@ public class PromotionsController {
 			return error.getMessage();
 		}
 	}
-	*/
+	
+	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
 	@PutMapping("/reject/{id}")
 	public @ResponseBody String update(@PathVariable("id")int id, @RequestParam("reject") String reject) {
 		
@@ -522,7 +524,7 @@ public class PromotionsController {
 		}
 	}
 	
-	@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
+	/*@PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
 	@PutMapping("/rejected/{id}")
 	public ResponseEntity<?> rejectedPromotion(@PathVariable("id")Integer id, @RequestParam(required = true) String description) {
 		try {
@@ -579,7 +581,7 @@ public class PromotionsController {
 		}catch(Exception ex) {
 			return ResponseEntity.status(500).body("Error en el proceso de aprobación");
 		}
-	}
+	}*/
 	
 	@PreAuthorize("hasAnyAuthority('COMPANY')")
 	@DeleteMapping("/delete/{id}")

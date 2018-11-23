@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -408,20 +409,20 @@ public class UserController {
 					user.setConfirmed(confirmed);
 					userRepository.save(user);
 					
-					model.addAttribute("messageConfirm", "Usuario verificado");
+					model.addAttribute("confirmMsg", "Usuario verificado");
 					return "login";
 				}
 			}
 		}catch(Exception ex) {
-			model.addAttribute("messageError", "Ha ocurrido un error");
+			model.addAttribute("errorMsg", "Ha ocurrido un error");
 			return "login";
 		}
-		model.addAttribute("messageError", "Ha ocurrido un error");
+		model.addAttribute("errorMsg", "Ha ocurrido un error");
 		return "login";
 	}
 	
 	@PostMapping("/new_client")
-	public String insertClient(@Valid @ModelAttribute("user") Users user, BindingResult result, Model model) {
+	public String insertClient(@Valid @ModelAttribute("user") Users user, BindingResult result, Model model, RedirectAttributes attributes) {
 		try {
 			if(result.hasErrors()) {
 				return "register";
@@ -442,13 +443,15 @@ public class UserController {
 				
 				String message = "Bienvenido a la Cuponera S.A de C.V. <br><br>"
 						+ "Contraseña: "+password+" <br>"
-						+ "Antes debes verificar tú cuenta <a href='localhost:8080/users/confirmaccount/"+ token +"'> Click Aquí</a>";
+						+ "Antes debes verificar tú cuenta. Copia este link localhost:8080/users/confirmaccount/"+ token;
 				
-				mailService.SendSimpleMessage(user.getEmail(), "Verifiación de cuenta", message);
+				mailService.SendSimpleMessage(user.getEmail(), "Verificación de cuenta", message);
 				
+				attributes.addFlashAttribute("confirmMsg", "Favor confirmar cuenta");
 				return "redirect:/login";
 			}
 		}catch(Exception ex) {
+			attributes.addFlashAttribute("errorMsg", "Ha ocurrido un error en el proceso");
 			model.addAttribute("user", user);
 			return "redirect:/register";
 		}
