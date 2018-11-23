@@ -128,7 +128,7 @@ public class PromotionsController {
 					Optional<Promotions> promo = promotionRepository.findById(id);
 					
 					if (promo.get().getLimitCant() == 0 || promo.get().getLimitCant() >= cant) {
-						if (promo.get().getCouponsAvailable() >= cant) {
+						if (promo.get().getLimitCant() == 0 || promo.get().getCouponsAvailable() >= cant) {
 							
 							//promo.get().setCouponsAvailable(promo.get().getCouponsAvailable() - cant);
 							//promo.get().setCouponsSold(promo.get().getCouponsSold() + cant);
@@ -220,11 +220,11 @@ public class PromotionsController {
 		if (promo.isPresent()) 
 		{
 			model.addAttribute("promotion",promo.get());
-			state = promo.get().getState().getId() == 2 && promo.get().getCouponsAvailable() > 0;
+			state = promo.get().getState().getId() == 2 && (promo.get().getCouponsAvailable() > 0 || promo.get().getLimitCant() == 0);
 			if (promo.get().getLimitCant() > 0)
 				model.addAttribute("max", ( promo.get().getLimitCant() <= promo.get().getCouponsAvailable() )? promo.get().getLimitCant() : promo.get().getCouponsAvailable() );
 			else
-				model.addAttribute("max", promo.get().getCouponsAvailable());
+				model.addAttribute("max", 100);
 		}
 		
 		model.addAttribute("state",state);
