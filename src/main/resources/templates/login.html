@@ -55,9 +55,9 @@
 							</div>
 							<form role="form" method="POST" th:action="'/login'">
 								<div class="form-group">
-									<label for="email" class="label">Username</label>
+									<label for="email" class="label">Nombre de Usuario</label>
 									<div class="input-group">
-										<input type="email" name="email" id="email" required="true"
+										<input type="email" name="email" id="email" required
 											class="form-control" placeholder="example@company.com"
 											data-validation="email" />
 										<!--  input type="email" name="username" id="username" required="true" class="form-control" placeholder="example@company.com" data-validation="custom"  /-->
@@ -69,10 +69,10 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="password" class="label">Password</label>
+									<label for="password" class="label">Contraseña</label>
 									<div class="input-group">
 										<input id="password" name="password" type="password"
-											required="true" class="form-control" placeholder="*********"
+											required class="form-control" placeholder="*********"
 											data-validation="length" data-validation-length="min2">
 										<div class="input-group-append">
 											<span class="input-group-text"> <i
@@ -88,19 +88,17 @@
 
 								<div class="form-group d-flex justify-content-between">
 									<a th:href="@{'/recover_password'}"
-										class="text-small forgot-password text-black">¿Ha olvidado
-										la conteseña?</a>
+										class="text-small forgot-password text-black">¿Se te ha olvidado la contraseña?</a>
 								</div>
 
 								<div class="form-group">
 									<a class="btn btn-block g-login" href="/"><i
-										class="fa fa-money"></i>Ver cupones</a>
+										class="fa fa-money"></i>Ver Cupones</a>
 								</div>
 
 								<div class="text-block text-center my-3">
-									<span class="text-small font-weight-semibold">¿No posee
-										una cuenta? </span><a th:href="@{'/register'}"
-										class="text-black text-small">Registrese</a>
+									<span class="text-small font-weight-semibold">¿No estas registrado?, </span><a th:href="@{'/register'}"
+										class="text-black text-small">Registrate</a>
 								</div>
 							</form>
 						</div>

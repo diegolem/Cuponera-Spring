@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" >
+<head th:insert="index :: headPage('Detalle del cupon', ~{:: link})" >
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
+
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
 
 	<section id="container">
@@ -13,7 +16,7 @@
 		<article th:if="${state}">
 			<div class="card border-success">
 		     	<div class="card-body">
-		   			<h5 class="card-title" th:utext="${'Compa�ia distribuidora: ' + promotion.company.name}" ></h5>
+		   			<h5 class="card-title" th:utext="${'Compañia distribuidora: ' + promotion.company.name}" ></h5>
 		    		<p class="card-text" th:utext="${promotion.description}"></p>
 		    		<p class="card-text">
 		    			<small class="text-muted" th:text="${ 'Fecha de inicio: ' + promotion.initDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha limite: ' + promotion.limitDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha de vencimiento: ' + promotion.endDate}" ></small>
@@ -29,7 +32,7 @@
 		
 		<article th:if="${!state}">
 			<div class="alert alert-danger" role="alert">
-		  		La promocion no es valida
+		  		La promocion no es válida
 			</div>
 		</article>
 	</section>

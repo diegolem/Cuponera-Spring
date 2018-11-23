@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="index :: headPage('Employee', ~{:: link})" >
+<head th:insert="index :: headPage('Cupones', ~{:: link})" >
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
 </head>
 <body th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
@@ -29,8 +29,9 @@
                           
 					</div>
 					<div class="card-footer">
-						<p class="text-dark">
-							<b>Cupones disponibles: <span class="text-dark"
+						<p class="text-dark" th:switch="${promotion.couponsAvailable < 1}">
+							<b th:case="true">Cupones disponibles: Ilimitados</b>
+							<b th:case="false">Cupones disponibles: <span class="text-dark"
 								th:text="${promotion.couponsAvailable}"> </span></b>
 						</p>
 					</div>

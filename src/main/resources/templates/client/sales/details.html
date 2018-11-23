@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head  th:insert="client/index :: clientHead" ></head>
+<head  th:insert="client/index :: clientHead" >
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
 <body th:insert="client/index :: clientBody(~{:: article}, ~{:: script})">
 	<article th:if="${state}" class="d-flex justify-content-between mb-2">
 	    <h3 th:text="${ 'Oferta: ' + promotion.title}" ></h3>
@@ -9,7 +12,7 @@
 	<article th:if="${state}">
 		<div class="card border-success">
 	     	<div class="card-body">
-	   			<h5 class="card-title" th:utext="${'Compañia distribuidora: ' + promotion.company.name}" ></h5>
+	   			<h5 class="card-title" th:utext="${'CompaÃ±ia distribuidora: ' + promotion.company.name}" ></h5>
 	    		<p class="card-text" th:utext="${promotion.description}"></p>
 	    		<p class="card-text">
 	    			<small class="text-muted" th:text="${ 'Fecha de inicio: ' + promotion.initDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha limite: ' + promotion.limitDate}" ></small> | <small class="text-muted" th:text="${ 'Fecha de vencimiento: ' + promotion.endDate}" ></small>
@@ -25,7 +28,7 @@
 	
 	<article th:if="${!state}">
 		<div class="alert alert-danger" role="alert">
-	  		La promocion no es valida
+	  		La promociÃ³n no es valida
 		</div>
 	</article>
 
@@ -36,7 +39,7 @@
 					
 					$.confirm({
 						title: '[[${promotion.title}]]',
-					    content: '<p>¿Esta seguro que desa comprar el cupon?</p>' +
+					    content: '<p>Â¿Esta seguro que desa comprar el cupon?</p>' +
 					    '<form action="" class="formName">' +
 					    '<div class="form-group">' +
 					    '<label>Cantidad cupones:</label>' +

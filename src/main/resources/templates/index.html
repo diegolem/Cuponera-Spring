@@ -33,12 +33,7 @@
         </a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center">
-        <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
-          <li th:switch="${user == null}" class="nav-item">
-            <a th:case="true" href="/coupons" class="nav-link">Cupones
-              <span class="badge badge-primary ml-1">New</span>
-            </a>
-          </li>
+      <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
           <div th:replace="${menu} ?: _">
         </ul>
         
@@ -52,7 +47,7 @@
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <a class="dropdown-item">
               	<form th:action="@{/logout}" method="POST">
-					<button class="btn btn-danger btn-block" type="submit">Sign Out <i class="fa fa-sign-out"></i></button>
+					<button class="btn btn-danger btn-block" type="submit">Cerrar Sesión <i class="fa fa-sign-out"></i></button>
 				</form>
               </a>
             </div>
@@ -88,18 +83,15 @@
                 </div>
               </div>
             </div>
-			<div th:case="*" class="nav-link">
-            	<a href="/" class="btn btn-success btn-block">promociones
-                	<i class="fa fa-money"></i>
-              	</a>
-            </div>
           </li>
           
-          <li th:if="${user == null}" class="nav-item">
-          	<a href="/login" class="nav-link">
-              	<i class="menu-icon fa fa-user-circle-o"></i><span class="menu-title">Iniciar session</span>
-            </a>
-          </li>
+          <div th:switch="${user == null}">
+	          <li th:case="true" class="nav-item">
+	          	<a href="/login" class="nav-link">
+	              	<i class="menu-icon fa fa-user-circle-o"></i><span class="menu-title">Iniciar Sesión</span>
+	            </a>
+	          </li>
+          </div>
           
           <span th:replace="${listOption} ?: _"></span>
         </ul>
@@ -113,7 +105,7 @@
         
         <footer class="footer">
           <div class="container-fluid clearfix">
-            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. El Salvador All rights reserved.</span>
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. El Salvador Todos los derechos reservados.</span>
             <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Universidad Don Bosco</span>
           </div>
         </footer>

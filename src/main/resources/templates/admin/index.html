@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="adminHead" th:insert="index :: headPage('Admin', ~{:: link})" >
+<head th:fragment="adminHead" th:insert="index :: headPage('Administrador', ~{:: link})" >
 	<link rel="stylesheet" href="/css/datatables.bootstrap4.min.css">
 </head>
 <body th:fragment="adminBody(data, dataScript)" th:insert="index :: bodyHome(~{:: .option_list}, ~{:: #container}, ~{:: .menu_option}, ~{:: #script})">
 
 	<!-- // Menu lateral //////////////////////////////////////////////// -->
-  	
+  	<li class="nav-item option_list">
+       <a class="nav-link" href="/admin">
+         <i class="menu-icon fa fa-home"></i>
+         <span class="menu-title">Home</span>
+       </a>
+    </li>
   	<li class="nav-item option_list">
        <a class="nav-link" th:href="@{/admin/configuration/}">
          <i class="menu-icon fa fa-user-circle-o"></i>

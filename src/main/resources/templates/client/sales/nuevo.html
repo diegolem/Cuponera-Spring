@@ -51,8 +51,9 @@
                           
 					</div>
 					<div class="card-footer">
-						<p class="text-dark">
-							<b>Cupones disponibles: <span class="text-dark"
+						<p class="text-dark" th:switch="${promotion.couponsAvailable < 1}">
+							<b th:case="true">Cupones disponibles: Ilimitados</b>
+							<b th:case="false">Cupones disponibles: <span class="text-dark"
 								th:text="${promotion.couponsAvailable}"> </span></b>
 						</p>
 					</div>
